@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_journey_day"
+            android:enabled="true"
+            android:title="我的行程"></item>
+        <item android:id="@+id/menu_userinfo"
+            android:title="个人信息"
+            android:icon="@mipmap/chat1"></item>
+        <item android:id="@+id/menu_location"
+            android:title="我的位置"
+            android:icon="@mipmap/position" />
+    </group>
+    <group>
+        <item android:id="@+id/menu_journey_record"
+            android:title="行程记录">
+            <menu>
+                <item android:id="@+id/menu_my_journey"
+                    android:title="我的行程">
+                </item>
+                <item android:id="@+id/menu_my_journey_share"
+                    android:title="行程分享">
+                </item>
+            </menu>
+        </item>
+    </group>
+    <group >
+        <item android:id="@+id/menu_settting"
+            android:title="设置"></item>
+    </group>
+</menu>
