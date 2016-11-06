@@ -1,6 +1,5 @@
 package com.example.coderqiang.followme.View;
 
-
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by CoderQiang on 2016/10/28.
+ * Created by CoderQiang on 2016/11/5.
  */
 
 public class MyLinearLayoutManager extends LinearLayoutManager {

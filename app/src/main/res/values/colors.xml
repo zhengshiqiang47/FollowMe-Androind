@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#5B5B5B</color>
+    <color name="colorPrimaryDark">#D0D0D0</color>
     <color name="colorAccent">#2cc7ad</color>
     <color name="white">#fff</color>
     <color name="touming">#00000000</color>
@@ -24,4 +24,10 @@
     <color name="purple_2">#8158FF</color>
     <color name="green_3">#009E00</color>
     <color name="journey_green">#2cc7ad</color>
+    <color name="tab_pink">#ff80ab</color>
+    <color name="tab_purple">#9575cd</color>
+    <color name="tab_blue">#10B5DE</color>
+    <color name="tab_green">#009688</color>
+    <color name="tab_brown">#795548</color>
+    <color name="tab_green2">#009958</color>
 </resources>

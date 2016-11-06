@@ -1,49 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:layout_height="match_parent"
+<RelativeLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
-    <include layout="@layout/journey_title_bar"></include>
-    <android.support.design.widget.CoordinatorLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:id="@+id/journey_coordinatorlayout"
-        android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/journey_day_mainlayout"
         android:layout_height="match_parent"
-        tools:context="com.example.coderqiang.followme.Activity.MainActivity">
-        <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        xmlns:android="http://schemas.android.com/apk/res/android" >
+        <include layout="@layout/journey_title_bar"></include>
+
+        <android.support.design.widget.CoordinatorLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
+            android:id="@+id/journey_coordinatorlayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <include
-                layout="@layout/map_view"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"></include>
-        </LinearLayout>
+            android:layout_height="match_parent"
+            tools:context="com.example.coderqiang.followme.Activity.MainActivity">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <include
+                    layout="@layout/map_view"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"></include>
+            </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/journey_day_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/geometry"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            app:behavior_hideable="true"
-            app:behavior_peekHeight="150dp"
-            app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
-        </android.support.v7.widget.RecyclerView>
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/journey_day_fab"
-            android:background="@drawable/circle"
-            android:elevation="15dp"
-            android:layout_margin="16dp"
-            android:layout_gravity="bottom|right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/journey_day_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/geometry"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                app:behavior_hideable="true"
+                app:behavior_peekHeight="150dp"
+                android:scrollbars="none"
+                android:overScrollMode="never"
+                app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+            </android.support.v7.widget.RecyclerView>
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/journey_nestedScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:behavior_hideable="true"
+                app:behavior_peekHeight="200dp"
+                app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+                >
+
+            </android.support.v4.widget.NestedScrollView>
+
+            <com.example.coderqiang.followme.View.MyScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:behavior_hideable="true"
+                app:behavior_peekHeight="200dp"
+                app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </LinearLayout>
+            </com.example.coderqiang.followme.View.MyScrollView>
 
 
-    </android.support.design.widget.CoordinatorLayout>
-</LinearLayout>
+            <TextView
+                android:id="@+id/journey_day_recyclerviewHearder"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@drawable/geometry"
+                android:layout_gravity="bottom"
+                android:translationY="-150dp"
+                android:text="^"
+                android:textSize="20sp"
+                android:gravity="center_horizontal"
+                />
+
+
+        </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/journey_menu_hide_text"
+        android:visibility="gone"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <include layout="@layout/journey_day_menu"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/journey_day_fab"
+        android:src="@drawable/fab_plus_icon"
+        android:elevation="16dp"
+        android:layout_margin="17dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>
