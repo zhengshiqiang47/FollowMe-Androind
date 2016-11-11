@@ -113,7 +113,7 @@ public class DynamicFragment extends Fragment{
         }
 
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
+        private class MyViewHolder extends RecyclerView.ViewHolder {
             private TextView userNameTv;
             public MyViewHolder(View itemView) {
                 super(itemView);
@@ -121,7 +121,7 @@ public class DynamicFragment extends Fragment{
             }
         }
 
-        class HeaderHolder extends RecyclerView.ViewHolder {
+        private class HeaderHolder extends RecyclerView.ViewHolder {
 
             private RecyclerView headerRecy;
             public HeaderHolder(View itemView) {

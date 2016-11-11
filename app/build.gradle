@@ -9,7 +9,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.activity_scenic.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -40,5 +40,8 @@ dependencies {
     compile 'com.nightonke:boommenu:1.0.9'
     compile 'com.android.support:cardview-v7:24.0.+'
     compile 'com.bartoszlipinski.recyclerviewheader:library:1.2.0'
+    compile 'me.everything:overscroll-decor-android:1.0.3'
+    compile 'io.reactivex:rxjava:1.0.14'
+    compile 'io.reactivex:rxandroid:1.0.1'
     compile files('libs/jsoup-1.9.2.jar')
 }

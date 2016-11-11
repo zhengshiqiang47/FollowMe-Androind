@@ -13,8 +13,8 @@ import okhttp3.Response;
  */
 
 public class HttpAnalyze {
-    private static final String TAG = "HttpAnalyze";
-    public static String getHtml(String url){
+    private  final String TAG = "HttpAnalyze";
+    public String getHtml(String url){
         String result=null;
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
         Request request=new Request.Builder()
@@ -24,7 +24,6 @@ public class HttpAnalyze {
         try {
             Response response=okHttpClient.newCall(request).execute();
             result = new String(response.body().bytes());
-            Log.i(TAG,"result:" + result);
         } catch (IOException e) {
             e.printStackTrace();
         }

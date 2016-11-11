@@ -22,6 +22,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,8 +83,6 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
     LinearLayout menuJourneyLayout;
     @Bind(R.id.menu_new_journey_note_layout)
     LinearLayout menuNoteLayou;
-    @Bind(R.id.journey_day_recyclerviewHearder)
-    TextView journeyRecyHearder;
     @Bind(R.id.journey_day_mainlayout)
     LinearLayout mainLayout;
     @Bind(R.id.menu_new_journey)
@@ -133,7 +132,6 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
                 closeMenu(journeyFab);
             }
         });
-        headerTransY=journeyRecyHearder.getTranslationY();
         circleImagview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,27 +142,42 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
         journeyFab.setOnClickListener(this);
         behavior=BottomSheetBehavior.from(mRecyclerview);
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            private static final int ARROW_DOWN=2;
+            private static final int ARROW_UP=3;
+            private int arrowType=ARROW_DOWN;
+            private int centerX;
+            private int centerY;
+            ImageView imageView;
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 Log.i(TAG,"State:"+newState);
             }
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                Log.i(TAG,"slideOffset:"+slideOffset);
+                if (imageView == null) {
+                    imageView = (ImageView) getActivity().findViewById(R.id.journey_recy_header_arrow);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(behavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
+                                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                            }else {
+                                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                            }
+                        }
+                    });
+                }
+//                Log.i(TAG,"slideOffset:"+slideOffset);
                 if(slideOffset>=0) {
                     searchView.setTranslationY(-slideOffset*200);
                     mapView.setTranslationY(-slideOffset*400);
                     journeyFab.setTranslationX(0);
                     journeyFab.setTranslationY(0);
+                    imageView.setRotation(180+slideOffset*180);
                 }
                 if(slideOffset<=0){
                     journeyFab.setTranslationY(slideOffset*250);
                     journeyFab.setTranslationX(-slideOffset*140);
-                }
-                if(behavior.getState()==BottomSheetBehavior.STATE_COLLAPSED){
-                    journeyRecyHearder.setVisibility(View.VISIBLE);
-                }else {
-                    journeyRecyHearder.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -287,8 +300,8 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
     }
 
     private void openMenu(View view){
-        ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",0,-155,-135);
-        animator.setDuration(800);
+        ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",0,-135);
+        animator.setDuration(700);
         animator.start();
         menuHideTv.setVisibility(View.VISIBLE);
         AlphaAnimation alphaAnimation=new AlphaAnimation(0.0f,0.7f);
@@ -307,8 +320,8 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
         fabOpened=true;
     }
     private void closeMenu(View view){
-        ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",-135,20,0);
-        animator.setDuration(700);
+        ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",-135,0);
+        animator.setDuration(600);
         animator.start();
         AlphaAnimation alphaAnimation=new AlphaAnimation(0.7f,0.0f);
         alphaAnimation.setDuration(500);
@@ -324,21 +337,43 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
         fabOpened=false;
     }
 
-    class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
+    class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+
+        private static final int TYPE_HEADER=0;
+        private static final int TYPE_NORMAL=1;
+
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if(viewType==TYPE_HEADER){
+                return new HeaderHolder(LayoutInflater.from(getActivity()).inflate(R.layout.journey_recycler_header, parent, false));
+            }
+            if(viewType==TYPE_NORMAL){
                 MyViewHolder holder = new MyViewHolder(LayoutInflater.from(getActivity()).inflate(R.layout.journey_day_list_item, parent, false));
                 return holder;
+            }
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder viewholder, int position) {
+            if(viewholder instanceof MyViewHolder){
+                position=position-1;
+                MyViewHolder holder=(MyViewHolder)viewholder;
+                holder.city.setText(journeyDays.get(position).getCity());
+                holder.detail.setText(journeyDays.get(position).getDetail());
+                holder.day.setText("Day " + journeyDays.get(position).getDay());
+            }else if(viewholder instanceof HeaderHolder){
+                HeaderHolder headerHolder=(HeaderHolder)viewholder;
+            }
 
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            holder.city.setText(journeyDays.get(position).getCity());
-            holder.detail.setText(journeyDays.get(position).getDetail());
-            holder.day.setText("Day " + journeyDays.get(position).getDay());
+        public int getItemViewType(int position) {
+            if(position==0){
+                return TYPE_HEADER;
+            }else return TYPE_NORMAL;
         }
-
 
         @Override
         public int getItemCount() {
@@ -356,5 +391,15 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
                 day = (TextView) itemView.findViewById(R.id.journey_day_day);
             }
         }
+
+        private class HeaderHolder extends RecyclerView.ViewHolder {
+            ImageView arrowView;
+            public HeaderHolder(View itemView) {
+                super(itemView);
+                arrowView = (ImageView) itemView.findViewById(R.id.journey_recy_header_arrow);
+                arrowView.setRotation(180);
+            }
+        }
+
     }
 }

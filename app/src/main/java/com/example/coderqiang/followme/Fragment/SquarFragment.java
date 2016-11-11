@@ -65,32 +65,32 @@ public class SquarFragment extends android.app.Fragment {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 ArgbEvaluator evaluator = new ArgbEvaluator();
                 if (position == 0) {
-                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_green2));
-                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_green), getResources().getColor(R.color.tab_green2));
+                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_1_green));
+                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_2_blue), getResources().getColor(R.color.tab_1_green));
                     setBg(evaluate);
                 }
                 if (0 < position && position < 1) {
-                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_green2));
-                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_green2), getResources().getColor(R.color.tab_green));
+                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_1_green));
+                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_1_green), getResources().getColor(R.color.tab_2_blue));
                     setBg(evaluate);
                 }
 
                 if (position == 1) {
-                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_purple));
-                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_green2), getResources().getColor(R.color.tab_purple));
+                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_3_purple));
+                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_1_green), getResources().getColor(R.color.tab_3_purple));
                     setBg(evaluate);
                 }
 
                 if (1 < position && position < 2) {
-                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_purple));
-                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_purple), getResources().getColor(R.color.tab_green2));
+                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_3_purple));
+                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_3_purple), getResources().getColor(R.color.tab_1_green));
                     mTabLayout.setBackgroundColor(evaluate);
                 }
 
 
                 if (position == 2) {
                     mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_pink));
-                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_purple), getResources().getColor(R.color.tab_pink));
+                    int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_3_purple), getResources().getColor(R.color.tab_pink));
                     setBg(evaluate);
                 }
             }
@@ -107,7 +107,7 @@ public class SquarFragment extends android.app.Fragment {
         });
         fragments = new ArrayList<android.support.v4.app.Fragment>();
         fragments.add(new DynamicFragment());
-        fragments.add(new TestFragment());
+        fragments.add(new ScenicFragment());
         fragments.add(new TestFragment());
         mAdapter = new FragAdapter(((MainActivity)getActivity()).getSupportFragmentManager(), fragments);
         viewPager.setAdapter(mAdapter);
