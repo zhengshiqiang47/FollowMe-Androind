@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <EditText
+        android:id="@+id/login_name_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/login_passwd_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/login_sign_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="登录"/>
+    <EditText
+        android:id="@+id/login_identifycode"
+        android:hint="验证码"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/login_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="注册"/>
+    <Button
+        android:id="@+id/login_loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="登录"/>
+    <Button
+        android:id="@+id/login_reset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="重置密码"/>
+    <Button
+        android:id="@+id/login_reset2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="重置密码2"/>
+
+</LinearLayout>

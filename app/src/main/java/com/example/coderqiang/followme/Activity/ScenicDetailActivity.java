@@ -1,39 +1,44 @@
 package com.example.coderqiang.followme.Activity;
 
-import android.animation.ArgbEvaluator;
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.baidu.mapapi.map.Text;
 import com.bumptech.glide.Glide;
-import com.example.coderqiang.followme.Fragment.DynamicFragment;
+import com.example.coderqiang.followme.Fragment.ScenicCommentsFragment;
 import com.example.coderqiang.followme.Fragment.ScenicDetailFragment;
-import com.example.coderqiang.followme.Fragment.ScenicFragment;
-import com.example.coderqiang.followme.Fragment.SquarFragment;
-import com.example.coderqiang.followme.Fragment.TestFragment;
 import com.example.coderqiang.followme.Model.Scenicspot;
+import com.example.coderqiang.followme.Model.ScenicspotLab;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Util.HttpParse;
+import com.example.coderqiang.followme.View.BlurTransformation2;
+import com.example.coderqiang.followme.View.CustomViewPager;
+import com.example.coderqiang.followme.View.MyViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -44,18 +49,28 @@ import rx.schedulers.Schedulers;
  * Created by CoderQiang on 2016/11/10.
  */
 
-public class ScenicDetailActivity extends FragmentActivity {
+public class ScenicDetailActivity extends SwipeBackActivity implements View.OnClickListener{
     private static final String TAG = "ScenicDetailActivity";
     public static final String EXTRA_SCENIC="Scenic";
     private Context context;
+    @Bind(R.id.scenic_detail_nestscroll)
+    NestedScrollView nestedScrollView;
+    @Bind(R.id.scenic_detail_fab)
+    FloatingActionButton fab;
+    @Bind(R.id.scenic_detail_back_button)
+    Button backButton;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.scenic_detail_appbar)
+    AppBarLayout appBarLayout;
     @Bind(R.id.scenic_detail_tablayout)
     TabLayout mTabLayout;
     @Bind(R.id.scenic_detail_viewpager)
-    ViewPager viewPager;
+    CustomViewPager viewPager;
     @Bind(R.id.scenic_detail_img)
     ImageView detailImageView;
+    @Bind(R.id.scenic_detail_img_bg)
+    ImageView detailImageViewBg;
     @Bind(R.id.scenic_detail_name_header)
     TextView nameHeaderTv;
     @Bind(R.id.scenic_detail_name_right)
@@ -63,11 +78,14 @@ public class ScenicDetailActivity extends FragmentActivity {
     List<android.support.v4.app.Fragment> fragments;
     PagerAdapter mAdapter;
     Scenicspot scenicspot;
+    int scenicPositon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scenic_detail);
-        scenicspot =(Scenicspot) getIntent().getSerializableExtra(EXTRA_SCENIC);
+        scenicPositon =getIntent().getIntExtra(EXTRA_SCENIC,0);
+        Log.i(TAG, "position" + scenicPositon);
+        scenicspot = ScenicspotLab.get(getApplicationContext()).getScenicspots().get(scenicPositon);
         context=this;
         Log.i(TAG, scenicspot.getScenicName());
         ButterKnife.bind(this);
@@ -77,12 +95,14 @@ public class ScenicDetailActivity extends FragmentActivity {
 
     private void initData(){
         nameRightTv.setText(scenicspot.getScenicName());
+        backButton.setOnClickListener(this);
+        fab.setOnClickListener(this);
         Observable.create(new Observable.OnSubscribe<String>() {
 
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 HttpParse httpParse=new HttpParse();
-                httpParse.getScenicDetail(context,scenicspot);
+//                httpParse.getScenicDetail(context,scenicspot);
                 subscriber.onNext("");
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
@@ -99,8 +119,18 @@ public class ScenicDetailActivity extends FragmentActivity {
             @Override
             public void onNext(String str) {
                 Glide.with(context).load(scenicspot.getImgUrls().get(0)).centerCrop().into(detailImageView);
+                Glide.with(context).load(scenicspot.getImgUrls().get(0)).transform(new BlurTransformation2(getApplicationContext())).into(detailImageViewBg);
                 initViewPager();
                 initTabLayout();
+            }
+        });
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                float offset=1.0f+verticalOffset*1.0f/(appBarLayout.getHeight()-toolbar.getHeight()-Dp2Px(getApplicationContext(),16));
+                Log.i(TAG, "offset" +offset );
+                detailImageView.setAlpha(offset);
             }
         });
     }
@@ -111,11 +141,53 @@ public class ScenicDetailActivity extends FragmentActivity {
 
     private void initViewPager() {
         fragments = new ArrayList<Fragment>();
-        fragments.add(ScenicDetailFragment.newInstance(scenicspot));
-        fragments.add(ScenicDetailFragment.newInstance(scenicspot));
+        fragments.add(ScenicDetailFragment.newInstance(scenicspot,viewPager));
+        fragments.add(ScenicCommentsFragment.newInstance(scenicspot,viewPager));
         mAdapter = new ScenicDetailActivity.FragAdapter(this.getSupportFragmentManager(), fragments);
         viewPager.setAdapter(mAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int currentPosition=0;
+            boolean shouldReset=true;
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.i(TAG, "position:" + position + " positionOffset" + positionOffset);
+                if(currentPosition==1){
+                    if(positionOffset==0&&shouldReset){
+                        viewPager.resetHeight(1);
+                        shouldReset=false;
+                        Log.i(TAG,"重置高度");
+                    }
+                }else if(currentPosition==0){
+                    if(positionOffset==0&&shouldReset){
+                        viewPager.resetHeight(0);
+                        shouldReset=false;
+                        Log.i(TAG,"重置高度");
+                    }
+                }
+            }
+            @Override
+            public void onPageSelected(int position) {
+                currentPosition = position;
+                shouldReset=true;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         viewPager.setCurrentItem(0);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.scenic_detail_back_button:
+                super.onBackPressed();
+                finish();
+                break;
+        }
     }
 
     class FragAdapter extends FragmentPagerAdapter {
@@ -151,7 +223,7 @@ public class ScenicDetailActivity extends FragmentActivity {
         @Override
         protected Void doInBackground(Void... params) {
             HttpParse httpParse=new HttpParse();
-            httpParse.getScenicDetail(context,scenicspot);
+//            httpParse.getScenicDetail(context,scenicspot);
             return null;
         }
 
@@ -161,5 +233,10 @@ public class ScenicDetailActivity extends FragmentActivity {
             initTabLayout();
             initViewPager();
         }
+    }
+
+    public static int Dp2Px(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
     }
 }

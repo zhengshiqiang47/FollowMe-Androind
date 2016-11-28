@@ -13,8 +13,11 @@
         </com.baidu.mapapi.map.MapView>
         <android.support.v7.widget.SearchView
             android:id="@+id/journey_day_search"
+            android:queryHint="搜索地点、景点"
             android:background="@color/white"
-            android:layout_margin="16dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_alignParentTop="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

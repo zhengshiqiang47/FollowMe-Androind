@@ -10,6 +10,9 @@ import java.util.ArrayList;
 public class Scenicspot implements Serializable{
     private int ScenicspotID;
     private String ScenicName;
+    private String rank;
+    private String addr;
+    private String manyA;
     private String firstImg;
     private ArrayList<String> imgUrls;
     private String cityName;
@@ -24,7 +27,7 @@ public class Scenicspot implements Serializable{
     private String strategy;
     private String shotIntro;
     private boolean isParse;
-
+    public static int ID=0;
     public String getUrl() {
         return url;
     }
@@ -162,5 +165,28 @@ public class Scenicspot implements Serializable{
 
     public void setParse(boolean parse) {
         isParse = parse;
+    }
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
+    }
+
+    public String getManyA() {
+        return manyA;
+    }
+
+    public void setManyA(String manyA) {
+        this.manyA = manyA;
     }
 }

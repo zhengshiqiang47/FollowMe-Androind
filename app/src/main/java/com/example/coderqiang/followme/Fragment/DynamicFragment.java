@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import com.bartoszlipinski.recyclerviewheader.RecyclerViewHeader;
 import com.example.coderqiang.followme.Model.Dynamic;
 import com.example.coderqiang.followme.R;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 
@@ -31,6 +34,10 @@ public class DynamicFragment extends Fragment{
     ViewPager viewPager;
     @Bind(R.id.dynamic_recyclerView)
     RecyclerView mRecyclerview;
+    @Bind(R.id.twinklingrefreshLayout)
+    TwinklingRefreshLayout refreshLayout;
+//    @Bind(R.id.dynamic_swipeRefesh)
+//    SwipeRefreshLayout pullToRefreshView;
 //    @Bind(R.id.swipeToLoad)
 //    SwipeToLoadLayout swipeToLoadLayout;
     ArrayList<String> str = new ArrayList<>();
@@ -136,7 +143,7 @@ public class DynamicFragment extends Fragment{
 
 
 
-            class headerAdapter extends RecyclerView.Adapter<headerAdapter.headerItemHolder>{
+            private class headerAdapter extends RecyclerView.Adapter<headerAdapter.headerItemHolder>{
                 ImgListener imgListener;
 
                 @Override

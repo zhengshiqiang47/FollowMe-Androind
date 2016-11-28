@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
+<com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scenic_swiperefresh"
+    android:id="@+id/scenic_twinklingrefresh"
     android:background="@color/white"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -13,4 +13,4 @@
         android:background="@drawable/geometry"
         android:overScrollMode="ifContentScrolls">
     </android.support.v7.widget.RecyclerView>
-</android.support.v4.widget.SwipeRefreshLayout>
+</com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
+    android:paddingLeft="4dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="16dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/header_item_img"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/dog_2"/>
-    <TextView
-        android:layout_width="20dp"
-        android:background="@color/white"
-        android:layout_height="match_parent" />
+        android:layout_height="120dp" />
 </LinearLayout>

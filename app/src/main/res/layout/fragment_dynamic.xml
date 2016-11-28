@@ -6,22 +6,17 @@
     android:background="@color/gray"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/dynamic_swipeRefesh"
+    <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+        android:id="@+id/twinklingrefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/swipe_target"
+        android:layout_height="match_parent"
+        app:tr_wave_height="180dp"
+        app:tr_head_height="100dp">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/dynamic_recyclerView"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/dynamic_recyclerView"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
-        </LinearLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
-
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+    </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
 </LinearLayout>

@@ -33,6 +33,8 @@ import com.example.coderqiang.followme.Model.ScenicspotLab;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Util.HttpParse;
 import com.example.coderqiang.followme.View.ViewPagerScaleTransformer;
+import com.lcodecore.tkrefreshlayout.IHeaderView;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,8 +52,8 @@ public class ScenicFragment extends Fragment {
     private static final String TAG="ScenicFragment";
     @Bind(R.id.scenic_recyclerview)
     RecyclerView recyclerView;
-    @Bind(R.id.scenic_swiperefresh)
-    SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.scenic_twinklingrefresh)
+    TwinklingRefreshLayout twinklingRefreshLayout;
     ArrayList<ScenicHeaderFragment> fragments;
     @Nullable
     @Override
@@ -73,6 +75,7 @@ public class ScenicFragment extends Fragment {
         for(int i=0;i<5;i++){
             fragments.add(ScenicHeaderFragment.newInstance(scenicspots.get(i)));
         }
+
     }
 
     class FragAdapter extends FragmentPagerAdapter {
@@ -154,11 +157,12 @@ public class ScenicFragment extends Fragment {
                 Glide.with(this.scenicFragment).load(imgUrl).diskCacheStrategy(DiskCacheStrategy.RESULT).into(imageView);
                 myViewHolder.introTv.setText(intro);
                 myViewHolder.nameTv.setText(name);
+                final int scePosition=position;
                 myViewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), ScenicDetailActivity.class);
-                        intent.putExtra(ScenicDetailActivity.EXTRA_SCENIC, (Serializable) scenicspot);
+                        intent.putExtra(ScenicDetailActivity.EXTRA_SCENIC, scePosition);
                         startActivity(intent);
                     }
                 });
@@ -166,7 +170,7 @@ public class ScenicFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), ScenicDetailActivity.class);
-                        intent.putExtra(ScenicDetailActivity.EXTRA_SCENIC, scenicspot);
+                        intent.putExtra(ScenicDetailActivity.EXTRA_SCENIC, scePosition);
                         startActivity(intent);
                     }
                 });
@@ -193,6 +197,7 @@ public class ScenicFragment extends Fragment {
         public int getItemCount() {
             return scenicspots.size()+1;
         }
+
 
         private class MyViewHolder extends RecyclerView.ViewHolder{
             LinearLayout linearLayout;

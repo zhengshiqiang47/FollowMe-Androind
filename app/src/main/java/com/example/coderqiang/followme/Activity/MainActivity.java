@@ -1,48 +1,53 @@
 package com.example.coderqiang.followme.Activity;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ListView;
-import android.widget.TextView;
-
+//
+//import com.alibaba.mobileim.IYWLoginService;
+//import com.alibaba.mobileim.YWAPI;
+//import com.alibaba.mobileim.YWAccountType;
+//import com.alibaba.mobileim.YWIMKit;
+//import com.alibaba.mobileim.YWLoginParam;
+//import com.alibaba.mobileim.aop.AdviceBinder;
+//import com.alibaba.mobileim.aop.PointCutEnum;
+//import com.alibaba.mobileim.channel.event.IWxCallback;
+//import com.alibaba.mobileim.contact.IYWContactService;
+//import com.alibaba.mobileim.ui.contact.ContactsFragment;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Text;
-import com.example.coderqiang.followme.CircleImagview;
 import com.example.coderqiang.followme.Fragment.JourneyFragment;
+import com.example.coderqiang.followme.Fragment.ScenicCommentsFragment;
 import com.example.coderqiang.followme.Fragment.SquarFragment;
-import com.example.coderqiang.followme.Fragment.TestFragment;
 import com.example.coderqiang.followme.Fragment.UserinfoFragment;
-import com.example.coderqiang.followme.Model.JourneyDay;
+import com.example.coderqiang.followme.IMabout.ConversationActivity;
+import com.example.coderqiang.followme.IMabout.ConversationFragment;
 import com.example.coderqiang.followme.Model.ScenicspotLab;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Util.HttpParse;
-
-import java.util.ArrayList;
+import com.example.coderqiang.followme.Util.SetStatusColor;
+import com.tencent.TIMCallBack;
+import com.tencent.TIMConnListener;
+import com.tencent.TIMManager;
+import com.tencent.TIMUser;
 
 import butterknife.Bind;
-import butterknife.BindInt;
 import butterknife.ButterKnife;
+import tencent.tls.platform.TLSAccountHelper;
+import tencent.tls.platform.TLSErrInfo;
+import tencent.tls.platform.TLSLoginHelper;
+import tencent.tls.platform.TLSPwdLoginListener;
+import tencent.tls.platform.TLSPwdRegListener;
+import tencent.tls.platform.TLSPwdResetListener;
+import tencent.tls.platform.TLSUserInfo;
 
 public class MainActivity extends FragmentActivity {
     private static final String TAG="MainActivity";
@@ -50,24 +55,64 @@ public class MainActivity extends FragmentActivity {
     JourneyFragment journeyFragment;
     UserinfoFragment userinfoFragment;
     SquarFragment squarFragment;
+    ScenicCommentsFragment scenicCommentsFragment;
     Fragment currentFragment;
     @Bind(R.id.journey_nav)
     BottomNavigationBar bottomNavigationBar;
+    ConversationFragment conversationFragment;
+//    YWIMKit imKit;
 
+    public final static int accType = 8902;
+    public final static int sdkAppid=1400019371;
+    public final static String appVer="1.0";
+    TLSAccountHelper accountHelper;
+    TLSLoginHelper loginHelper;
+    TLSPwdLoginListener loginListener;
+
+    TLSPwdRegListener pwdRegListener;
+    TLSPwdResetListener resetListener;
+    Context context;
+
+    String num="86-15659772595";
+    String pwd="zsqqq1996424";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        context=this;
         fm = this.getFragmentManager();
         setDefaultFragment();
         initNavigation();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         new GetScenicSpot().execute();
+        SetStatusColor.MIUISetStatusBarLightMode(getWindow(), true);
+        Log.i(TAG, "rom厂商:" + android.os.Build.BRAND);
+        TIMManager timManager=TIMManager.getInstance();
+        timManager.init(getApplicationContext());
+        timManager.setConnectionListener(new TIMConnListener() {
+            @Override
+            public void onConnected() {
+                Log.i(TAG, "连接建立");
+            }
+            @Override
+            public void onDisconnected(int i, String s) {
+                Log.i(TAG, "连接断开errorCode:"+i+" "+s);
+            }
+
+            @Override
+            public void onWifiNeedAuth(String s) {
+                Log.i(TAG, "连接WifiNeedAuth");
+            }
+        });
+        loginAccount();
+//        AdviceBinder.bindAdvice(PointCutEnum.CONVERSATION_FRAGMENT_UI_POINTCUT, ConversationFragment.class);
+//        loginAndStartActivity();
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
+
     int count=0;
     @Override
     public void onBackPressed() {
@@ -81,10 +126,11 @@ public class MainActivity extends FragmentActivity {
     private void initNavigation(){
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_SHIFTING);
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
-        bottomNavigationBar.addItem(new BottomNavigationItem(R.mipmap.position1, "日程").setActiveColor(R.color.journey_green))
-                .addItem(new BottomNavigationItem(R.mipmap.fire_white, "广场").setActiveColor(R.color.journey_green))
-                .addItem(new BottomNavigationItem(R.mipmap.chat, "联系人")).setActiveColor(R.color.journey_green)
-                .addItem(new BottomNavigationItem(R.mipmap.mine,"我的")).setActiveColor(R.color.journey_green)
+        bottomNavigationBar
+                .addItem(new BottomNavigationItem(R.mipmap.position1, "日程"))
+                .addItem(new BottomNavigationItem(R.drawable.tab_conversation, "广场"))
+                .addItem(new BottomNavigationItem(R.mipmap.chat, "联系人"))
+                .addItem(new BottomNavigationItem(R.drawable.mine_selected,"我的"))
                 .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -102,8 +148,13 @@ public class MainActivity extends FragmentActivity {
                         switchFragment(currentFragment,squarFragment);
                         break;
                     case 2:
-                        Intent intent = new Intent(getApplicationContext(), ScenicDetailActivity.class);
-                        startActivity(intent);
+                        if (conversationFragment == null) {
+                            conversationFragment=new ConversationFragment();
+                        }
+                        switchFragment(currentFragment, conversationFragment);
+//                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                        startActivity(intent);
+//                        addFriend();
                         break;
                     case 3:
                         if (userinfoFragment == null) {
@@ -112,7 +163,6 @@ public class MainActivity extends FragmentActivity {
                         switchFragment(currentFragment,userinfoFragment);
                         break;
                 }
-
             }
 
             @Override
@@ -152,8 +202,112 @@ public class MainActivity extends FragmentActivity {
         @Override
         protected Void doInBackground(Void... params) {
             HttpParse httpParse=new HttpParse();
-            httpParse.getScenicspot(getApplicationContext(),"中国", "3");
+            httpParse.getScenicspot(getApplicationContext(),"杭州","2");
+            httpParse.getScenicDetail(getApplicationContext(),ScenicspotLab.get(getApplicationContext()).getScenicspots().get(0));
             return null;
         }
     }
+
+    private void loginAccount() {
+        loginHelper = TLSLoginHelper.getInstance().init(getApplicationContext(), sdkAppid, accType, appVer);
+//        if(!loginHelper.needLogin(num)) {
+//            Log.i(TAG, "不需要登录");
+//            Intent intent = new Intent(context, ConversationActivity.class);
+//            startActivity(intent);
+//            return;
+//        }
+        loginListener=new TLSPwdLoginListener() {
+            @Override
+            public void OnPwdLoginSuccess(TLSUserInfo tlsUserInfo) {
+
+                String usersig = loginHelper.getUserSig(tlsUserInfo.identifier);
+                Log.i(TAG, "登录请求成功"+usersig);
+                TIMUser user = new TIMUser();
+                user.setIdentifier(num);
+
+                TIMManager.getInstance().login(sdkAppid,user,usersig,new TIMCallBack(){
+
+                    @Override
+                    public void onError(int i, String s) {
+                        Log.i(TAG, "SDK登录失败"+i+" "+s);
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        Log.e(TAG,"SDK登录成功");
+                    }
+                });
+            }
+
+            @Override
+            public void OnPwdLoginReaskImgcodeSuccess(byte[] bytes) {
+                Log.i(TAG, "登录请求图片成功");
+            }
+
+            @Override
+            public void OnPwdLoginNeedImgcode(byte[] bytes, TLSErrInfo tlsErrInfo) {
+                Log.i(TAG, "登录有问题");
+            }
+
+            @Override
+            public void OnPwdLoginFail(TLSErrInfo tlsErrInfo) {
+                Log.i(TAG, "登录请求失败"+tlsErrInfo.ErrCode+" "+tlsErrInfo.Msg+" "+tlsErrInfo.Title);
+            }
+
+            @Override
+            public void OnPwdLoginTimeout(TLSErrInfo tlsErrInfo) {
+                Log.i(TAG, "登录请求超时");
+            }
+        };
+        loginHelper.TLSPwdLogin(num, pwd.getBytes(), loginListener);
+
+    }
+//    private void loginAndStartActivity(){
+//        String userid = "1234";
+//        String passwd="123456";
+//        imKit=YWAPI.getIMKitInstance(userid, LocationApplication.API_KEY);
+//        IYWLoginService loginService=imKit.getLoginService();
+//        YWLoginParam loginParam = YWLoginParam.createLoginParam(userid, passwd);
+//        loginService.login(loginParam, new IWxCallback() {
+//            @Override
+//            public void onSuccess(Object... objects) {
+//                Log.i(TAG,"登录成功");
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//                Log.i(TAG,"登录失败");
+//            }
+//
+//            @Override
+//            public void onProgress(int i) {
+//                Log.i(TAG,"登录中"+i);
+//            }
+//        });
+//    }
+//
+//    private void addFriend(){
+//        IYWContactService contactService = imKit.getContactService();
+//
+//        IWxCallback callback = new IWxCallback() {
+//
+//            @Override
+//            public void onSuccess(Object... result) {
+//                // onSuccess参数为空
+//                Log.i(TAG,"添加成功");
+//            }
+//
+//            @Override
+//            public void onError(int i, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onProgress(int progress) {
+//
+//            }
+//
+//        };
+//        contactService.addContact("1234", LocationApplication.API_KEY, "remarkName", "message", callback);
+//    }
 }

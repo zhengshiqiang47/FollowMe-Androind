@@ -7,6 +7,8 @@ import java.util.ArrayList;
  */
 
 public class Comment {
+    private String commentId;
+    private String ownerImag;
     private String CommentName;
     private String ScenicSpot;
     private String Content;
@@ -51,5 +53,21 @@ public class Comment {
 
     public void setImages(ArrayList<String> images) {
         this.images = images;
+    }
+
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
+    }
+
+    public String getOwnerImag() {
+        return ownerImag;
+    }
+
+    public void setOwnerImag(String ownerImag) {
+        this.ownerImag = ownerImag;
     }
 }
