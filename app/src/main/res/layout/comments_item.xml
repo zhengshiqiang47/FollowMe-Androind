@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginBottom="12dp"
     xmlns:expandableTextView="http://schemas.android.com/tools"
     android:background="@color/white"
+    android:id="@+id/scenic_comments_item_layout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -26,6 +26,7 @@
             android:layout_marginLeft="8dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="一个人饮醉"
@@ -51,7 +52,9 @@
             expandableTextView:animAlphaStart="1.0f">
             <TextView
                 android:id="@id/expandable_text"
-                android:textColor="#272727"
+                android:textColor="@color/black_3"
+                android:textSize="15sp"
+                android:lineSpacingMultiplier="1.2"
                 android:layout_marginLeft="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,5 +73,8 @@
             android:id="@+id/scenic_comments_item_recylerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:background="@color/gray_system"/>
 </LinearLayout>

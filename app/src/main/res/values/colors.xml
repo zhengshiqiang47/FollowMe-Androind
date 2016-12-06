@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#D0D0D0</color>
     <color name="colorAccent">#2cc7ad</color>
     <color name="touming">#00000000</color>
-    <color name="dark">#111</color>
+    <color name="dark">#424141</color>
+    <color name="black_3">#4f4f4f</color>
     <color name="blue_cyan">#00FFFF</color>
     <color name="gray">#E0E0E0</color>
     <color name="red">#FF0000</color>
@@ -36,6 +37,8 @@
     <color name="mark_red">#E10A01</color>
     <color name="gray_system">#FAFAFA</color>
     <color name="tencent_blue">#12B7F5</color>
+    <color name="red_mark">#F47C7C</color>
+    <color name="yellow_manyA">#F7F48B</color>
     <color name="course_color0">#A0e0e0e0</color>
     <color name="course_color1">#A0e53935</color>
     <color name="course_color2">#A03949ab</color>

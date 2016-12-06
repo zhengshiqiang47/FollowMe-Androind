@@ -3,14 +3,14 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <ImageView
+    <com.example.coderqiang.followme.CircleImagview
         android:layout_margin="8dp"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/touxiang_zip"/>
     <TextView
         android:id="@+id/chat_item_text_peek"
-        android:paddingLeft="20dp"
+        android:paddingLeft="25dp"
         android:paddingTop="8dp"
         android:paddingRight="8dp"
         android:paddingBottom="4dp"
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/black"
-        android:layout_height="40dp"
-        android:background="@drawable/bubble_gray"/>
+        android:layout_height="wrap_content"
+        android:background="@drawable/chat_bg_peer_40_9"/>
 
 </LinearLayout>

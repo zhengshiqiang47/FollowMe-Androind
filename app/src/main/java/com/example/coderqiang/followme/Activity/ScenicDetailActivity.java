@@ -1,6 +1,8 @@
 package com.example.coderqiang.followme.Activity;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.coderqiang.followme.Fragment.ScenicCommentsFragment;
 import com.example.coderqiang.followme.Fragment.ScenicDetailFragment;
+import com.example.coderqiang.followme.Model.ScenicImg;
 import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.ScenicspotLab;
 import com.example.coderqiang.followme.R;
@@ -49,7 +52,7 @@ import rx.schedulers.Schedulers;
  * Created by CoderQiang on 2016/11/10.
  */
 
-public class ScenicDetailActivity extends SwipeBackActivity implements View.OnClickListener{
+public class ScenicDetailActivity extends FragmentActivity implements View.OnClickListener{
     private static final String TAG = "ScenicDetailActivity";
     public static final String EXTRA_SCENIC="Scenic";
     private Context context;
@@ -75,6 +78,10 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
     TextView nameHeaderTv;
     @Bind(R.id.scenic_detail_name_right)
     TextView nameRightTv;
+    @Bind(R.id.scenic_detail_mark)
+    TextView markTv;
+    @Bind(R.id.scenic_detail_range)
+    TextView rangeTv;
     List<android.support.v4.app.Fragment> fragments;
     PagerAdapter mAdapter;
     Scenicspot scenicspot;
@@ -94,15 +101,17 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
     }
 
     private void initData(){
+        rangeTv.setText(scenicspot.getManyA());
+        markTv.setText(scenicspot.getMark());
         nameRightTv.setText(scenicspot.getScenicName());
         backButton.setOnClickListener(this);
         fab.setOnClickListener(this);
+        nestedScrollView.setSmoothScrollingEnabled(true);
         Observable.create(new Observable.OnSubscribe<String>() {
-
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 HttpParse httpParse=new HttpParse();
-//                httpParse.getScenicDetail(context,scenicspot);
+                httpParse.getScenicDetail(context,scenicspot);
                 subscriber.onNext("");
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
@@ -118,8 +127,8 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
 
             @Override
             public void onNext(String str) {
-                Glide.with(context).load(scenicspot.getImgUrls().get(0)).centerCrop().into(detailImageView);
-                Glide.with(context).load(scenicspot.getImgUrls().get(0)).transform(new BlurTransformation2(getApplicationContext())).into(detailImageViewBg);
+                Glide.with(context).load(scenicspot.getImgUrls().get(0).getBigImgUrl()).centerCrop().into(detailImageView);
+                Glide.with(context).load(scenicspot.getImgUrls().get(0).getBigImgUrl()).transform(new BlurTransformation2(context)).into(detailImageViewBg);
                 initViewPager();
                 initTabLayout();
             }
@@ -129,8 +138,22 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 float offset=1.0f+verticalOffset*1.0f/(appBarLayout.getHeight()-toolbar.getHeight()-Dp2Px(getApplicationContext(),16));
-                Log.i(TAG, "offset" +offset );
+//                Log.i(TAG, "offset" +offset );
                 detailImageView.setAlpha(offset);
+            }
+        });
+        detailImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PictureActivity.class);
+                ArrayList<String> images = new ArrayList<String>();
+                for (ScenicImg scenicImg : scenicspot.getImgUrls()) {
+                    images.add(scenicImg.getBigImgUrl());
+                }
+                intent.putStringArrayListExtra(PictureActivity.EXTRA_IMGURLS,images);
+                intent.putExtra(PictureActivity.EXTRA_POSITION,0);
+                intent.putExtra(PictureActivity.EXTRA_DESCRIPTION, scenicspot.getBrightPoint());
+                startActivity(intent);
             }
         });
     }
@@ -143,6 +166,7 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
         fragments = new ArrayList<Fragment>();
         fragments.add(ScenicDetailFragment.newInstance(scenicspot,viewPager));
         fragments.add(ScenicCommentsFragment.newInstance(scenicspot,viewPager));
+        Log.e(TAG, "Fragment大小"+fragments.size());
         mAdapter = new ScenicDetailActivity.FragAdapter(this.getSupportFragmentManager(), fragments);
         viewPager.setAdapter(mAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -150,7 +174,7 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
             boolean shouldReset=true;
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.i(TAG, "position:" + position + " positionOffset" + positionOffset);
+//                Log.i(TAG, "position:" + position + " positionOffset" + positionOffset);
                 if(currentPosition==1){
                     if(positionOffset==0&&shouldReset){
                         viewPager.resetHeight(1);
@@ -178,6 +202,12 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
         });
         viewPager.setCurrentItem(0);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        System.gc();
     }
 
     @Override
@@ -218,22 +248,7 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
         }
     }
 
-    private class getDetail extends AsyncTask<Void,Void,Void>{
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            HttpParse httpParse=new HttpParse();
-//            httpParse.getScenicDetail(context,scenicspot);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            Glide.with(context).load(scenicspot.getImgUrls().get(0)).centerCrop().into(detailImageView);
-            initTabLayout();
-            initViewPager();
-        }
-    }
 
     public static int Dp2Px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;

@@ -77,6 +77,7 @@ import com.example.coderqiang.followme.CircleImagview;
 import com.example.coderqiang.followme.LocationApplication;
 import com.example.coderqiang.followme.MapRelate.DrivingRouteOverlay;
 import com.example.coderqiang.followme.Model.JourneyDay;
+import com.example.coderqiang.followme.Model.MyLocation;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Service.LocationService;
 import com.example.coderqiang.followme.Service.MyOrientationListener;
@@ -90,7 +91,7 @@ import butterknife.ButterKnife;
  * Created by CoderQiang on 2016/10/28.
  */
 
-public class JourneyFragment extends Fragment implements View.OnClickListener{
+public class JourneyFragment extends android.support.v4.app.Fragment implements View.OnClickListener{
     private static final String TAG="JourneyFragment";
     @Bind(R.id.journey_day_map_schedule_imagview)
     ImageView journey_day_map_schedule_imagview;
@@ -126,6 +127,7 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
     @Bind(R.id.journey_day_title_layout)
     LinearLayout titleLayout;
     private ArrayList<JourneyDay> journeyDays;
+    public BDLocation bdLocation;
     private MyAdapter myAdapter;
     BottomSheetBehavior behavior;
     BaiduMap baiduMap;
@@ -319,6 +321,12 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
                         .latitude(location.getLatitude())
                         .longitude(location.getLongitude())
                         .build();
+                MyLocation myLocation=MyLocation.getMyLocation(getActivity());
+                myLocation.setCityName(location.getCity());
+                myLocation.setLatitute(location.getLatitude());
+                myLocation.setLongtitute(location.getLongitude());
+                myLocation.setHasLocation(true);
+                bdLocation=location;
                 baiduMap.setMyLocationData(locationData);
                 if (isFirstLoc) {
                     isFirstLoc = false;
@@ -329,7 +337,6 @@ public class JourneyFragment extends Fragment implements View.OnClickListener{
                     builder.target(ll).zoom(18.0f);
                     baiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
                 }
-
             }
         };
         locClient.registerLocationListener(locListener);

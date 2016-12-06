@@ -5,15 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F0F0">
-    <TextView
+    <LinearLayout
+        android:paddingTop="20dp"
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="我的"
-        android:textStyle="italic"
-        android:gravity="center"
-        android:textSize="18dp"
-        android:padding="16dp"/>
+        android:layout_height="80dp">
+        <TextView
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="我的"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:padding="16dp"/>
+    </LinearLayout>
+
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_marginTop="16dp"
@@ -144,6 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
+                    android:id="@+id/userinfo_my_message"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="1dp"
                     android:orientation="horizontal"

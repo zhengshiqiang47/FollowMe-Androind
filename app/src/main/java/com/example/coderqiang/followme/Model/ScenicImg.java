@@ -7,14 +7,14 @@ package com.example.coderqiang.followme.Model;
 public class ScenicImg {
 
     /**
-     * id : 63443468
-     * smallImgUrl : http://dimg05.c-ctrip.com/images/100d070000002ie1061C1_C_70_70_Mtg_7.jpg
-     * bigImgUrl : http://dimg05.c-ctrip.com/images/100d070000002ie1061C1_R_1600_10000_Mtg_7.jpg
-     * width : 6597
-     * height : 4403
+     * id : 17007299
+     * smallImgUrl : http://dimg09.c-ctrip.com/images/fd/tg/g1/M05/7B/AD/CghzfFWwuq-AA5pdAALKb19P8Vo085_C_70_70_Mtg_7.jpg
+     * bigImgUrl : http://dimg09.c-ctrip.com/images/fd/tg/g1/M05/7B/AD/CghzfFWwuq-AA5pdAALKb19P8Vo085_C_1600_1200_Mtg_7.jpg
+     * width : 1081
+     * height : 717
      * originalimage : null
-     * userInfo : {"name":"doris圈圈","picUrl":"http://images4.c-ctrip.com/target/t1/headphoto/763/486/854/834a5882f8834ffcba96c4d6bb18c458_C_50_50.jpg","level":0,"travelNum":0,"homeUrl":"/members/18A257D4E4424781B611E6EA44FFBEF6","travelHomeUrl":"/members/18A257D4E4424781B611E6EA44FFBEF6/journals"}
-     * imgInfo : {"title":"_DSC3894","time":"2015-12-30","travelName":null,"travelUrl":null,"poi":"灵隐寺","poiScore":"4.5","commentNum":5489,"poiUrl":"/sight/hangzhou14/2040.html","destination":"杭州","destinationUrl":"/place/hangzhou14.html","address":"杭州市西湖区灵隐路法云弄1号","commentUrl":"/sight/hangzhou14/2040.html#comment"}
+     * userInfo : {"name":"尊敬的会员","picUrl":"http://images4.c-ctrip.com/target/t1/headphoto/295/361/724/faaedf607954497eafa6249a1743c550_C_50_50.jpg","level":0,"travelNum":0,"homeUrl":"/members/3F2951AB44E947DF8B4A6567FDFE5A44","travelHomeUrl":"/members/3F2951AB44E947DF8B4A6567FDFE5A44/journals"}
+     * imgInfo : {"title":"故宫3","time":"2014-09-24","travelName":null,"travelUrl":null,"poi":"故宫","poiScore":"4.7","commentNum":36440,"poiUrl":"/sight/beijing1/229.html","destination":"北京","destinationUrl":"/place/beijing1.html","address":"北京市东城区景山前街4号","commentUrl":"/sight/beijing1/229.html#comment"}
      */
 
     private int id;
@@ -22,7 +22,6 @@ public class ScenicImg {
     private String bigImgUrl;
     private int width;
     private int height;
-    private Object originalimage;
     private UserInfoBean userInfo;
     private ImgInfoBean imgInfo;
 
@@ -66,14 +65,6 @@ public class ScenicImg {
         this.height = height;
     }
 
-    public Object getOriginalimage() {
-        return originalimage;
-    }
-
-    public void setOriginalimage(Object originalimage) {
-        this.originalimage = originalimage;
-    }
-
     public UserInfoBean getUserInfo() {
         return userInfo;
     }
@@ -92,12 +83,12 @@ public class ScenicImg {
 
     public static class UserInfoBean {
         /**
-         * name : doris圈圈
-         * picUrl : http://images4.c-ctrip.com/target/t1/headphoto/763/486/854/834a5882f8834ffcba96c4d6bb18c458_C_50_50.jpg
+         * name : 尊敬的会员
+         * picUrl : http://images4.c-ctrip.com/target/t1/headphoto/295/361/724/faaedf607954497eafa6249a1743c550_C_50_50.jpg
          * level : 0
          * travelNum : 0
-         * homeUrl : /members/18A257D4E4424781B611E6EA44FFBEF6
-         * travelHomeUrl : /members/18A257D4E4424781B611E6EA44FFBEF6/journals
+         * homeUrl : /members/3F2951AB44E947DF8B4A6567FDFE5A44
+         * travelHomeUrl : /members/3F2951AB44E947DF8B4A6567FDFE5A44/journals
          */
 
         private String name;
@@ -158,24 +149,22 @@ public class ScenicImg {
 
     public static class ImgInfoBean {
         /**
-         * title : _DSC3894
-         * time : 2015-12-30
+         * title : 故宫3
+         * time : 2014-09-24
          * travelName : null
          * travelUrl : null
-         * poi : 灵隐寺
-         * poiScore : 4.5
-         * commentNum : 5489
-         * poiUrl : /sight/hangzhou14/2040.html
-         * destination : 杭州
-         * destinationUrl : /place/hangzhou14.html
-         * address : 杭州市西湖区灵隐路法云弄1号
-         * commentUrl : /sight/hangzhou14/2040.html#comment
+         * poi : 故宫
+         * poiScore : 4.7
+         * commentNum : 36440
+         * poiUrl : /sight/beijing1/229.html
+         * destination : 北京
+         * destinationUrl : /place/beijing1.html
+         * address : 北京市东城区景山前街4号
+         * commentUrl : /sight/beijing1/229.html#comment
          */
 
         private String title;
         private String time;
-        private Object travelName;
-        private Object travelUrl;
         private String poi;
         private String poiScore;
         private int commentNum;
@@ -199,22 +188,6 @@ public class ScenicImg {
 
         public void setTime(String time) {
             this.time = time;
-        }
-
-        public Object getTravelName() {
-            return travelName;
-        }
-
-        public void setTravelName(Object travelName) {
-            this.travelName = travelName;
-        }
-
-        public Object getTravelUrl() {
-            return travelUrl;
-        }
-
-        public void setTravelUrl(Object travelUrl) {
-            this.travelUrl = travelUrl;
         }
 
         public String getPoi() {

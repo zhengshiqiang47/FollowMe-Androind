@@ -18,7 +18,6 @@ import com.bartoszlipinski.recyclerviewheader.RecyclerViewHeader;
 import com.example.coderqiang.followme.Model.Dynamic;
 import com.example.coderqiang.followme.R;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 

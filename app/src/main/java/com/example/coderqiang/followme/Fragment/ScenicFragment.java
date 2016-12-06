@@ -32,6 +32,7 @@ import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.ScenicspotLab;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Util.HttpParse;
+import com.example.coderqiang.followme.View.CornersTransform;
 import com.example.coderqiang.followme.View.ViewPagerScaleTransformer;
 import com.lcodecore.tkrefreshlayout.IHeaderView;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
@@ -42,7 +43,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 /**
  * Created by CoderQiang on 2016/11/6.
@@ -65,12 +65,12 @@ public class ScenicFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         MyAdapter myAdapter = new MyAdapter(this);
         recyclerView.setAdapter(myAdapter);
-        OverScrollDecoratorHelper.setUpOverScroll(recyclerView, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
         initView();
         return v;
     }
 
     private void initView(){
+        new getScenicDetail().execute();
         ArrayList<Scenicspot> scenicspots=ScenicspotLab.get(getActivity()).getScenicspots();
         for(int i=0;i<5;i++){
             fragments.add(ScenicHeaderFragment.newInstance(scenicspots.get(i)));
@@ -110,7 +110,7 @@ public class ScenicFragment extends Fragment {
         int TYPE_NORMAL=2;
         int current=1;
         boolean isRecyc=true;
-        HeaderHolder headerHolder;
+//        HeaderHolder headerHolder;
 
         public MyAdapter(ScenicFragment scenicFragment) {
             super();
@@ -120,42 +120,42 @@ public class ScenicFragment extends Fragment {
 
         @Override
         public void onViewRecycled(RecyclerView.ViewHolder holder) {
-            if(holder instanceof HeaderHolder) {
-                Log.i(TAG,"onviewRecycled");
-                isRecyc=false;
-                headerHolder=(HeaderHolder) holder;
-                return;
-            }
+//            if(holder instanceof HeaderHolder) {
+//                Log.i(TAG,"onviewRecycled");
+//                isRecyc=false;
+//                headerHolder=(HeaderHolder) holder;
+//                return;
+//            }
             super.onViewRecycled(holder);
 
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            if(viewType==TYPE_HEADER){
-                if(isRecyc){
-                    headerHolder=new HeaderHolder(LayoutInflater.from(getActivity()).inflate(R.layout.scenic_recycler_header_layout, parent, false));
-                }
-                return headerHolder;
-            }
+//            if(viewType==TYPE_HEADER){
+//                if(isRecyc){
+//                    headerHolder=new HeaderHolder(LayoutInflater.from(getActivity()).inflate(R.layout.scenic_recycler_header_layout, parent, false));
+//                }
+//                return headerHolder;
+//            }
             return new MyViewHolder(LayoutInflater.from(getActivity()).inflate(R.layout.scenic_recycler_item,parent,false));
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            position-=1;
             if(holder instanceof MyViewHolder){
                 MyViewHolder myViewHolder = (MyViewHolder) holder;
                 String imgUrl;
-                if(scenicspots.get(position).getImgUrls()!=null){
-                    imgUrl = scenicspots.get(position).getImgUrls().get(0);
-                }else imgUrl=scenicspots.get(position).getFirstImg();
+                if(scenicspots.get(position).getImgUrls().size()>0){
+                    imgUrl = scenicspots.get(position).getImgUrls().get(0).getBigImgUrl();
+                } else imgUrl = scenicspots.get(position).getFirstImg();
                 String name = scenicspots.get(position).getScenicName();
-                String intro = scenicspots.get(position).getShotIntro();
+                String intro = scenicspots.get(position).getBrightPoint();
                 final Scenicspot scenicspot = scenicspots.get(position);
                 ImageView imageView=myViewHolder.imageView;
-                Glide.with(this.scenicFragment).load(imgUrl).diskCacheStrategy(DiskCacheStrategy.RESULT).into(imageView);
+                Glide.with(this.scenicFragment).load(imgUrl).diskCacheStrategy(DiskCacheStrategy.RESULT).skipMemoryCache(true).into(imageView);
                 myViewHolder.introTv.setText(intro);
+                Log.i(TAG, "亮点" + intro);
                 myViewHolder.nameTv.setText(name);
                 final int scePosition=position;
                 myViewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
@@ -174,14 +174,15 @@ public class ScenicFragment extends Fragment {
                         startActivity(intent);
                     }
                 });
-            }else if(holder instanceof HeaderHolder){
-                if(isRecyc){
-                    headerHolder= (HeaderHolder) holder;
-                    ((HeaderHolder) holder).viewPager.setAdapter(new FragAdapter(((MainActivity)getActivity()).getSupportFragmentManager(),fragments));
-                    ((HeaderHolder) holder).viewPager.setCurrentItem(current);
-                }
-
             }
+//            else if(holder instanceof HeaderHolder){
+//                if(isRecyc){
+//                    headerHolder= (HeaderHolder) holder;
+//                    ((HeaderHolder) holder).viewPager.setAdapter(new FragAdapter(((MainActivity)getActivity()).getSupportFragmentManager(),fragments));
+//                    ((HeaderHolder) holder).viewPager.setCurrentItem(current);
+//                }
+//
+//            }
 
         }
 
@@ -195,7 +196,7 @@ public class ScenicFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return scenicspots.size()+1;
+            return scenicspots.size();
         }
 
 
@@ -215,48 +216,47 @@ public class ScenicFragment extends Fragment {
             }
         }
 
-        private class HeaderHolder extends RecyclerView.ViewHolder {
-            ViewPager viewPager;
-            public HeaderHolder(View itemView) {
-                super(itemView);
-                viewPager = (ViewPager) itemView.findViewById(R.id.scenic_recycler_header_viewpager);
-                viewPager.setPageMargin(dp2px(getActivity(),-80));
-                viewPager.setOffscreenPageLimit(3);
-                viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                    @Override
-                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                    }
-
-                    @Override
-                    public void onPageSelected(int position) {
-                        current = position;
-                    }
-
-                    @Override
-                    public void onPageScrollStateChanged(int state) {
-
-                    }
-                });
-
-                viewPager.setPageTransformer(false,new ViewPagerScaleTransformer());
-
-            }
-        }
+//        private class HeaderHolder extends RecyclerView.ViewHolder {
+//            ViewPager viewPager;
+//            public HeaderHolder(View itemView) {
+//                super(itemView);
+//                viewPager = (ViewPager) itemView.findViewById(R.id.scenic_recycler_header_viewpager);
+//                viewPager.setPageMargin(dp2px(getActivity(),-80));
+//                viewPager.setOffscreenPageLimit(3);
+//                viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//                    @Override
+//                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onPageSelected(int position) {
+//                        current = position;
+//                    }
+//
+//                    @Override
+//                    public void onPageScrollStateChanged(int state) {
+//
+//                    }
+//                });
+//
+//                viewPager.setPageTransformer(false,new ViewPagerScaleTransformer());
+//
+//            }
+//        }
     }
 
     private class getScenicDetail extends AsyncTask<Void,Void,Void>{
 
         @Override
         protected Void doInBackground(Void... params) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             HttpParse httpParse=new HttpParse();
-            httpParse.getAllScenicDetails(getActivity());
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
         }
     }
 

@@ -58,8 +58,8 @@ public class ScenicHeaderFragment extends Fragment {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 HttpParse httpParse=new HttpParse();
-//                httpParse.getScenicDetail(getActivity(),scenicspot);
-                subscriber.onNext(scenicspot.getImgUrls().get(0));
+                httpParse.getScenicDetail(getActivity(),scenicspot);
+                subscriber.onNext(scenicspot.getImgUrls().get(0).getBigImgUrl());
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
             @Override

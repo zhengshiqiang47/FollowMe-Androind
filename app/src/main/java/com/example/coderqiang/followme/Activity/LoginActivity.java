@@ -1,29 +1,43 @@
 package com.example.coderqiang.followme.Activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.coderqiang.followme.IMabout.ConversationActivity;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.model.LatLng;
+import com.example.coderqiang.followme.Model.MyLocation;
 import com.example.coderqiang.followme.R;
-import com.tencent.TIMCallBack;
-import com.tencent.TIMManager;
-import com.tencent.TIMUser;
+import com.example.coderqiang.followme.Service.LocationService;
+import com.example.coderqiang.followme.Util.HttpParse;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.controller.EaseUI;
+//import com.tencent.TIMCallBack;
+//import com.tencent.TIMManager;
+//import com.tencent.TIMUser;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import tencent.tls.platform.TLSAccountHelper;
-import tencent.tls.platform.TLSErrInfo;
-import tencent.tls.platform.TLSLoginHelper;
-import tencent.tls.platform.TLSPwdLoginListener;
-import tencent.tls.platform.TLSPwdRegListener;
-import tencent.tls.platform.TLSPwdResetListener;
-import tencent.tls.platform.TLSUserInfo;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 
 /**
  * Created by CoderQiang on 2016/11/26.
@@ -35,207 +49,123 @@ public class LoginActivity extends Activity {
     EditText name_edit;
     @Bind(R.id.login_passwd_edit)
     EditText passwd_edit;
-    @Bind(R.id.login_sign_in)
-    Button signInButton;
-    @Bind(R.id.login_sign_up)
-    Button signUpButton;
-    @Bind(R.id.login_identifycode)
-    EditText identifyCode;
-    @Bind(R.id.login_loginButton)
-    Button loginButton;
-    @Bind(R.id.login_reset)
-    Button resetButton;
-    @Bind(R.id.login_reset2)
-    Button resetButton2;
+    @Bind(R.id.login_btn)
+    TextView loginButton;
 
-    public final static int accType = 8902;
-    public final static int sdkAppid=1400019371;
-    public final static String appVer="1.0";
-    TLSAccountHelper accountHelper;
-    TLSLoginHelper loginHelper;
-    TLSPwdLoginListener loginListener;
+    LocationClient locClient;
+    BDLocationListener locListener;
+    LocationService locationService;
+    BDLocation bdLocation;
 
-    TLSPwdRegListener pwdRegListener;
-    TLSPwdResetListener resetListener;
-    Context context;
+    Activity context;
 
-    String num="86-15659772595";
+    String num="zhengshiqiang";
     String pwd="zsqqq1996424";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login_2);
+
         context=this;
         ButterKnife.bind(this);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         initView();
     }
 
     private void initView(){
-        signInButton.setText("获取验证码");
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signUp(name_edit.getText() + "", passwd_edit.getText() + "");
-                Log.i(TAG, name_edit.getText() + " " + passwd_edit.getText() + "");
-            }
-        });
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                accountHelper.TLSPwdRegVerifyCode(pwd, pwdRegListener);
-            }
-        });
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginAccount();
             }
         });
-        resetButton.setOnClickListener(new View.OnClickListener() {
+
+        locClient = new LocationClient(getApplicationContext());
+        locListener=new BDLocationListener() {
             @Override
-            public void onClick(View v) {
-                resetPasswd();
+            public void onReceiveLocation(BDLocation location) {
+                MyLocationData locationData=new MyLocationData.Builder()
+                        .accuracy(location.getRadius())
+                        .direction(100)
+                        .latitude(location.getLatitude())
+                        .longitude(location.getLongitude())
+                        .build();
+                MyLocation myLocation=MyLocation.getMyLocation(getApplicationContext());
+                myLocation.setCityName(location.getCity());
+                myLocation.setLatitute(location.getLatitude());
+                myLocation.setLongtitute(location.getLongitude());
+                myLocation.setHasLocation(true);
+                bdLocation=location;
+
+            }
+        };
+        locClient.registerLocationListener(locListener);
+        initLocation();
+        locClient.start();
+        Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                HttpParse httpParse=new HttpParse();
+                httpParse.getAllCityId(getApplicationContext());
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+
             }
         });
-        resetButton2.setOnClickListener(new View.OnClickListener() {
+
+    }
+
+    private void loginAccount(){
+        EMClient.getInstance().login(num, pwd, new EMCallBack() {
             @Override
-            public void onClick(View v) {
-                accountHelper.TLSPwdResetAskCode(num, resetListener);
+            public void onSuccess() {
+                EMClient.getInstance().groupManager().loadAllGroups();
+                EMClient.getInstance().chatManager().loadAllConversations();
+                Log.i(TAG,"登录成功");
+                Intent intent = new Intent(context, MainActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Log.e(TAG,"登录失败"+i+" "+s);
+            }
+            @Override
+            public void onProgress(int i, String s) {
+
             }
         });
     }
 
-    private void signUp(String number, final String pwd){
-        pwdRegListener=new TLSPwdRegListener() {
-            @Override
-            public void OnPwdRegAskCodeSuccess(int i, int i1) {
-                Log.i(TAG, "短信调用成功");
-            }
-
-            @Override
-            public void OnPwdRegReaskCodeSuccess(int i, int i1) {
-
-            }
-
-            @Override
-            public void OnPwdRegVerifyCodeSuccess() {
-                Log.i(TAG,"验证成功");
-                accountHelper.TLSPwdRegCommit(pwd, pwdRegListener);
-            }
-
-            @Override
-            public void OnPwdRegCommitSuccess(TLSUserInfo tlsUserInfo) {
-                Log.i(TAG, "密码提交成功");
-            }
-
-            @Override
-            public void OnPwdRegFail(TLSErrInfo tlsErrInfo) {
-                Log.i(TAG, "短信调用失败");
-            }
-
-            @Override
-            public void OnPwdRegTimeout(TLSErrInfo tlsErrInfo) {
-                Log.i(TAG, "短信调用超时"+tlsErrInfo.ErrCode);
-            }
-        };
-        accountHelper = TLSAccountHelper.getInstance().init(getApplicationContext(),sdkAppid,accType,appVer);
-        accountHelper.TLSPwdRegAskCode(num, pwdRegListener);
+    private void initLocation(){
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
+        );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
+        int span=1000;
+        option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
+        option.setOpenGps(true);//可选，默认false,设置是否使用gps
+        option.setLocationNotify(true);//可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+        option.setIsNeedLocationDescribe(true);//可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+        option.setIsNeedLocationPoiList(true);//可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        option.setIgnoreKillProcess(false);//可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+        option.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
+        option.setEnableSimulateGps(false);//可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+        locClient.setLocOption(option);
     }
-
-
-    private void resetPasswd(){
-        accountHelper = TLSAccountHelper.getInstance().init(getApplicationContext(),sdkAppid,accType,appVer);
-        resetListener=new TLSPwdResetListener() {
-            @Override
-            public void OnPwdResetAskCodeSuccess(int i, int i1) {
-                Log.i(TAG, "密码重置请求成功");
-            }
-
-            @Override
-            public void OnPwdResetReaskCodeSuccess(int i, int i1) {
-
-            }
-
-            @Override
-            public void OnPwdResetVerifyCodeSuccess() {
-
-            }
-
-            @Override
-            public void OnPwdResetCommitSuccess(TLSUserInfo tlsUserInfo) {
-                Log.i(TAG, "重置成功");
-            }
-
-            @Override
-            public void OnPwdResetFail(TLSErrInfo tlsErrInfo) {
-
-            }
-
-            @Override
-            public void OnPwdResetTimeout(TLSErrInfo tlsErrInfo) {
-
-            }
-        };
-        accountHelper.TLSPwdResetAskCode(num, resetListener);
-
-    }
-
-    private void loginAccount() {
-        loginHelper = TLSLoginHelper.getInstance().init(getApplicationContext(), sdkAppid, accType, appVer);
-//        if(!loginHelper.needLogin(num)) {
-//            Log.i(TAG, "不需要登录");
-//            Intent intent = new Intent(context, ConversationActivity.class);
-//            startActivity(intent);
-//            return;
-//        }
-        loginListener=new TLSPwdLoginListener() {
-            @Override
-            public void OnPwdLoginSuccess(TLSUserInfo tlsUserInfo) {
-
-                String usersig = loginHelper.getUserSig(tlsUserInfo.identifier);
-                Log.i(TAG, "登录请求成功"+usersig);
-                TIMUser user = new TIMUser();
-                user.setIdentifier(num);
-
-                TIMManager.getInstance().login(sdkAppid,user,usersig,new TIMCallBack(){
-
-                    @Override
-                    public void onError(int i, String s) {
-                        Log.i(TAG, "SDK登录失败"+i+" "+s);
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        Log.e(TAG,"SDK登录成功");
-                        Intent intent = new Intent(context, ConversationActivity.class);
-                        startActivity(intent);
-                    }
-                });
-            }
-
-            @Override
-            public void OnPwdLoginReaskImgcodeSuccess(byte[] bytes) {
-                Log.i(TAG, "登录请求图片成功");
-            }
-
-            @Override
-            public void OnPwdLoginNeedImgcode(byte[] bytes, TLSErrInfo tlsErrInfo) {
-                Log.i(TAG, "登录有问题");
-            }
-
-            @Override
-            public void OnPwdLoginFail(TLSErrInfo tlsErrInfo) {
-                Log.i(TAG, "登录请求失败"+tlsErrInfo.ErrCode+" "+tlsErrInfo.Msg+" "+tlsErrInfo.Title);
-            }
-
-            @Override
-            public void OnPwdLoginTimeout(TLSErrInfo tlsErrInfo) {
-                Log.i(TAG, "登录请求超时");
-            }
-        };
-        loginHelper.TLSPwdLogin(num, pwd.getBytes(), loginListener);
-
-    }
-
 }

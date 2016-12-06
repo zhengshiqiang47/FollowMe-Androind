@@ -8,12 +8,15 @@ import java.util.ArrayList;
 
 public class Comment {
     private String commentId;
-    private String ownerImag;
-    private String CommentName;
-    private String ScenicSpot;
-    private String Content;
-    private String time;
-    private ArrayList<String> images;
+    private String ownerImag="";
+    private String CommentName="";
+    private Scenicspot ScenicSpot;
+    private String Content="";
+    private String time="";
+    private String sightMark="";
+    private String useful = "";
+    private ArrayList<String> images=new ArrayList<String>();
+    private ArrayList<String> imgSmals=new ArrayList<String>();
 
     public String getCommentName() {
         return CommentName;
@@ -23,13 +26,6 @@ public class Comment {
         CommentName = commentName;
     }
 
-    public String getScenicSpot() {
-        return ScenicSpot;
-    }
-
-    public void setScenicSpot(String scenicSpot) {
-        ScenicSpot = scenicSpot;
-    }
 
     public String getContent() {
         return Content;
@@ -69,5 +65,37 @@ public class Comment {
 
     public void setOwnerImag(String ownerImag) {
         this.ownerImag = ownerImag;
+    }
+
+    public String getSightMark() {
+        return sightMark;
+    }
+
+    public void setSightMark(String sightMark) {
+        this.sightMark = sightMark;
+    }
+
+    public String getUseful() {
+        return useful;
+    }
+
+    public void setUseful(String useful) {
+        this.useful = useful;
+    }
+
+    public ArrayList<String> getImgSmals() {
+        return imgSmals;
+    }
+
+    public void setImgSmals(ArrayList<String> imgSmals) {
+        this.imgSmals = imgSmals;
+    }
+
+    public Scenicspot getScenicSpot() {
+        return ScenicSpot;
+    }
+
+    public void setScenicSpot(Scenicspot scenicSpot) {
+        ScenicSpot = scenicSpot;
     }
 }

@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
  * Created by CoderQiang on 2016/11/4.
  */
 
-public class SquarFragment extends android.app.Fragment {
+public class SquarFragment extends android.support.v4.app.Fragment {
     private static final String TAG="SquareFragment";
     @Bind(R.id.viewpager)
     ViewPager viewPager;

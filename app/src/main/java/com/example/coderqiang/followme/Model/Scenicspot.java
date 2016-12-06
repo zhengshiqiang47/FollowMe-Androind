@@ -7,27 +7,86 @@ import java.util.ArrayList;
  * Created by CoderQiang on 2016/11/6.
  */
 
-public class Scenicspot implements Serializable{
-    private int ScenicspotID;
-    private String ScenicName;
-    private String rank;
-    private String addr;
-    private String manyA;
-    private String firstImg;
-    private ArrayList<String> imgUrls;
-    private String cityName;
-    private ArrayList<Comment> comments;
-    private String phoneNumber;
-    private String introduction;
-    private String traffic;
-    private String ScenicWeb;
-    private String ticket;
-    private String openTime;
-    private String CountTime;
-    private String strategy;
-    private String shotIntro;
-    private boolean isParse;
+public class Scenicspot {
+    private String ScenicspotID="";
+    private String ScenicName="";
+    private String rank="";
+    private String addr="";
+    private String manyA="";
+    private String type="";
+    private String mark = "";
+    private String commentCount = "";
+    private String firstImg="";
+    private ArrayList<ScenicImg> imgUrls = new ArrayList<ScenicImg>();
+    private String cityName="";
+    private ArrayList<Comment> comments=new ArrayList<Comment>();
+    private String phoneNumber="";
+    private String introduction="";
+    private String traffic="";
+    private String ScenicWeb="";
+    private String brightPoint="";
+    private String tips="";
+    private String ticket="";
+    private String openTime="";
+    private String CountTime="";
+    private String strategy="";
+    private String shotIntro="";
+    private boolean isParse=false;
+    private String res = "";
+    private String districtName = "";
+    private String districtId = "";
+    private String poiId = "";
+    private int pageNum=2;
     public static int ID=0;
+
+    public String getScenicspotID() {
+        return ScenicspotID;
+    }
+
+    public void setScenicspotID(String scenicspotID) {
+        ScenicspotID = scenicspotID;
+    }
+
+    public String getRes() {
+        return res;
+    }
+
+    public void setRes(String res) {
+        this.res = res;
+    }
+
+    public String getDistrictName() {
+        return districtName;
+    }
+
+    public void setDistrictName(String districtName) {
+        this.districtName = districtName;
+    }
+
+    public String getDistrictId() {
+        return districtId;
+    }
+
+    public void setDistrictId(String districtId) {
+        this.districtId = districtId;
+    }
+
+    public String getPoiId() {
+        return poiId;
+    }
+
+    public void setPoiId(String poiId) {
+        this.poiId = poiId;
+    }
+
+    public static int getID() {
+        return ID;
+    }
+
+    public static void setID(int ID) {
+        Scenicspot.ID = ID;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -38,20 +97,16 @@ public class Scenicspot implements Serializable{
 
     private String url;
 
+    public void pageNumPlus() {
+        pageNum++;
+    }
+
     public String getShotIntro() {
         return shotIntro;
     }
 
     public void setShotIntro(String shotIntro) {
         this.shotIntro = shotIntro;
-    }
-
-    public int getScenicspotID() {
-        return ScenicspotID;
-    }
-
-    public void setScenicspotID(int scenicspotID) {
-        ScenicspotID = scenicspotID;
     }
 
     public String getScenicName() {
@@ -150,15 +205,6 @@ public class Scenicspot implements Serializable{
         this.firstImg = firstImg;
     }
 
-    public ArrayList<String> getImgUrls() {
-        return imgUrls;
-    }
-
-    public void setImgUrls(ArrayList<String> imgUrls) {
-        this.imgUrls = imgUrls;
-    }
-
-
     public boolean isParse() {
         return isParse;
     }
@@ -188,5 +234,61 @@ public class Scenicspot implements Serializable{
 
     public void setManyA(String manyA) {
         this.manyA = manyA;
+    }
+
+    public String getBrightPoint() {
+        return brightPoint;
+    }
+
+    public void setBrightPoint(String brightPoint) {
+        this.brightPoint = brightPoint;
+    }
+
+    public String getTips() {
+        return tips;
+    }
+
+    public void setTips(String tips) {
+        this.tips = tips;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public ArrayList<ScenicImg> getImgUrls() {
+        return imgUrls;
+    }
+
+    public void setImgUrls(ArrayList<ScenicImg> imgUrls) {
+        this.imgUrls = imgUrls;
+    }
+
+    public int getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public String getMark() {
+        return mark;
+    }
+
+    public void setMark(String mark) {
+        this.mark = mark;
+    }
+
+    public String getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(String commentCount) {
+        this.commentCount = commentCount;
     }
 }

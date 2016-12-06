@@ -3,14 +3,54 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <WebView
+        <com.example.coderqiang.followme.View.NotificationWebview
             android:id="@+id/poidetail_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+        </com.example.coderqiang.followme.View.NotificationWebview>
 
-        </WebView>
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/white"
+            android:layout_alignParentBottom="true"></LinearLayout>
+
+        <android.support.v7.widget.Toolbar
+            android:paddingTop="20dp"
+            android:id="@+id/webview_toolbar"
+            android:background="@color/tencent_blue"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_arrow_back_white_24dp"
+                    android:layout_gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/webview_title"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:text="游记"/>
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/xingji_white"
+                    android:layout_marginRight="8dp"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+        </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
