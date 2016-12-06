@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -35,6 +36,8 @@ import com.example.coderqiang.followme.Util.HttpParse;
 import com.example.coderqiang.followme.View.BlurTransformation2;
 import com.example.coderqiang.followme.View.CustomViewPager;
 import com.example.coderqiang.followme.View.MyViewPager;
+import com.example.coderqiang.followme.View.ObservableScrollView;
+import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,12 +55,10 @@ import rx.schedulers.Schedulers;
  * Created by CoderQiang on 2016/11/10.
  */
 
-public class ScenicDetailActivity extends FragmentActivity implements View.OnClickListener{
+public class ScenicDetailActivity extends SwipeBackActivity implements View.OnClickListener,ObservableScrollView.ScrollViewListener{
     private static final String TAG = "ScenicDetailActivity";
     public static final String EXTRA_SCENIC="Scenic";
     private Context context;
-    @Bind(R.id.scenic_detail_nestscroll)
-    NestedScrollView nestedScrollView;
     @Bind(R.id.scenic_detail_fab)
     FloatingActionButton fab;
     @Bind(R.id.scenic_detail_back_button)
@@ -82,6 +83,10 @@ public class ScenicDetailActivity extends FragmentActivity implements View.OnCli
     TextView markTv;
     @Bind(R.id.scenic_detail_range)
     TextView rangeTv;
+    @Bind(R.id.scenic_detail_scroll)
+    ObservableScrollView scrollView;
+    @Bind(R.id.scenic_detail_tkRefresh)
+    TwinklingRefreshLayout twinklingRefreshLayout;
     List<android.support.v4.app.Fragment> fragments;
     PagerAdapter mAdapter;
     Scenicspot scenicspot;
@@ -106,7 +111,6 @@ public class ScenicDetailActivity extends FragmentActivity implements View.OnCli
         nameRightTv.setText(scenicspot.getScenicName());
         backButton.setOnClickListener(this);
         fab.setOnClickListener(this);
-        nestedScrollView.setSmoothScrollingEnabled(true);
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
@@ -156,6 +160,9 @@ public class ScenicDetailActivity extends FragmentActivity implements View.OnCli
                 startActivity(intent);
             }
         });
+
+        scrollView.setScrollViewListener(this);
+        toolbar.setAlpha(0.0f);
     }
     private void initTabLayout() {
         mTabLayout.setTabsFromPagerAdapter(mAdapter);
@@ -217,6 +224,17 @@ public class ScenicDetailActivity extends FragmentActivity implements View.OnCli
                 super.onBackPressed();
                 finish();
                 break;
+        }
+    }
+
+    @Override
+    public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
+        Log.i(TAG,"y:"+y);
+        if(y<550){
+            float alpha = y*1.0f / 500;
+            toolbar.setAlpha(alpha);
+        }else {
+            toolbar.setAlpha(1.0f);
         }
     }
 
