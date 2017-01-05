@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Created by CoderQiang on 2016/11/6.
  */
 
-public class Scenicspot {
+public class Scenicspot implements Serializable{
     private String ScenicspotID="";
     private String ScenicName="";
     private String rank="";

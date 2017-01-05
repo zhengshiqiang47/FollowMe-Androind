@@ -9,5 +9,6 @@
         android:id="@+id/header_item_img"
         android:layout_width="130dp"
         android:scaleType="fitCenter"
-        android:layout_height="130dp" />
+        android:layout_height="130dp"
+        android:transitionName="picture_iamge"/>
 </LinearLayout>

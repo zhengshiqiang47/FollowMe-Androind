@@ -1,8 +1,10 @@
 package com.example.coderqiang.followme.Fragment;
 
 import android.animation.ObjectAnimator;
+import android.app.ActivityOptions;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,10 +15,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,6 +33,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -48,6 +55,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Text;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -72,17 +80,31 @@ import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.baidu.mapapi.search.sug.SuggestionSearchOption;
+import com.bumptech.glide.Glide;
+import com.example.coderqiang.followme.Activity.MainActivity;
+import com.example.coderqiang.followme.Activity.PlaceDetaiWebView;
+import com.example.coderqiang.followme.Activity.ScenicActivity;
+import com.example.coderqiang.followme.Activity.ScenicDetailActivity;
 import com.example.coderqiang.followme.Activity.WebViewActivity;
 import com.example.coderqiang.followme.CircleImagview;
 import com.example.coderqiang.followme.LocationApplication;
 import com.example.coderqiang.followme.MapRelate.DrivingRouteOverlay;
 import com.example.coderqiang.followme.Model.JourneyDay;
 import com.example.coderqiang.followme.Model.MyLocation;
+import com.example.coderqiang.followme.Model.Scenicspot;
+import com.example.coderqiang.followme.Model.ScenicspotLab;
+import com.example.coderqiang.followme.Model.SettingLab;
+import com.example.coderqiang.followme.Model.TravelPlanLab;
+import com.example.coderqiang.followme.Model.TravleDay;
+import com.example.coderqiang.followme.Model.TravlePlan;
+import com.example.coderqiang.followme.Model.User;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Service.LocationService;
 import com.example.coderqiang.followme.Service.MyOrientationListener;
+import com.example.coderqiang.followme.Util.UploadImage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -116,6 +138,8 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
     TextView menuHideTv;
     @Bind(R.id.menu_new_day_layout)
     LinearLayout menuDayLayout;
+    @Bind(R.id.journey_day_menu_layout)
+    LinearLayout menuLayout;
     @Bind(R.id.menu_new_journey_layout)
     LinearLayout menuJourneyLayout;
     @Bind(R.id.menu_new_journey_note_layout)
@@ -126,18 +150,15 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
     TextView menuNewJourney;
     @Bind(R.id.journey_day_title_layout)
     LinearLayout titleLayout;
-    private ArrayList<JourneyDay> journeyDays;
     public BDLocation bdLocation;
     private MyAdapter myAdapter;
     BottomSheetBehavior behavior;
     BaiduMap baiduMap;
     LocationClient locClient;
     BDLocationListener locListener;
-    LocationService locationService;
     PoiSearch mPoiSearch;
     boolean isFirstLoc = true;
     boolean fabOpened=false;
-    float headerTransY;
     boolean change=false;
 
     public static JourneyFragment newInstance(){
@@ -149,7 +170,6 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initData();
-
     }
 
     @Nullable
@@ -167,6 +187,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         menuDayLayout.setVisibility(View.GONE);
         menuJourneyLayout.setVisibility(View.GONE);
         menuNoteLayou.setVisibility(View.GONE);
+        menuLayout.setVisibility(View.GONE);
         menuNewJourney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,6 +201,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                 drawer.openDrawer(Gravity.LEFT);
             }
         });
+        UploadImage.setTouxiang(circleImagview,getActivity().getApplicationContext());
         journey_day_map_schedule_layout.setOnClickListener(this);
         journey_day_map_schedule_layout.setAlpha(0);
         journeyFab.setOnClickListener(this);
@@ -237,8 +259,8 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                     }
                 }
                 if(slideOffset<=0){
-                    searchView.setTranslationY(slideOffset*130);
-                    titleLayout.setTranslationY(slideOffset*170);
+                    searchView.setTranslationY(slideOffset*160);
+                    titleLayout.setTranslationY(slideOffset*250);
                     if (slideOffset<0){
                         journey_day_map_schedule_layout.setAlpha(-slideOffset);
                         if(change){
@@ -254,8 +276,32 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
             }
         });
         mRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
-        myAdapter = new MyAdapter();
-        mRecyclerview.setAdapter(myAdapter);
+    }
+
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            if(SettingLab.getSettingLab(getActivity().getApplicationContext()).isTravelDayUpdate()){
+                mRecyclerview.getAdapter().notifyDataSetChanged();
+                SettingLab.getSettingLab(getActivity().getApplicationContext()).setTravelDayUpdate(false);
+            }
+            boolean touxiangUpdate=SettingLab.getSettingLab(getActivity().getApplicationContext()).isTouxiangUpdate();
+            if (touxiangUpdate){
+                UploadImage.setTouxiang(circleImagview,getActivity());
+                SettingLab.getSettingLab(getActivity().getApplicationContext()).setTouxiangUpdate(false);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(SettingLab.getSettingLab(getActivity().getApplicationContext()).isTravelDayUpdate()){
+            mRecyclerview.getAdapter().notifyDataSetChanged();
+            SettingLab.getSettingLab(getActivity().getApplicationContext()).setTravelDayUpdate(false);
+        }
     }
 
     RoutePlanSearch routePlanSearch;
@@ -280,6 +326,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                     return;
                 }
                 SuggestionResult.SuggestionInfo suggestionInfo=result.getAllSuggestions().get(0);
+
                 Log.i(TAG, "" + suggestionInfo.city + " " + suggestionInfo.key + " " + suggestionInfo.describeContents() + " " + suggestionInfo.district + " "+suggestionInfo.uid);
             }
         };
@@ -374,9 +421,9 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                         .position(markLl)
                         .icon(bitmap);
                 baiduMap.addOverlay(options);
-//                Intent intent = new Intent(getActivity(), WebViewActivity.class);
-//                intent.putExtra(WebViewActivity.WEB_URL, poiDetailResult.getDetailUrl());
-//                startActivity(intent);
+                Intent intent = new Intent(getActivity(), PlaceDetaiWebView.class);
+                intent.putExtra("url", poiDetailResult.getDetailUrl());
+                startActivity(intent);
             }
 
             @Override
@@ -434,6 +481,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         routePlanSearch.setOnGetRoutePlanResultListener(listener);
     }
 
+
     private void initLocation(){
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
@@ -451,16 +499,33 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         option.setEnableSimulateGps(false);//可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
         locClient.setLocOption(option);
     }
+
+
     private void initData(){
-        journeyDays = new ArrayList<JourneyDay>();
-        for(int i=0;i<6;i++){
-            JourneyDay journeyDay=new JourneyDay();
-            journeyDay.setCity("北京"+i);
-            journeyDay.setDetail("故宫一日游，宫一日游，同妻子。");
-            journeyDay.setDate("2016-11-"+i);
-            journeyDay.setDay(i+1+"");
-            journeyDays.add(journeyDay);
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (TravelPlanLab.get(getActivity().getApplicationContext()).getTravelPlans().size()==0){
+                    try {
+                        Log.i(TAG,"sleep");
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                getActivity().runOnUiThread(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i(TAG,"正在获取数据");
+                        myAdapter = new MyAdapter();
+                        mRecyclerview.setAdapter(myAdapter);
+                    }
+                }));
+
+
+            }
+        }).start();
+
     }
 
     @Override
@@ -498,19 +563,20 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
     private void openMenu(View view){
         ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",0,-135);
-        animator.setDuration(700);
+        animator.setDuration(300);
         animator.start();
         final View hview = view;
         menuHideTv.setVisibility(View.VISIBLE);
         AlphaAnimation alphaAnimation=new AlphaAnimation(0.0f,0.7f);
         AlphaAnimation alphaAnimation2=new AlphaAnimation(0.0f,1.0f);
-        alphaAnimation2.setDuration(600);
+        alphaAnimation2.setDuration(300);
         alphaAnimation2.setFillAfter(true);
-        alphaAnimation.setDuration(500);
+        alphaAnimation.setDuration(300);
         alphaAnimation.setFillAfter(true);
         menuHideTv.startAnimation(alphaAnimation);
         menuDayLayout.setVisibility(View.VISIBLE);
         menuJourneyLayout.setVisibility(View.VISIBLE);
+        menuLayout.setVisibility(View.VISIBLE);
         menuNoteLayou.setVisibility(View.VISIBLE);
         menuDayLayout.startAnimation(alphaAnimation2);
         menuJourneyLayout.startAnimation(alphaAnimation2);
@@ -520,10 +586,10 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
     private void closeMenu(View view){
         ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",-135,0);
-        animator.setDuration(600);
+        animator.setDuration(300);
         animator.start();
         AlphaAnimation alphaAnimation=new AlphaAnimation(0.7f,0.0f);
-        alphaAnimation.setDuration(500);
+        alphaAnimation.setDuration(300);
         alphaAnimation.setFillAfter(true);
         menuHideTv.startAnimation(alphaAnimation);
         menuDayLayout.startAnimation(alphaAnimation);
@@ -532,15 +598,27 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         menuDayLayout.setVisibility(View.GONE);
         menuJourneyLayout.setVisibility(View.GONE);
         menuNoteLayou.setVisibility(View.GONE);
+        menuLayout.setVisibility(View.GONE);
         fabOpened=false;
     }
 
 
     class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
+        TravlePlan travlePlan;
         private static final int TYPE_HEADER=0;
         private static final int TYPE_NORMAL=1;
         private static final int TYPE_FOOTER=2;
+
+        public MyAdapter() {
+            super();
+            if(TravelPlanLab.get(getActivity().getApplicationContext()).getTravelPlans().size()==0){
+
+            }else {
+                travlePlan = TravelPlanLab.get(getActivity().getApplicationContext()).getTravelPlans().get(0);
+            }
+
+        }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -559,21 +637,42 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder viewholder, int position) {
+
             if(viewholder instanceof MyViewHolder){
                 int tempposition=position-1;
+                final TravleDay travleDay=travlePlan.getTravleDays().get(tempposition);
                 MyViewHolder holder=(MyViewHolder)viewholder;
-                holder.city.setText(journeyDays.get(tempposition).getCity());
-                holder.detail.setText(journeyDays.get(tempposition).getDetail());
-                holder.day.setText("Day " + journeyDays.get(tempposition).getDay());
+                holder.city.setText(travlePlan.getCity().getCityName());
+                holder.detail.setText(travleDay.getMemo());
+                holder.detail.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        Log.i(TAG,"beforeTextChanged"+s);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        Log.i(TAG,"onTextChanged:"+s);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        travleDay.setMemo(s.toString());
+                    }
+                });
+                holder.day.setText("Day " + travleDay.getDayNum());
+                final String cityName=travlePlan.getCity().getCityName();
                 holder.city.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i(TAG, "开始路径规划");
-                        PlanNode st = PlanNode.withLocation(latLng);
-                        PlanNode ed = PlanNode.withCityNameAndPlaceName("福州", "福州国家森林公园");
-                        routePlanSearch.drivingSearch((new DrivingRoutePlanOption()).from(st).to(ed));
+                        Intent intent=new Intent(getActivity(),ScenicActivity.class);
+                        intent.putExtra(ScenicActivity.EXTRA_CITY,cityName);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
                     }
                 });
+                holder.scenicRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+                holder.scenicRecycler.setAdapter(new scenicAdapter(travleDay));
             }else if(viewholder instanceof HeaderHolder){
                 HeaderHolder headerHolder=(HeaderHolder)viewholder;
             }
@@ -584,26 +683,145 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         public int getItemViewType(int position) {
             if(position==0){
                 return TYPE_HEADER;
-            }else if(position==journeyDays.size()+1) {
+            }else if(position==travlePlan.getTravleDays().size()+1) {
                 return TYPE_FOOTER;
             }else return TYPE_NORMAL;
         }
 
         @Override
         public int getItemCount() {
-            return journeyDays.size()+2;
+            if(travlePlan==null) return 2;
+            return travlePlan.getTravleDays().size()+2;
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
             TextView city;
-            TextView detail;
+            EditText detail;
             TextView day;
+
+            RecyclerView scenicRecycler;
             public MyViewHolder(View itemView) {
                 super(itemView);
                 city = (TextView) itemView.findViewById(R.id.journey_day_city);
-                detail = (TextView) itemView.findViewById(R.id.journey_day_detail);
+                detail = (EditText) itemView.findViewById(R.id.journey_day_detail);
                 day = (TextView) itemView.findViewById(R.id.journey_day_day);
+                scenicRecycler=(RecyclerView)itemView.findViewById(R.id.journey_day_normal_recycler);
             }
+
+
+        }
+
+        private class scenicAdapter extends RecyclerView.Adapter{
+            ArrayList<Scenicspot> scenicspots;
+            TravleDay travleDay;
+
+            public scenicAdapter(TravleDay travleDay) {
+                super();
+                scenicspots=travleDay.getScenicspots();
+                this.travleDay=travleDay;
+                Log.i(TAG, "景点数:" + scenicspots.size());
+            }
+
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new scenicHolder(LayoutInflater.from(getActivity()).inflate(R.layout.journey_day_travel_item,parent,false));
+            }
+
+            @Override
+            public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+                scenicHolder scenicHolder=(scenicAdapter.scenicHolder)holder;
+                final Scenicspot scenicspot=scenicspots.get(position);
+                scenicHolder.scenicName.setText(scenicspots.get(position).getScenicName());
+                scenicHolder.scenicName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), ScenicDetailActivity.class);
+                        intent.putExtra(ScenicDetailActivity.EXTRA_SCENIC_SER,scenicspot);
+                        ActivityOptions activityOptions=null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                            android.util.Pair<View, String> pair[] = new android.util.Pair[1];
+                            pair[0] = new android.util.Pair<View, String>(((scenicHolder) holder).scenicName, "scenic_name");
+                            activityOptions= ActivityOptions.makeSceneTransitionAnimation(getActivity(),pair);
+                        }
+                        startActivity(intent,activityOptions.toBundle());
+                    }
+                });
+                scenicHolder.scenicName.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Log.i(TAG,"长按");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("提示");
+                        builder.setMessage("是否从Day "+travleDay.getDayNum()+"删除"+scenicspot.getScenicName());
+                        builder.setIcon(R.drawable.circle);
+                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                travleDay.deleteScenicSpots(scenicspot);
+                                scenicspots=travleDay.getScenicspots();
+                                notifyItemRemoved(position);
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.create().show();
+                        return true;
+                    }
+                });
+                final String endPlace=scenicspot.getScenicName();
+                if(position!=0){
+                    scenicHolder.addIcon.setVisibility(View.GONE);
+                }else {
+                    scenicHolder.addIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent=new Intent(getActivity(),ScenicActivity.class);
+                            intent.putExtra(ScenicActivity.EXTRA_CITY,MyLocation.getMyLocation(getActivity().getApplicationContext()).getCityName());
+                            startActivity(intent);
+                            Toast.makeText(getActivity(), "选择景点并点击\"到这去\"",Toast.LENGTH_SHORT).show();
+                            getActivity().overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
+                        }
+                    });
+                }
+                scenicHolder.goIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i(TAG, "开始路径规划");
+                        PlanNode st = PlanNode.withLocation(latLng);
+                        PlanNode ed = PlanNode.withCityNameAndPlaceName("福州",endPlace);
+                        routePlanSearch.drivingSearch((new DrivingRoutePlanOption()).from(st).to(ed));
+                        Toast.makeText(getActivity(),"开始路径规划,到"+endPlace,Toast.LENGTH_SHORT).show();
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        mRecyclerview.scrollToPosition(0);
+                    }
+                });
+
+            }
+
+            @Override
+            public int getItemCount() {
+                return scenicspots.size();
+            }
+
+            private class scenicHolder extends RecyclerView.ViewHolder{
+                private TextView scenicName;
+                ImageView addIcon;
+                ImageView goIcon;
+                RelativeLayout travelItemLayout;
+                public scenicHolder(View itemView) {
+                    super(itemView);
+                    scenicName=(TextView)itemView.findViewById(R.id.journey_day_travel_item_name);
+                    addIcon=(ImageView)itemView.findViewById(R.id.journey_day_travel_item_add);
+                    goIcon = (ImageView) itemView.findViewById(R.id.journey_day_travel_item_go);
+                    travelItemLayout=(RelativeLayout)itemView.findViewById(R.id.travel_item_layout);
+                }
+            }
+
         }
 
         private class HeaderHolder extends RecyclerView.ViewHolder {
@@ -623,4 +841,5 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         }
 
     }
+
 }

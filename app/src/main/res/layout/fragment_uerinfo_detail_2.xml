@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -23,9 +23,10 @@
 
 
     <LinearLayout
+
         android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:id="@+id/userinfo_img"
+        android:layout_marginTop="90dp"
+        android:id="@+id/userinfo_imaglayout"
         android:background="#F0F0F0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -51,17 +52,32 @@
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
-                <TextView
-                    android:text="他的可爱我的帅"
-                    android:textSize="17sp"
-                    android:textColor="#000"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/userinfo_nick"
+                        android:textSize="17sp"
+                        android:textColor="#000"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:id="@+id/userinfo_edit"
+                        android:src="@drawable/edit"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+                </LinearLayout>
+
+                <EditText
+                    android:background="@color/white"
+                    android:focusable="false"
+                    android:id="@+id/userinfo_signature"
                     android:layout_marginTop="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="这个人很懒什么都没留下..."/>
+                    android:text=""/>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -76,7 +92,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent">
                 <TextView
-                    android:text="76"
+                    android:id="@+id/userinfo_concern"
+                    android:text="0"
                     android:textStyle="italic"
                     android:gravity="center"
                     android:textSize="18sp"
@@ -97,7 +114,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent">
                 <TextView
-                    android:text="76"
+                    android:id="@+id/userinfo_follower"
+                    android:text="0"
                     android:textStyle="italic"
                     android:gravity="center"
                     android:textSize="18sp"
@@ -118,7 +136,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent">
                 <TextView
-                    android:text="76"
+                    android:id="@+id/userinfo_travel"
+                    android:text="0"
                     android:textStyle="italic"
                     android:gravity="center"
                     android:textSize="18sp"
@@ -136,6 +155,7 @@
         </LinearLayout>
     </LinearLayout>
     <com.example.coderqiang.followme.View.MyScrollView
+        android:layout_below="@id/userinfo_imaglayout"
         android:scrollbars="none"
         android:forceHasOverlappingRendering="false"
         android:fadeScrollbars="false"
@@ -165,12 +185,15 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:src="@mipmap/chat1"/>
+
                     <TextView
                         android:layout_weight="1"
                         android:padding="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="我的消息"/>
+                        android:text="我的消息"
+                        android:id="@+id/textView8" />
+
                     <ImageView
                         android:rotation="-90"
                         android:layout_marginRight="16dp"
@@ -180,6 +203,7 @@
                         android:src="@drawable/arrow_down"/>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/userinfo_my_travel_plan"
                     android:orientation="horizontal"
                     android:background="@color/white"
                     android:layout_width="match_parent"
@@ -195,7 +219,7 @@
                         android:padding="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="我的消息"/>
+                        android:text="我的游记"/>
                     <ImageView
                         android:rotation="-90"
                         android:layout_marginRight="16dp"
@@ -207,6 +231,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/scenic_collection"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="1dp"
                 android:background="@color/white"
@@ -224,8 +249,9 @@
                     android:padding="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="我的消息"/>
+                    android:text="景点收藏"/>
                 <ImageView
+                    android:id="@+id/scenic_collection_arrow"
                     android:rotation="-90"
                     android:layout_marginRight="16dp"
                     android:layout_gravity="center"
@@ -233,6 +259,12 @@
                     android:layout_height="16dp"
                     android:src="@drawable/arrow_down"/>
             </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/scenic_collection_recycler"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -249,7 +281,7 @@
                     android:padding="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="我的消息"/>
+                    android:text="设置"/>
                 <ImageView
                     android:rotation="-90"
                     android:layout_marginRight="16dp"
@@ -259,6 +291,7 @@
                     android:src="@drawable/arrow_down"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/logout"
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -275,7 +308,7 @@
                     android:padding="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="我的消息"/>
+                    android:text="退出"/>
                 <ImageView
                     android:rotation="-90"
                     android:layout_marginRight="16dp"
@@ -288,4 +321,4 @@
 
     </com.example.coderqiang.followme.View.MyScrollView>
 
-</LinearLayout>
+</RelativeLayout>

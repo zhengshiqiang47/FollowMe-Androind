@@ -107,8 +107,6 @@ public class SquarFragment extends android.support.v4.app.Fragment {
         });
         fragments = new ArrayList<android.support.v4.app.Fragment>();
         fragments.add(new DynamicFragment());
-        fragments.add(new ScenicFragment());
-        fragments.add(new TestFragment());
         mAdapter = new FragAdapter(((MainActivity)getActivity()).getSupportFragmentManager(), fragments);
         viewPager.setAdapter(mAdapter);
         viewPager.setCurrentItem(0);

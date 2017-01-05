@@ -6,13 +6,14 @@
     android:layout_height="match_parent">
     <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
         android:id="@+id/scenic_main_twinkRefresh"
-        android:background="@color/gray_system"
+        android:background="@color/gray_light"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/scenic_main_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
     </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
     <android.support.design.widget.AppBarLayout
         android:background="@color/tencent_blue"
@@ -28,19 +29,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <com.example.coderqiang.followme.CircleImagview
+                    android:id="@+id/scenic_main_touxiang"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/touxiang_zip"/>
-                <include
-                    layout="@layout/search_layout"/>
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginRight="8dp"
+
+                <android.support.v7.widget.SearchView
+                    android:id="@+id/scenic_main_search"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_edit_white_36dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radius_bg"></android.support.v7.widget.SearchView>
+
+                <Spinner
+                    android:id="@+id/scenic_main_spinner"
+                    android:layout_width="50dp"
+                    android:background="@color/tencent_blue"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dialog"></Spinner>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
+    <ProgressBar
+        android:id="@+id/scenic_main_progress"
+        android:layout_centerInParent="true"
+        android:background="@drawable/chat_edit_bg"
+        android:padding="16dp"
+        android:layout_width="140dp"
+        android:layout_height="120dp" />
+    <TextView
+        android:id="@+id/scenic_main_progress_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:text="加载中..."
+        android:layout_centerInParent="true"/>
 </RelativeLayout>

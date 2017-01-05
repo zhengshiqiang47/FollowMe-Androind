@@ -14,6 +14,7 @@
 package com.hyphenate.easeui.ui;
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -86,7 +87,7 @@ public class EaseContactListFragment extends EaseBaseFragment {
     @Override
     protected void initView() {
         contentContainer = (FrameLayout) getView().findViewById(R.id.content_container);
-        
+        new getContact().execute();
         contactListLayout = (EaseContactList) getView().findViewById(R.id.contact_list);        
         listView = contactListLayout.getListView();
         
@@ -209,7 +210,7 @@ public class EaseContactListFragment extends EaseBaseFragment {
     
     // refresh ui
     public void refresh() {
-        getContactList();
+//        getContactList();
         contactListLayout.refresh();
     }
     
@@ -334,5 +335,27 @@ public class EaseContactListFragment extends EaseBaseFragment {
     public void setContactListItemClickListener(EaseContactListItemClickListener listItemClickListener){
         this.listItemClickListener = listItemClickListener;
     }
-    
+
+    private class getContact extends AsyncTask<Void, Void, Void >{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                List<String> users=EMClient.getInstance().contactManager().getAllContactsFromServer();
+                for (String username:users){
+                    EaseUser user=new EaseUser(username);
+                    user.setAvatar(".206.195.52:8080/day_30/upload/"+username+".png");
+                    contactList.add(user);
+                }
+            } catch (HyphenateException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            refresh();
+        }
+    }
 }

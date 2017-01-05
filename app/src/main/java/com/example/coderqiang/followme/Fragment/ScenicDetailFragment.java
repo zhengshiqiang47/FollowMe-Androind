@@ -3,15 +3,19 @@ package com.example.coderqiang.followme.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,7 +45,7 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
     @Bind(R.id.scenic_detail_linearlayout)
     public LinearLayout linearLayout;
     @Bind(R.id.scenic_detail_intro_expand_textView)
-    ExpandableTextView introTv;
+    TextView introTv;
     @Bind(R.id.scenic_detail_traffic_expand_textView)
     ExpandableTextView trafficTv;
     @Bind(R.id.scenic_detail_item_counttime)
@@ -55,6 +59,7 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
     Fragment context;
     ArrayList<String> albumImg;
     CustomViewPager vp;
+    boolean canBack=false;
     public static ScenicDetailFragment newInstance(Scenicspot scenicspot, CustomViewPager viewPager){
         ScenicDetailFragment scenicDetailFragment=new ScenicDetailFragment();
         scenicDetailFragment.scenicspot=scenicspot;
@@ -74,7 +79,8 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
         Log.i(TAG,"介绍"+intro);
         introTv.setText(intro);
         countTime.setText(scenicspot.getCountTime()+"");
-        price.setText(scenicspot.getTicket()+"");
+        price.setText(scenicspot.getTicket()+" ");
+        Log.i(TAG, "门票" + scenicspot.getTicket());
         trafficTv.setText(scenicspot.getTraffic()+"");
         openTime.setText(scenicspot.getOpenTime()+"");
         albumImg = new ArrayList<String>();
@@ -105,7 +111,7 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            AlbumHolder albumHolder=(AlbumHolder)holder;
+            final AlbumHolder albumHolder=(AlbumHolder)holder;
             final int comPosition=position;
             albumHolder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -118,10 +124,21 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
                     intent.putStringArrayListExtra(PictureActivity.EXTRA_IMGURLS,images);
                     intent.putExtra(PictureActivity.EXTRA_POSITION,comPosition);
                     intent.putExtra(PictureActivity.EXTRA_DESCRIPTION, scenicspot.getIntroduction());
+                    Pair pair=new android.util.Pair<View, String>(albumHolder.imageView, "scenic_img");
                     startActivity(intent);
                 }
             });
-            Glide.with(context).load(scenicspot.getImgUrls().get(position).getSmallImgUrl()).skipMemoryCache(true).into(albumHolder.imageView);
+            try {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(context).load(scenicspot.getImgUrls().get(comPosition).getSmallImgUrl()).skipMemoryCache(true).into(albumHolder.imageView);
+                        ((ScenicDetailActivity)getActivity()).canBack=true;
+                    }
+                },800);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         @Override

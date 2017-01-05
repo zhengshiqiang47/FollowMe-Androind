@@ -7,7 +7,7 @@ android {
         applicationId "com.example.coderqiang.followme"
         minSdkVersion 19
         targetSdkVersion 24
-
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.fragment_scenic_main.runner.AndroidJUnitRunner"
@@ -44,11 +44,13 @@ dependencies {
     compile 'com.ms-square:expandableTextView:0.1.4'
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'com.yalantis:pulltorefresh:1.0.0'
-    compile 'com.lcodecorex:tkrefreshlayout:1.0.3'
+    compile 'com.lcodecorex:tkrefreshlayout:1.0.4'
     compile 'com.daimajia.swipelayout:library:1.2.0@aar'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    compile 'com.bigkoo:convenientbanner:2.0.5'
+    compile 'com.android.support:multidex:1.0.0'
     compile files('libs/jsoup-1.9.2.jar')
     compile project(':easeUI_CN')
     compile project(':library')

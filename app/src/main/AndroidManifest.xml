@@ -46,10 +46,11 @@
             android:value="djeGjEl5CGTKMlh1p8TN8Engz3tdsL7m" />
         <activity android:name=".Activity.MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
-
+            android:windowSoftInputMode="adjustResize"
+            android:hardwareAccelerated="true">
         </activity>
-        <activity android:name=".Activity.LoginActivity">
+        <activity android:name=".Activity.LoginActivity"></activity>
+        <activity android:name=".Activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -57,15 +58,21 @@
         </activity>
         <activity android:name=".Activity.WebViewActivity"/>
         <activity android:name=".Activity.ChatActivity"/>
-        <activity android:name=".Activity.ScenicDetailActivity"/>
+        <activity android:name=".Activity.ScenicDetailActivity"
+            android:hardwareAccelerated="true"/>
         <activity android:name=".Activity.ScenicActivity"/>
+        <activity android:name=".Activity.PlaceDetaiWebView"/>
         <activity
             android:name=".IMAbout.Model.Activity.VideoCallActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide"></activity>
+        <activity android:name=".Activity.SignUpActivity"/>
+        <activity android:name=".Activity.ChinaActivity"
+            android:launchMode="singleTask"/>
         <activity android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity"/>
+        <activity android:name=".Activity.SelectImageActivity"/>
         <activity android:name="com.hyphenate.easeui.ui.EaseShowNormalFileActivity"/>
         <activity android:name="com.hyphenate.easeui.ui.EaseShowVideoActivity"/>
         <activity android:name=".IMAbout.Model.Activity.ImageGridActivity"/>

@@ -32,32 +32,15 @@
                 android:layout_marginBottom="8dp"
                 android:text="景区简介:"/>
         </LinearLayout>
-        <com.ms.square.android.expandabletextview.ExpandableTextView
+        <TextView
             android:id="@+id/scenic_detail_intro_expand_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            expandableTextView:maxCollapsedLines="6"
-            expandableTextView:animAlphaStart="1"
-            expandableTextView:animDuration="400">
-            <TextView
-                android:id="@id/expandable_text"
-                android:textSize="15sp"
-                android:layout_marginLeft="8dp"
-                android:lineSpacingMultiplier="1.2"
-                android:textColor="@color/black_deep"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-            <ImageButton
-                android:id="@id/expand_collapse"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:scaleType="centerInside"
-                android:layout_gravity="center"
-                android:src="@drawable/arrow_up"
-                android:background="@android:color/transparent" />
-        </com.ms.square.android.expandabletextview.ExpandableTextView>
+            android:textSize="15sp"
+            android:layout_marginLeft="8dp"
+            android:lineSpacingMultiplier="1.2"
+            android:textColor="@color/black_deep">
+        </TextView>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -85,7 +68,6 @@
         android:id="@+id/scenic_detail_item_price"
         android:paddingLeft="16dp"
         android:paddingRight="8dp"
-        android:layout_weight="1"
         android:textSize="15sp"
         android:background="@color/white"
         android:textColor="@color/black_3"
@@ -117,7 +99,6 @@
         android:textColor="@color/black_3"
         android:background="@color/white"
         android:textSize="15sp"
-        android:layout_weight="1"
         android:paddingLeft="16dp"
         android:lineSpacingMultiplier="1.2"
         android:layout_width="match_parent"

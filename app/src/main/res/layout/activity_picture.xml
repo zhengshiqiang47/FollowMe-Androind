@@ -6,6 +6,7 @@
     android:background="@color/black">
 
     <com.example.coderqiang.followme.View.HackyViewPager
+        android:paddingTop="20dp"
         android:id="@+id/photo_vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -40,7 +41,7 @@
             android:id="@+id/picture_iv_index"
             android:text="1/10"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </ScrollView>

@@ -26,6 +26,7 @@ public class Dynamic {
         love=0;
     }
 
+
     public String getUserName() {
         return userName;
     }

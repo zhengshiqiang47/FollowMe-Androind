@@ -11,6 +11,7 @@ import com.example.coderqiang.followme.Model.Comment;
 import com.example.coderqiang.followme.Model.ScenicImg;
 import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.ScenicspotLab;
+import com.example.coderqiang.followme.Model.Weather;
 
 import org.jsoup.Jsoup;
 import org.jsoup.helper.StringUtil;
@@ -43,41 +44,37 @@ import rx.schedulers.Schedulers;
 
 public class HttpParse {
     private static final String TAG = "HttpParse";
+    private static final String APP_KEY="e6e8f3668fc7f4817d9738489cf1d738";
 
-    public void getScenicspot(Context context,String cityname,String pageNum){
+    public ArrayList<Scenicspot> getScenicspot(Context context,String cityname,String pageNum){
         ArrayList<Scenicspot> scenicspots=ScenicspotLab.get(context).getScenicspots();
+
         HttpAnalyze httpAnalyze=new HttpAnalyze();
-        ArrayList<City> cities=CityLab.get(context).getCities();
-        Log.i(TAG, "cities.size:" + cities.size());
-        if (cityname.charAt(cityname.length()-1)=='市'){
-            cityname=cityname.substring(0, cityname.length() - 1);
-        }
         City city=new City();
-        for (int i=0;i<cities.size();i++) {
-            City cityT=cities.get(i);
-            Log.i(TAG, "城市" + cityT.getCityName());
-            if(cityT.getCityName().equals(cityname)){
-                Log.i(TAG, "城市:" + cityname + " " + cityT.isParse());
-                if(cityT.isParse()){
-                    return;
-                }else city=cityT;
-                break;
-            }else if(i==cities.size()-1){
-                Log.i(TAG, "城市:" + cityname + "不存在");
-                cities.add(city);
-            }
+        if (cityname != null) {
+            city=CityLab.get(context).isContain(cityname);
+        }else {
+            city.setCityName("杭州");
+            city.setProvinceName("浙江");
+            city.setCtripId("hangzhou14");
+            cityname = "杭州";
+        }
+        ArrayList<Scenicspot> citySpots=city.getScenicspots();
+        if(Integer.parseInt(pageNum)<city.getCountPage()){
+            return citySpots;
         }
         String result=httpAnalyze.getHtml("http://you.ctrip.com/searchsite/Sight?query="+cityname);
         Document document;
         try {
             document= Jsoup.parse(result);
+
             Element allSightEle=document.select("a[class=fr]").get(0);
             String allUrl=allSightEle.attr("href");
             String pageUrl=allUrl.split(".html")[0]+"/s0-p"+pageNum+".html";
             String sightResult=httpAnalyze.getHtml("http://you.ctrip.com/"+pageUrl);
+            Log.i(TAG, pageUrl + "");
             Document sightDoc=Jsoup.parse(sightResult);
             Elements sightElems=sightDoc.select("div[class=list_mod2]");
-            Log.w(TAG, "景点个数" + sightElems.size());
             for (int i=0;i<sightElems.size();i++) {
                 Element element=sightElems.get(i);
                 String imgUrl=element.select("div[class=leftimg]").select("a").select("img").attr("src");
@@ -99,7 +96,7 @@ public class HttpParse {
 //                Log.i(TAG,"manyA:"+manyA);
 //                Log.i(TAG,"mark:"+mark);
 //                Log.i(TAG, "commentCount" + commentCount);
-                Log.i(TAG,"---------");
+//                Log.i(TAG,"---------");
                 Scenicspot scenicspot=new Scenicspot();
                 scenicspot.setMark(mark);
                 scenicspot.setCommentCount(commentCount);
@@ -111,16 +108,21 @@ public class HttpParse {
                 scenicspot.setRank(rank);
                 scenicspot.setAddr(addr);
                 scenicspot.setManyA(manyA);
+                scenicspot.setParse(false);
                 scenicspots.add(scenicspot);
+                citySpots.add(scenicspot);
+                city.setScenicspots(citySpots);
                 city.setParse(true);
             }
+            return citySpots;
         }catch (Exception e){
             Log.e(TAG,"解析景点地址出错",e);
-            return;
+            return citySpots;
         }
     }
 
     public  void getAllScenicDetails(final Context context, String cityname){
+        if (cityname==null) cityname = "北京";
         final ArrayList<Scenicspot> scenicspots=ScenicspotLab.get(context).getScenicspots();
         final ArrayList<Scenicspot> willParse = new ArrayList<Scenicspot>();
         if (cityname.charAt(cityname.length()-1)=='市'){
@@ -131,13 +133,19 @@ public class HttpParse {
                 willParse.add(scenicspot);
             }
         }
+        final String cityName=cityname;
+        CityLab.get(context).isContain(cityName);
         for(int i=0;i<willParse.size();i++){
             final int position=i;
             Observable.create(new Observable.OnSubscribe<Object>() {
                 @Override
                 public void call(Subscriber<? super Object> subscriber) {
-                    Log.i(TAG, "position:"+position);
-                    getScenicDetail(context, willParse.get(position));
+                    if(!willParse.get(position).isParse())
+                        scenicspots.get(position).setParse(getScenicDetail(context, willParse.get(position)));
+                    if (position==0) {
+                        ScenicspotLab.get(context.getApplicationContext()).getHotScenicspots().add(scenicspots.get(position));
+                    }
+                    subscriber.onNext(null);
                 }
             }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
                 @Override
@@ -152,24 +160,29 @@ public class HttpParse {
 
                 @Override
                 public void onNext(Object o) {
-
+                    if(!willParse.get(position).isParse()){
+                        Log.i(TAG, willParse.get(position).getScenicName() + "未解析成功");
+                        scenicspots.remove(willParse.get(position));
+                        if(CityLab.get(context).isContain(cityName)!=null){
+                            CityLab.get(context).isContain(cityName).deleteScenicspot(willParse.get(position));
+                            Log.i(TAG,"移除"+CityLab.get(context).isContain(cityName).getScenicspots().contains(scenicspots.get(position)));
+                        }
+                    }
                 }
             });
-            if(!willParse.get(i).isParse()){
-                Log.i(TAG, willParse.get(i).getScenicName() + "未解析成功");
-                scenicspots.remove(i);
-            }
+
         }
         Log.i(TAG,"景点信息加载完成");
     }
 
     public boolean getScenicDetail(Context context, Scenicspot scenicspot) {
-        if(scenicspot.getImgUrls().size()>=2&&scenicspot.getComments().size()>=1){
-
+        if (scenicspot.isParse()) {
+            Log.i(TAG, "已解析过");
+            return true;
         }
         HttpAnalyze httpAnalyze = new HttpAnalyze();
         String result = httpAnalyze.getHtml(scenicspot.getUrl());
-        Log.i(TAG, scenicspot.getScenicName());
+//        Log.i(TAG, scenicspot.getScenicName());
         try {
             Document document = Jsoup.parse(result);
             try {
@@ -178,7 +191,7 @@ public class HttpParse {
 //                Log.i(TAG, "亮点" + brightPoint);
                 String[] poiIdstr = document.select("span[class=pl_num]").select("a[class=b_orange_m]").attr("href").split("/");
                 String poiId = poiIdstr[poiIdstr.length - 1].replace(".html", "");
-                Log.i(TAG, "poiId:");
+//                Log.i(TAG, "poiId:");
                 scenicspot.setPoiId(poiId);
                 scenicspot.setBrightPoint(brightPoint);
                 Elements elements = introEle.select("div[class=detailcon detailbox_dashed]").select("div[class=toggle_l]").select("div[itemprop=description]").select("p");
@@ -223,11 +236,15 @@ public class HttpParse {
                     scenicspot.setScenicWeb(web);
 //                    Log.i(TAG, "web" + web);
                 }
-                String openTime = detailEle.select("dl[class=s_sight_in_list]").get(0).select("dd").get(0).text();
+                if(detailEle.select("dl[class=s_sight_in_list]").size()>=1){
+                    String openTime = detailEle.select("dl[class=s_sight_in_list]").get(0).select("dd").get(0).text();
 //                Log.i(TAG, "openTime" + openTime);
-                scenicspot.setOpenTime(openTime);
-                String ticket = detailEle.select("dl[class=s_sight_in_list]").get(1).select("dd").get(0).text();
-                scenicspot.setTicket(ticket);
+                    scenicspot.setOpenTime(openTime);
+                }
+                if(detailEle.select("dl[class=s_sight_in_list]").size()>=2){
+                    String ticket = detailEle.select("dl[class=s_sight_in_list]").get(1).select("dd").get(0).text();
+                    scenicspot.setTicket(ticket);
+                }
 //                Log.i(TAG, "ticket" + ticket);
             } catch (Exception e) {
                 Log.e(TAG, "基本信息解析失败" + scenicspot.getScenicName() + " " + scenicspot.getUrl(), e);
@@ -237,6 +254,7 @@ public class HttpParse {
                 getPhoto(imgUrl, httpAnalyze, scenicspot);
             } catch (Exception e) {
                 Log.e(TAG, "相册解析失败" + scenicspot.getScenicName() + " " + scenicspot.getUrl(), e);
+                return false;
             }
             try {
                 ArrayList<Comment> comments = getComments(result, scenicspot);
@@ -258,7 +276,6 @@ public class HttpParse {
         ArrayList<Comment> comments = new ArrayList<Comment>();
         Document document = Jsoup.parse(result);
         Elements commentElems=document.select("div[class=comment_single]");
-        Log.i(TAG, "开始解析评论" + commentElems.size());
         for (int i=0;i<commentElems.size();i++) {
             Comment comment=new Comment();
             Element commentEle=commentElems.get(i);
@@ -290,7 +307,6 @@ public class HttpParse {
             comment.setContent(descriotion);
             comment.setImages(bigImages);
             comment.setImgSmals(smaImages);
-            comment.setScenicSpot(scenicspot);
             comments.add(comment);
         }
         return comments;
@@ -302,13 +318,13 @@ public class HttpParse {
         String distict = getDistinct(distictUrl);
         String res=urls[urls.length-1].split("-")[0].substring(1);
         String id = urls[urls.length - 1].split("-")[1].split(".html")[0];
-        Log.i(TAG, "distinct:" + distict);
-        Log.i(TAG, "distinct:" + getDistinctName(distictUrl));
+//        Log.i(TAG, "distinct:" + distict);
+//        Log.i(TAG, "distinct:" + getDistinctName(distictUrl));
         scenicspot.setDistrictId(distict);
         scenicspot.setDistrictName(getDistinctName(distictUrl));
         scenicspot.setRes(res);
-        Log.i(TAG,"res:"+res);
-        Log.i(TAG, "id:" + id);
+//        Log.i(TAG,"res:"+res);
+//        Log.i(TAG, "id:" + id);
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl("http://you.ctrip.com/Destinationsite/TTDSecond/Photo/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -329,7 +345,7 @@ public class HttpParse {
         String result = null;
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
         FormBody.Builder form = new FormBody.Builder();
-        Log.i(TAG, "poiId:" + scenicspot.getPoiId() + "districteName:" + scenicspot.getDistrictName() + " diId:" +scenicspot.getDistrictId());
+//        Log.i(TAG, "poiId:" + scenicspot.getPoiId() + "districteName:" + scenicspot.getDistrictName() + " diId:" +scenicspot.getDistrictId());
         form.add("poiID", scenicspot.getPoiId())
                 .add("districtId", scenicspot.getDistrictId())
                 .add("districtEName", scenicspot.getDistrictName())
@@ -395,9 +411,46 @@ public class HttpParse {
 //                Log.i(TAG,"citripIdAndName:"+ctripidAndName);
                 city.setCityName(name);
                 city.setProvinceName(provinceName);
+                if(provinceName.contains("直辖市")){
+                    city.setProvinceName(name);
+                }
                 city.setCtripId(ctripidAndName);
                 cities.add(city);
             }
+        }
+    }
+
+    public void getPlace(City city){
+        ArrayList<String> imageUrl=city.getIamgeUrls();
+        HttpAnalyze httpAnalyze=new HttpAnalyze();
+        String result=httpAnalyze.getHtml("http://you.ctrip.com/place/"+city.getCtripId()+".html");
+        Document document=Jsoup.parse(result);
+        Elements elements=document.select("div[class=slide_show]").select("div[class=imgbackgbox]").select("img");
+        Log.i(TAG,"Size"+elements.size());
+        for (int i = 0; i < elements.size(); i ++) {
+            imageUrl.add(elements.get(i).attr("src"));
+            Log.i(TAG,"imageUrl:"+elements.get(i).attr("src"));
+        }
+    }
+
+    public void getWeather(Context context,City city){
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("http://op.juhe.cn/onebox/weather/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        WeatherInterface jsonIterface = retrofit.create(WeatherInterface.class);
+        Call<Weather> call=jsonIterface.getWeather(city.getCityName(),APP_KEY,"json");
+        Log.i(TAG,"开始查询天气1");
+        try {
+            Weather weather=call.execute().body();
+            Log.i(TAG,"开始查询天气2"+weather.getReason());
+            if(weather.getReason().equals("查询成功")||weather.getReason().equals("successed!")){
+                city.setWeather(weather);
+                Log.i(TAG,city.getCityName()+"天气查询成功"+city.getWeather().getResult().getData().getWeather().get(0).getInfo().getDay().get(2));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, "获取失败", e);
         }
     }
 

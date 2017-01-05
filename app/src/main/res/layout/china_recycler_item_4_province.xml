@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/china_province_tv"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:background="@drawable/chat_edit_bg"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:layout_height="wrap_content"
+            android:text="安徽"
+            />
+        <ImageView
+            android:layout_centerHorizontal="true"
+            android:translationX="-32dp"
+            android:translationY="-4dp"
+            android:layout_width="30dp"
+            android:layout_height="34dp"
+            android:src="@mipmap/position"/>
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/china_city_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

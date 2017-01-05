@@ -5,14 +5,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.Visibility;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 //
@@ -29,18 +35,29 @@ import android.widget.TextView;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.baidu.mapapi.SDKInitializer;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
 import com.example.coderqiang.followme.Fragment.JourneyFragment;
 import com.example.coderqiang.followme.Fragment.ScenicCommentsFragment;
 import com.example.coderqiang.followme.Fragment.ScenicMainFragment;
 import com.example.coderqiang.followme.Fragment.SquarFragment;
 import com.example.coderqiang.followme.Fragment.UserinfoFragment;
 import com.example.coderqiang.followme.IMAbout.Model.ConversationListFragment;
+import com.example.coderqiang.followme.Model.City;
+import com.example.coderqiang.followme.Model.CityLab;
 import com.example.coderqiang.followme.Model.MyLocation;
+import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.ScenicspotLab;
+import com.example.coderqiang.followme.Model.User;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Util.HttpAnalyze;
 import com.example.coderqiang.followme.Util.HttpParse;
 import com.example.coderqiang.followme.Util.SetStatusColor;
+import com.example.coderqiang.followme.Util.TravelPlanUtil;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMChatManager;
@@ -48,21 +65,27 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
+import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.ui.EaseContactListFragment;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
+import com.hyphenate.exceptions.HyphenateException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity{
     private static final String TAG="MainActivity";
     FragmentManager fm;
     public JourneyFragment journeyFragment;
     UserinfoFragment userinfoFragment;
     SquarFragment squarFragment;
     ScenicMainFragment scenicMainFragment;
+    EaseContactListFragment easeContactListFragment;
     private int currentTabIndex;
     private TextView unreadLabel;
     Fragment currentFragment;
@@ -70,18 +93,9 @@ public class MainActivity extends FragmentActivity {
     BottomNavigationBar bottomNavigationBar;
     ConversationListFragment conversationListFragment;
     FragmentManager fmV4;
-    //    YWIMKit imKit;
-//    TLSAccountHelper accountHelper;
-//    TLSLoginHelper loginHelper;
-//    TLSPwdLoginListener loginListener;
-//
-//    TLSPwdResetListener resetListener;
-//    TLSPwdRegListener pwdRegListener;
     Context context;
     Boolean isV4=false;
     int count=0;
-    String num="zhengshiqiang";
-    String pwd="zsqqq1996424";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +106,7 @@ public class MainActivity extends FragmentActivity {
         fm =this.getSupportFragmentManager();
         setDefaultFragment();
         initNavigation();
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         EMClient.getInstance().addConnectionListener(new EMConnectionListener() {
             @Override
@@ -120,14 +135,16 @@ public class MainActivity extends FragmentActivity {
 
     private void initNavigation(){
         registerBroadcastReceiver();
-        bottomNavigationBar.setMode(BottomNavigationBar.MODE_SHIFTING);
+        bottomNavigationBar.setMode(BottomNavigationBar.MODE_CLASSIC);
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.mipmap.position1, "日程"))
                 .addItem(new BottomNavigationItem(R.mipmap.xingji1,"动态"))
                 .addItem(new BottomNavigationItem(R.drawable.fire_white,"攻略"))
                 .addItem(new BottomNavigationItem(R.mipmap.chat, "联系人"))
+                .addItem(new BottomNavigationItem(R.mipmap.chat, "会话"))
                 .addItem(new BottomNavigationItem(R.drawable.mine_selected,"我的"))
+
                 .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -139,6 +156,9 @@ public class MainActivity extends FragmentActivity {
                         switchFragment(currentFragment,journeyFragment);
                         break;
                     case 1:
+                        if(scenicMainFragment==null){
+                            scenicMainFragment=new ScenicMainFragment();
+                        }
                         switchFragment(currentFragment, scenicMainFragment);
                         break;
                     case 2:
@@ -148,12 +168,38 @@ public class MainActivity extends FragmentActivity {
                         switchFragment(currentFragment,squarFragment);
                         break;
                     case 3:
+//                        if (conversationListFragment == null) {
+//                            conversationListFragment=new ConversationListFragment();
+//                            conversationListFragment.setConversationListItemClickListener(new EaseConversationListFragment.EaseConversationListItemClickListener() {
+//
+//                                @Override
+//                                public void onListItemClicked(EMConversation conversation) {
+//                                    Log.i(TAG, "点击联系人");
+//                                    startActivity(new Intent(MainActivity.this, ChatActivity.class).putExtra(EaseConstant.EXTRA_USER_ID, conversation.getUserName()));
+//                                }
+//                            });
+//                        }
+//                        Log.i(TAG,"conversationList");
+//                        switchFragment(currentFragment,conversationListFragment);
+                        if(easeContactListFragment==null){
+                            easeContactListFragment=new EaseContactListFragment();
+                            easeContactListFragment.setContactListItemClickListener(new EaseContactListFragment.EaseContactListItemClickListener() {
+                                @Override
+                                public void onListItemClicked(EaseUser user) {
+                                    startActivity(new Intent(MainActivity.this, ChatActivity.class).putExtra(EaseConstant.EXTRA_USER_ID,user.getUsername()));
+                                }
+                            });
+                        }
+                        switchFragment(currentFragment,easeContactListFragment);
+                        break;
+                    case 4:
                         if (conversationListFragment == null) {
                             conversationListFragment=new ConversationListFragment();
                             conversationListFragment.setConversationListItemClickListener(new EaseConversationListFragment.EaseConversationListItemClickListener() {
 
                                 @Override
                                 public void onListItemClicked(EMConversation conversation) {
+                                    Log.i(TAG, "点击联系人");
                                     startActivity(new Intent(MainActivity.this, ChatActivity.class).putExtra(EaseConstant.EXTRA_USER_ID, conversation.getUserName()));
                                 }
                             });
@@ -161,11 +207,14 @@ public class MainActivity extends FragmentActivity {
                         Log.i(TAG,"conversationList");
                         switchFragment(currentFragment,conversationListFragment);
                         break;
-                    case 4:
+                    case 5:
+
                         if (userinfoFragment == null) {
                             userinfoFragment=new UserinfoFragment();
                         }
                         switchFragment(currentFragment,userinfoFragment);
+                        break;
+                    default:
                         break;
                 }
             }
@@ -180,16 +229,71 @@ public class MainActivity extends FragmentActivity {
 
             }
         });
+        Glide.with(this).load("http://123.206.195.52:8080/day_30/upload/"+ User.get(getApplicationContext()).getName()+".png").asBitmap().diskCacheStrategy(DiskCacheStrategy.NONE).into(new Target<Bitmap>() {
+            @Override
+            public void onLoadStarted(Drawable placeholder) {
+
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                User.get(getApplicationContext()).setTouxiang(resource);
+                Log.i(TAG,"加载头像成功");
+            }
+
+            @Override
+            public void onLoadCleared(Drawable placeholder) {
+
+            }
+
+            @Override
+            public void getSize(SizeReadyCallback cb) {
+
+            }
+
+            @Override
+            public void setRequest(Request request) {
+
+            }
+
+            @Override
+            public Request getRequest() {
+                return null;
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onStop() {
+
+            }
+
+            @Override
+            public void onDestroy() {
+
+            }
+        });
     }
 
     private void switchFragment(Fragment from, Fragment to){
         if(currentFragment!=to){
             if(!to.isAdded()){
-                fm.beginTransaction().add(R.id.fragment_container,to).show(to).commit();
+                fm.beginTransaction().add(R.id.fragment_container,to).hide(from).show(to).commit();
             }else {
                 fm.beginTransaction().hide(from).show(to).commit();
+//                fm.beginTransaction().replace(R.id.fragment_container, to).commit();
             }
+
             currentFragment=to;
+            Log.i(TAG, "current:" + to.toString());
         }
 
     }
@@ -201,9 +305,16 @@ public class MainActivity extends FragmentActivity {
         ft.commit();
         currentFragment=journeyFragment;
         conversationListFragment=new ConversationListFragment();
+        conversationListFragment.setConversationListItemClickListener(new EaseConversationListFragment.EaseConversationListItemClickListener() {
+
+            @Override
+            public void onListItemClicked(EMConversation conversation) {
+                Log.i(TAG, "点击联系人");
+                startActivity(new Intent(MainActivity.this, ChatActivity.class).putExtra(EaseConstant.EXTRA_USER_ID, conversation.getUserName()));
+            }
+        });
         squarFragment=new SquarFragment();
         userinfoFragment=new UserinfoFragment();
-        scenicMainFragment=new ScenicMainFragment();
     }
 
     private class GetScenicSpot extends AsyncTask<Void, Void, Void> {
@@ -212,10 +323,23 @@ public class MainActivity extends FragmentActivity {
         protected Void doInBackground(Void... params) {
             HttpParse httpParse=new HttpParse();
             String cityName= MyLocation.getMyLocation(getApplicationContext()).getCityName();
-            httpParse.getScenicspot(getApplicationContext(), MyLocation.getMyLocation(getApplicationContext()).getCityName(),"1");
+//            cityName="杭州市";
+            City city=CityLab.get(getApplicationContext()).isContain(cityName);
+            ArrayList<Scenicspot> tempSces= httpParse.getScenicspot(getApplicationContext(), city.getCityName(),city.getScenicPage()+"");
+            Log.i(TAG,"hasLocation"+MyLocation.getMyLocation(getApplicationContext()).isHasLocation());
+            if(!MyLocation.getMyLocation(getApplicationContext()).isHasLocation()){
+                Log.i(TAG,"进到这了");
+                city.setScenicspots(tempSces);
+            }
+            city.addscenicPage();
+            CityLab.get(getApplicationContext()).setCurrentCity(city);
+            Log.e(TAG, ScenicspotLab.get(getApplication()).getScenicspots().size() + "");
+            TravelPlanUtil.getTravelPlan(context);
             httpParse.getAllScenicDetails(getApplicationContext(), cityName);
             return null;
         }
+
+
     }
 
     private BroadcastReceiver broadcastReceiver;
@@ -269,6 +393,5 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
-
 
 }

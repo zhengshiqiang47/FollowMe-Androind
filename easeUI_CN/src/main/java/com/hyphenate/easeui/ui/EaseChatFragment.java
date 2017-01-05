@@ -62,6 +62,7 @@ import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 import com.hyphenate.util.EMLog;
 import com.hyphenate.util.PathUtil;
 import com.lcodecore.tkrefreshlayout.Footer.LoadingView;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.SinaRefreshView;
 
@@ -358,13 +359,7 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
     }
 
     protected void setRefreshLayoutListener() {
-        swipeRefreshLayout.setOnRefreshListener(new TwinklingRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onPullingDown(TwinklingRefreshLayout refreshLayout, float fraction) {
-
-                super.onPullingDown(refreshLayout, fraction);
-            }
-
+        swipeRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
             @Override
             public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
                 EditText editText = (EditText) getActivity().findViewById(R.id.et_sendmessage);
@@ -373,7 +368,12 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                 }else {
                     Log.i(TAG,"输入框为空");
                 }
-                new showKeyboard().execute();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.finishLoadmore();
+                    }
+                },100);
             }
 
             @Override
@@ -415,7 +415,6 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                     }
                 }, 600);
             }
-
         });
     }
 
@@ -1094,22 +1093,5 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
          * @return
          */
         EaseCustomChatRowProvider onSetCustomChatRowProvider();
-    }
-    private class showKeyboard extends AsyncTask<Void,Void,Void>{
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            swipeRefreshLayout.finishLoadmore();
-        }
     }
 }

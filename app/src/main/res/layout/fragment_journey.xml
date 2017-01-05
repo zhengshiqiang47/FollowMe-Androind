@@ -14,15 +14,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+
+
     <RelativeLayout
         android:id="@+id/journey_day_mainlayout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-
-
+        android:layout_alignParentTop="true">
 
         <android.support.design.widget.CoordinatorLayout
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -81,9 +80,9 @@
 
 
         </android.support.design.widget.CoordinatorLayout>
-        <include layout="@layout/journey_title_bar"></include>
-    </RelativeLayout>
 
+    </RelativeLayout>
+    <include layout="@layout/journey_title_bar"></include>
     <TextView
         android:id="@+id/journey_menu_hide_text"
         android:visibility="gone"

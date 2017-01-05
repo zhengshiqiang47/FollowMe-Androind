@@ -1,16 +1,16 @@
 package com.example.coderqiang.followme.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by CoderQiang on 2016/11/6.
  */
 
-public class Comment {
+public class Comment implements Serializable{
     private String commentId;
     private String ownerImag="";
     private String CommentName="";
-    private Scenicspot ScenicSpot;
     private String Content="";
     private String time="";
     private String sightMark="";
@@ -89,13 +89,5 @@ public class Comment {
 
     public void setImgSmals(ArrayList<String> imgSmals) {
         this.imgSmals = imgSmals;
-    }
-
-    public Scenicspot getScenicSpot() {
-        return ScenicSpot;
-    }
-
-    public void setScenicSpot(Scenicspot scenicSpot) {
-        ScenicSpot = scenicSpot;
     }
 }

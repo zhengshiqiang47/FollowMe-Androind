@@ -32,6 +32,7 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
 import com.hyphenate.easeui.widget.EaseConversationList;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.SinaRefreshView;
 
@@ -73,7 +74,7 @@ public class ConversationListFragment extends EaseConversationListFragment {
         SinaRefreshView sinaRefreshView = new SinaRefreshView(getActivity());
         twinklingRefreshLayout.setHeaderView(sinaRefreshView);
         twinklingRefreshLayout.setBottomHeight(0);
-        twinklingRefreshLayout.setOnRefreshListener(new TwinklingRefreshLayout.OnRefreshListener(){
+        twinklingRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {
                 new RefreshConversation().execute();

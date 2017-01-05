@@ -113,7 +113,7 @@ public class ScenicCommentsFragment extends Fragment {
             if (viewHolder instanceof CommentsHolder) {
                 CommentsHolder holder=(CommentsHolder)viewHolder;
                 Comment comment = comments.get(position);
-                Log.i(TAG, "" + comment.getContent());
+//                Log.i(TAG, "" + comment.getContent());
                 Glide.with(context).load(comment.getOwnerImag()).transform(new GlideCircleTransform(getActivity())).diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.touxiang);
                 holder.content.setText(comment.getContent());
                 holder.content.setAlpha(1.0f);
@@ -121,7 +121,7 @@ public class ScenicCommentsFragment extends Fragment {
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                 linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
-                holder.imagRecyclerView.setLayoutManager(gridLayoutManager);
+                holder.imagRecyclerView.setLayoutManager(linearLayoutManager);
                 holder.imagRecyclerView.setAdapter(new headerAdapter(comments.get(position).getImgSmals(), comments.get(position).getImages(), position));
                 holder.date.setText(comment.getTime());
             }else if(viewHolder instanceof FooterHolder){
@@ -139,7 +139,7 @@ public class ScenicCommentsFragment extends Fragment {
                             public void call(Subscriber<? super String> subscriber) {
                                 HttpParse httpPare=new HttpParse();
                                 scenicspot.pageNumPlus();
-                                httpPare.getMoreComment(context.getActivity(), comments, scenicspot, scenicspot.getPageNum() + "");
+                                httpPare.getMoreComment(context.getActivity().getApplicationContext(), comments, scenicspot, scenicspot.getPageNum() + "");
                                 subscriber.onNext("");
                                 subscriber.onCompleted();
                             }
@@ -212,7 +212,7 @@ public class ScenicCommentsFragment extends Fragment {
             }
         }
 
-        class headerAdapter extends RecyclerView.Adapter<headerAdapter.headerItemHolder>{
+        private class headerAdapter extends RecyclerView.Adapter<headerAdapter.headerItemHolder>{
             int currentPos=0;
             ArrayList<String> commentImags;
             ArrayList<String> bigCommentImages;

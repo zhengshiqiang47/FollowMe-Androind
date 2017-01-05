@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="@color/gray_system"
+    android:background="@color/gray_light"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <LinearLayout
-        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:paddingLeft="8dp"
         android:background="@color/white"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -20,76 +21,88 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textColor="@color/black_3"
             android:text="景点"/>
+
         <TextView
             android:layout_marginLeft="8dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/day_divider_line"/>
+            android:layout_gravity="center_vertical"
+            android:layout_height="1px"
+            android:background="@color/gray"
+            android:id="@+id/textView3" />
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="120dp">
+        android:layout_height="95dp">
         <LinearLayout
+            android:id="@+id/scenic_main_near"
             android:orientation="vertical"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
+
             <ImageView
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/scenic_1" />
+                android:layout_marginTop="8dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/scenic_1"
+                android:id="@+id/imageView3" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="@color/black_3"
                 android:text="附近景点"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/scenic_main_in"
             android:orientation="vertical"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
             <ImageView
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/scenic_2"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="@color/black_3"
                 android:layout_marginTop="8dp"
                 android:text="国内热门"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/scenic_main_out"
             android:orientation="vertical"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
+
             <ImageView
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/scenic_3"/>
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/scenic_3"
+                android:id="@+id/imageView6" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="@color/black_3"
                 android:layout_marginTop="8dp"
                 android:text="国际旅游"/>
@@ -100,7 +113,7 @@
     <LinearLayout
         android:background="@color/white"
         android:layout_marginTop="16dp"
-        android:layout_marginLeft="8dp"
+        android:paddingLeft="8dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -114,24 +127,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textColor="@color/black_3"
             android:text="攻略"/>
 
         <TextView
             android:layout_marginLeft="8dp"
-            android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/divider_line_hor"
-            android:id="@+id/textView3" />
+            android:layout_gravity="center_vertical"
+            android:layout_height="2px"
+            android:background="@color/gray"/>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="120dp">
+        android:layout_height="95dp">
         <LinearLayout
+            android:id="@+id/scenic_main_travel_near"
             android:orientation="vertical"
             android:layout_weight="1"
             android:layout_width="wrap_content"
@@ -139,9 +152,9 @@
 
             <ImageView
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/travel_2"
                 android:id="@+id/imageView4" />
 
@@ -150,46 +163,50 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="@color/black_3"
                 android:text="附近游记"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/scenic_main_travel_in"
             android:orientation="vertical"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
             <ImageView
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/travel_icon"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="@color/black_3"
                 android:layout_marginTop="8dp"
-                android:text="国内游记"/>
+                android:text="国内游记"
+                android:id="@+id/textView4" />
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/scenic_main_travel_out"
             android:orientation="vertical"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
             <ImageView
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/travel_3"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="@color/black_3"
                 android:layout_marginTop="8dp"
                 android:text="国际游记"/>
@@ -203,10 +220,10 @@
         android:background="@color/white">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_height="3px"
+            android:layout_marginTop="16dp"
             android:gravity="center"
-            android:background="@drawable/day_divider_line"/>
+            android:background="@color/gray"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

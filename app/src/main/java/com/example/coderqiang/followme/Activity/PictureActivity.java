@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import com.example.coderqiang.followme.View.HackyViewPager;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -32,7 +35,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * Created by CoderQiang on 2016/12/3.
  */
 
-public class PictureActivity extends AppCompatActivity {
+public class PictureActivity extends SwipeBackActivity {
     public static final String TYPE_SCENIC="scenic";
     public static final String TYPE_COMMENT="comment";
     public static final String EXTRA_TYPE="type";
@@ -57,6 +60,7 @@ public class PictureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         imgUrls = getIntent().getStringArrayListExtra(EXTRA_IMGURLS);
         postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
         description = ""+getIntent().getStringExtra(EXTRA_DESCRIPTION);
@@ -116,6 +120,19 @@ public class PictureActivity extends AppCompatActivity {
     public void onBackPressed() {
         System.gc();
         super.onBackPressed();
+        overridePendingTransition(R.anim.back_slide_exit,R.anim.back_slide_enter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.i("PictureActivity","OnDestroy");
+        picture_iv_back=null;
+        picture_iv_like=null;
+        context=null;
+        imgUrls=null;
+        context=null;
+        setContentView(R.layout.view_null);
+        super.onDestroy();
     }
 
     // 查看大图viewpager适配器
@@ -130,25 +147,21 @@ public class PictureActivity extends AppCompatActivity {
         public Object instantiateItem(ViewGroup container, final int position) {
             View view = getLayoutInflater().inflate(R.layout.picture_item, null);
             PhotoView picture_iv_item = (PhotoView) view.findViewById(R.id.picture_item_photoview);
-            picture_iv_item.setAllowParentInterceptOnEdge(true);
-            picture_iv_item.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+
+            picture_iv_item.setOnClickListener(new View.OnClickListener(){
                 @Override
-                public void onPhotoTap(View view, float x, float y) {
+                public void onClick(View v) {
                     if(isHide) showTv();
                     else hideTv();
                 }
 
-                @Override
-                public void onOutsidePhotoTap() {
-
-                }
             });
             // 给imageview设置一个tag，保证异步加载图片时不会乱序
             // AsyncImageLoader.getInstance(NewsPictureActivity.this).loadBitmaps(view, picture_iv_item, ConstantsUtil.IMAGE_URL + dataList.get(position).url, LocalApplication.getInstance().screenW, 0);
             final WeakReference<PhotoView> photoViewWeakReference = new WeakReference<PhotoView>(picture_iv_item);
             PhotoView target=photoViewWeakReference.get();
             if (target != null)
-                Glide.with(context).load(imgUrls.get(position)).skipMemoryCache(true).into(target);
+                Glide.with(context.getApplicationContext()).load(imgUrls.get(position)).asBitmap().skipMemoryCache(true).into(target);
             //把view加载到父容器中
             container.addView(view);
             return view;

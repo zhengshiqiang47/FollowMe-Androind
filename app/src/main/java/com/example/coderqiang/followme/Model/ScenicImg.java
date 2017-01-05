@@ -1,10 +1,12 @@
 package com.example.coderqiang.followme.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by CoderQiang on 2016/11/29.
  */
 
-public class ScenicImg {
+public class ScenicImg implements Serializable{
 
     /**
      * id : 17007299
@@ -81,7 +83,7 @@ public class ScenicImg {
         this.imgInfo = imgInfo;
     }
 
-    public static class UserInfoBean {
+    public static class UserInfoBean implements Serializable{
         /**
          * name : 尊敬的会员
          * picUrl : http://images4.c-ctrip.com/target/t1/headphoto/295/361/724/faaedf607954497eafa6249a1743c550_C_50_50.jpg
@@ -147,7 +149,7 @@ public class ScenicImg {
         }
     }
 
-    public static class ImgInfoBean {
+    public static class ImgInfoBean implements Serializable{
         /**
          * title : 故宫3
          * time : 2014-09-24

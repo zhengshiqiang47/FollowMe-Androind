@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="200dp"
+
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/tencent_blue"></LinearLayout>
+    <ImageView
+        android:layout_centerInParent="true"
+        android:id="@+id/china_top_image"
+        android:layout_width="200dp"
+        android:layout_height="140dp"
+        android:scaleType="centerCrop"/>
+    <TextView
+        android:paddingTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="70dp" />
+</RelativeLayout>

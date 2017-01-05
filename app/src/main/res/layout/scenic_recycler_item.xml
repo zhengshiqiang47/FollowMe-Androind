@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<android.support.v7.widget.CardView android:layout_margin="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="10dp"
     android:layout_marginBottom="10dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp"
+    android:background="@color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -20,10 +24,10 @@
                 <ImageView
                     android:id="@+id/scenic_recycler_item_img"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:layout_margin="8dp"
+                    android:layout_height="200dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/dog_2"/>
+                    android:src="@drawable/dog"
+                    android:transitionName="scenic_img"/>
                 <LinearLayout
                     android:paddingLeft="12dp"
                     android:orientation="vertical"
@@ -38,56 +42,123 @@
                         android:textStyle="bold"
                         android:layout_margin="16dp"
                         android:text="景点名称"/>
-
                 </LinearLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/rank_bg"
+                    android:layout_marginRight="-10dp"/>
+                <TextView
+                    android:id="@+id/scenic_main_rank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:singleLine="true"
+                    android:text="第1名"
+                    android:layout_marginRight="4dp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="32dp"/>
             </RelativeLayout>
         </LinearLayout>
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <ImageView
-                android:layout_marginLeft="8dp"
-                android:layout_width="4dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="6dp"
-                android:src="@drawable/scenic_detail_intro_left_line"/>
             <TextView
-                android:id="@+id/scenic_item_short_tv"
-                android:layout_weight="1"
+                android:id="@+id/scenic_recycler_item_name"
+                android:layout_margin="8dp"
+                android:text="景点名称"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:paddingLeft="4dp"
-                android:paddingRight="8dp"
-                android:textColor="@color/black_3"
-                android:textSize="13sp"
-                android:text="亮点"/>
+                android:textSize="18sp"
+                android:transitionName="scenic_name"/>
+            <LinearLayout
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="4dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/scenic_item_short_tv"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:paddingRight="8dp"
+                    android:textColor="@color/black_3"
+                    android:textSize="14sp"
+                    android:text="亮点"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_marginLeft="8dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_image_gray_18dp"
+                    android:id="@+id/imageView5" />
+
+                <TextView
+                    android:id="@+id/scenic_item_count_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#C2C2C2"
+                    android:layout_marginLeft="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="102"/>
+                <ImageView
+                    android:layout_marginLeft="32dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/comment_icon"
+                    />
+                <TextView
+                    android:id="@+id/scenic_item_count_commment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="#C2C2C2"
+                    android:layout_marginLeft="4dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="23"/>
+                <LinearLayout
+                    android:id="@+id/scenic_item_go"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/scenic_item_to_there"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:textColor="@color/blue_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="到这去"/>
+                    <ImageView
+                        android:layout_marginRight="8dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_near_me_black_24dp"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal"
-            android:divider="@drawable/divider_line_hor"
-            android:showDividers="middle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/scenic_recycler_detailTv"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="详情"/>
-            <TextView
-                android:gravity="center"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="不感兴趣"/>
-        </LinearLayout>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
