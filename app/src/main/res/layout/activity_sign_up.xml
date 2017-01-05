@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/login">
+    <com.example.coderqiang.followme.CircleImagview
+        android:layout_marginTop="16dp"
+        android:layout_width="120dp"
+        android:layout_height="125dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/f"/>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -11,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textSize="14sp"
+            android:textColor="@color/white"
             android:text="用户名:"/>
         <EditText
             android:id="@+id/sign_up_username_edit"
@@ -32,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textSize="14sp"
+            android:textColor="@color/white"
             android:text="昵    称:"/>
 
         <EditText
@@ -53,6 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textSize="14sp"
+            android:textColor="@color/white"
             android:text="密    码:"/>
 
         <EditText

@@ -52,7 +52,7 @@
                     android:background="@color/tencent_blue"
                     android:layout_gravity="center_vertical"
                     android:layout_height="wrap_content"
-                    android:spinnerMode="dialog"></Spinner>
+                    android:spinnerMode="dropdown"></Spinner>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>

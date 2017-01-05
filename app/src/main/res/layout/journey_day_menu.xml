@@ -76,7 +76,7 @@
             android:src="@drawable/circle"/>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/menu_new_journey_note_layout"
+        android:id="@+id/menu_add_scenic_layout"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -30,7 +30,7 @@ public class TravelPlanUtil {
         ArrayList<TravleDay> travleDays=new ArrayList<TravleDay>();
         for (int i=0;i<10;i++){
             TravleDay travleDay=new TravleDay();
-            travleDay.setMemo("这是备注，用来每日行程的准备");
+            travleDay.setMemo("");
             ArrayList<Scenicspot> scenicspots= new ArrayList<Scenicspot>();
             scenicspots.add(ScenicspotLab.get(context).getScenicspots().get(i));
             travleDay.setScenicspots(scenicspots);

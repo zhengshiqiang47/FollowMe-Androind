@@ -105,6 +105,7 @@ import com.example.coderqiang.followme.Util.UploadImage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -150,6 +151,8 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
     TextView menuNewJourney;
     @Bind(R.id.journey_day_title_layout)
     LinearLayout titleLayout;
+    @Bind(R.id.menu_add_scenic_layout)
+    LinearLayout addScenicLayout;
     public BDLocation bdLocation;
     private MyAdapter myAdapter;
     BottomSheetBehavior behavior;
@@ -160,6 +163,8 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
     boolean isFirstLoc = true;
     boolean fabOpened=false;
     boolean change=false;
+
+    TravlePlan currentPlan;
 
     public static JourneyFragment newInstance(){
         JourneyFragment journeyFragment = new JourneyFragment();
@@ -229,16 +234,21 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 if (imageView == null) {
                     imageView = (ImageView) getActivity().findViewById(R.id.journey_recy_header_arrow);
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(behavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
-                                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                            }else {
-                                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    try {
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(behavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
+                                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                }else {
+                                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                 }
 //                Log.i(TAG,"slideOffset:"+slideOffset);
                 if(slideOffset>=0) {
@@ -529,6 +539,13 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if(fabOpened)
+            closeMenu(journeyFab);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.journey_day_fab:
@@ -581,6 +598,30 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         menuDayLayout.startAnimation(alphaAnimation2);
         menuJourneyLayout.startAnimation(alphaAnimation2);
         menuNoteLayou.startAnimation(alphaAnimation2);
+        menuDayLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TravleDay travleDay=new TravleDay();
+                travleDay.setDayNum(currentPlan.getTravleDays().size()+1);
+                travleDay.setMemo("备注");
+                currentPlan.getTravleDays().add(travleDay);
+                mRecyclerview.getAdapter().notifyItemChanged(currentPlan.getTravleDays().size()-1);
+                mRecyclerview.smoothScrollToPosition(currentPlan.getTravleDays().size());
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                closeMenu(journeyFab);
+
+            }
+        });
+        addScenicLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(),ScenicActivity.class);
+                intent.putExtra(ScenicActivity.EXTRA_CITY,currentPlan.getCity().getCityName());
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
+                closeMenu(journeyFab);
+            }
+        });
         fabOpened=true;
     }
 
@@ -604,8 +645,8 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
 
     class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-
         TravlePlan travlePlan;
+
         private static final int TYPE_HEADER=0;
         private static final int TYPE_NORMAL=1;
         private static final int TYPE_FOOTER=2;
@@ -616,8 +657,8 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
             }else {
                 travlePlan = TravelPlanLab.get(getActivity().getApplicationContext()).getTravelPlans().get(0);
+                currentPlan=travlePlan;
             }
-
         }
 
         @Override
@@ -643,7 +684,9 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                 final TravleDay travleDay=travlePlan.getTravleDays().get(tempposition);
                 MyViewHolder holder=(MyViewHolder)viewholder;
                 holder.city.setText(travlePlan.getCity().getCityName());
-                holder.detail.setText(travleDay.getMemo());
+                if (!travleDay.getMemo().equals("")) {
+                    holder.detail.setText(travleDay.getMemo());
+                }
                 holder.detail.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -675,6 +718,19 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                 holder.scenicRecycler.setAdapter(new scenicAdapter(travleDay));
             }else if(viewholder instanceof HeaderHolder){
                 HeaderHolder headerHolder=(HeaderHolder)viewholder;
+            }else if(viewholder instanceof FooterHolder){
+                FooterHolder footerHolder=(FooterHolder)viewholder;
+                footerHolder.moreLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TravleDay travleDay=new TravleDay();
+                        travleDay.setDayNum(travlePlan.getTravleDays().size()+1);
+                        travleDay.setMemo("");
+                        travlePlan.getTravleDays().add(travleDay);
+                        mRecyclerview.getAdapter().notifyItemChanged(travlePlan.getTravleDays().size());
+                        mRecyclerview.smoothScrollToPosition(travlePlan.getTravleDays().size()-1);
+                    }
+                });
             }
 
         }
@@ -835,8 +891,10 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
         private class FooterHolder extends RecyclerView.ViewHolder {
             TextView textView;
+            RelativeLayout moreLayout;
             public FooterHolder(View itemView) {
                 super(itemView);
+                moreLayout=(RelativeLayout)itemView.findViewById(R.id.journey_recy_more_layout);
             }
         }
 

@@ -139,8 +139,8 @@ public class MainActivity extends FragmentActivity{
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.mipmap.position1, "日程"))
-                .addItem(new BottomNavigationItem(R.mipmap.xingji1,"动态"))
                 .addItem(new BottomNavigationItem(R.drawable.fire_white,"攻略"))
+                .addItem(new BottomNavigationItem(R.mipmap.xingji1,"动态"))
                 .addItem(new BottomNavigationItem(R.mipmap.chat, "联系人"))
                 .addItem(new BottomNavigationItem(R.mipmap.chat, "会话"))
                 .addItem(new BottomNavigationItem(R.drawable.mine_selected,"我的"))
@@ -208,7 +208,6 @@ public class MainActivity extends FragmentActivity{
                         switchFragment(currentFragment,conversationListFragment);
                         break;
                     case 5:
-
                         if (userinfoFragment == null) {
                             userinfoFragment=new UserinfoFragment();
                         }

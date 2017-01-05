@@ -283,7 +283,7 @@ public class ScenicFragment extends Fragment{
         protected Void doInBackground(Void... params) {
             HttpParse httpParse=new HttpParse();
             httpParse.getScenicspot(getActivity(),city.getCityName(),city.getScenicPage()+"");
-            if(!city.getCityName().equals( MyLocation.getMyLocation(getActivity().getApplicationContext()).getCityName()))
+            if(!city.getCityName().equals( MyLocation.getMyLocation(getActivity()).getCityName()))
                 city.addscenicPage();
             httpParse.getAllScenicDetails(getActivity(),city.getCityName());
             httpParse.getWeather(context.getActivity().getApplicationContext(),city);
