@@ -3,7 +3,7 @@
     android:id="@android:id/text1"
     style="?android:attr/spinnerDropDownItemStyle"
     android:singleLine="true"
-    android:background="@color/tencent_blue"
+    android:background="@color/journey_green"
     android:textColor="@color/white"
     android:layout_width="match_parent"
     android:paddingTop="4dp"

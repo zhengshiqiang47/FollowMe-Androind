@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,11 +27,13 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.example.coderqiang.followme.Model.City;
 import com.example.coderqiang.followme.Model.CityLab;
 import com.example.coderqiang.followme.Model.MyLocation;
 import com.example.coderqiang.followme.Model.User;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Service.LocationService;
+import com.example.coderqiang.followme.Util.GetPermission;
 import com.example.coderqiang.followme.Util.HttpParse;
 import com.example.coderqiang.followme.View.JellyInterpolator;
 import com.hyphenate.EMCallBack;
@@ -39,6 +42,8 @@ import com.hyphenate.easeui.controller.EaseUI;
 //import com.tencent.TIMCallBack;
 //import com.tencent.TIMManager;
 //import com.tencent.TIMUser;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -68,14 +73,45 @@ public class LoginActivity extends Activity {
     View mInputLayout;
     @Bind(R.id.layout_progress)
     View progress;
-
+    Activity context;
 
     LocationClient locClient;
     BDLocationListener locListener;
     LocationService locationService;
     BDLocation bdLocation;
+    BDLocationListener bdLocationListener=new BDLocationListener() {
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            MyLocationData locationData=new MyLocationData.Builder()
+                    .accuracy(location.getRadius())
+                    .direction(100)
+                    .latitude(location.getLatitude())
+                    .longitude(location.getLongitude())
+                    .build();
+            MyLocation myLocation=MyLocation.getMyLocation(getApplicationContext());
+            if (location.getCity()!=null){
+                myLocation.setHasLocation(true);
+                myLocation.setCityName(location.getCity());
+                myLocation.setLatitute(location.getLatitude());
+                myLocation.setLongtitute(location.getLongitude());
+                Log.i(TAG, "定位成功" + myLocation.getCityName());
+                if(isFirstGet){
+                    CityLab.get(getApplicationContext()).setCurrentCity(CityLab.get(getApplicationContext()).isContain(location.getCity()));
+                    EventBus.getDefault().post("定位改变");
+                    MyLocation.getMyLocation(getApplicationContext()).setBdLocation(location);
+                    isFirstGet=false;
+                }
 
-    Activity context;
+            }else {
+                Log.i(TAG,"定位中");
+                myLocation.setHasLocation(false);
+                CityLab.get(getApplicationContext()).setCurrentCity(CityLab.get(getApplicationContext()).isContain("杭州"));
+            }
+            bdLocation=location;
+
+        }
+    };
+
 
 
     @Override
@@ -85,11 +121,13 @@ public class LoginActivity extends Activity {
         context=this;
         ButterKnife.bind(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        GetPermission.getAllPermission(this);
         initView();
     }
 
     int width;
     int height;
+    boolean isFirstGet=true;
 
     private void initView(){
         width=loginButton.getWidth();
@@ -114,28 +152,8 @@ public class LoginActivity extends Activity {
             }
         });
         locClient = new LocationClient(getApplicationContext());
-        locListener=new BDLocationListener() {
-            @Override
-            public void onReceiveLocation(BDLocation location) {
-                MyLocationData locationData=new MyLocationData.Builder()
-                        .accuracy(location.getRadius())
-                        .direction(100)
-                        .latitude(location.getLatitude())
-                        .longitude(location.getLongitude())
-                        .build();
-                MyLocation myLocation=MyLocation.getMyLocation(getApplicationContext());
-                myLocation.setCityName(location.getCity());
-                myLocation.setLatitute(location.getLatitude());
-                myLocation.setLongtitute(location.getLongitude());
-                if (myLocation.getCityName()!=null){
-                    myLocation.setHasLocation(true);
-                }else {
-                    myLocation.setHasLocation(false);
-                }
-                bdLocation=location;
 
-            }
-        };
+        locListener=bdLocationListener;
         locClient.registerLocationListener(locListener);
         initLocation();
         locClient.start();
@@ -182,7 +200,8 @@ public class LoginActivity extends Activity {
                 User.get(getApplicationContext()).setPassword(pwd);
                 Intent intent = new Intent(context, MainActivity.class);;
                 startActivity(intent);
-                finish();
+                overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
+                onDestroy();
             }
 
             @Override
@@ -357,4 +376,18 @@ public class LoginActivity extends Activity {
             }
         });
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        locClient.unRegisterLocationListener(bdLocationListener);
+        locListener=null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
 }

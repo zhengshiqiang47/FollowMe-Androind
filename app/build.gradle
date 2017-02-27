@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "com.example.coderqiang.followme"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 24
         multiDexEnabled true
         versionCode 1
@@ -51,6 +51,8 @@ dependencies {
     compile 'com.squareup.leakcanary:leakcanary-android:1.5'
     compile 'com.bigkoo:convenientbanner:2.0.5'
     compile 'com.android.support:multidex:1.0.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.youth.banner:banner:1.4.8'
     compile files('libs/jsoup-1.9.2.jar')
     compile project(':easeUI_CN')
     compile project(':library')

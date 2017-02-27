@@ -21,7 +21,42 @@
             android:layout_alignParentTop="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
         </android.support.v7.widget.SearchView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/journey_search_reslut_recy"
+            android:layout_below="@id/journey_day_search"
+            android:background="@color/white"
+            android:visibility="gone"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+        <LinearLayout
+            android:id="@+id/map_menu_layout"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_below="@id/journey_day_search"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/map_menu_layer"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:elevation="8dp"
+                android:background="@drawable/ic_layers_green_36dp"/>
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/map_my_location"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/ic_my_location_blue_36dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"/>
     </RelativeLayout>
 </LinearLayout>

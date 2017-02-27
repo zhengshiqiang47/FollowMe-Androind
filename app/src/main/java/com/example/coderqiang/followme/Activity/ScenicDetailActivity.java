@@ -124,7 +124,7 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         scenicspot=(Scenicspot)getIntent().getSerializableExtra(EXTRA_SCENIC_SER);
-        Log.i(TAG,"序列化后的Name"+scenicspot.getScenicName());
+//        Log.i(TAG,"序列化后的Name"+scenicspot.getScenicName());
 //        Log.i(TAG, "position" + scenicPositon);
 //        scenicspot = ScenicspotLab.get(getApplicationContext()).getScenicspots().get(scenicPositon);
         context=this;
@@ -134,14 +134,17 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
         this.setEnterSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+//                Log.i(TAG,"共享动画结束");
                 super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
                 if (isEnter) {
-                    initViewPager();
+//                    initViewPager();
                     initTabLayout();
                     isEnter=false;
                 }
 
             }
+
+
         });
     }
 
@@ -162,7 +165,7 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
                 httpParse.getScenicDetail(context.getApplicationContext(), scenicspot);
                 subscriber.onNext("");
                 try {
-                    Thread.sleep(400);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -171,8 +174,8 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
             @Override
             public void onCompleted() {
+                initViewPager();
                 Log.i(TAG, "onCompleted");
-
             }
 
             @Override
@@ -182,7 +185,7 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
 
             @Override
             public void onNext(String str) {
-                Glide.with(context.getApplicationContext()).load(scenicspot.getImgUrls().get(0).getBigImgUrl()).override(800,600).diskCacheStrategy(DiskCacheStrategy.RESULT).skipMemoryCache(true).centerCrop().into(detailImageView);
+                Glide.with(context.getApplicationContext()).load(scenicspot.getImgUrls().get(0).getBigImgUrl()).placeholder(R.drawable.loadingbg).override(800,600).diskCacheStrategy(DiskCacheStrategy.RESULT).skipMemoryCache(true).centerCrop().into(detailImageView);
 //                Glide.with(context).load(scenicspot.getImgUrls().get(0).getBigImgUrl()).transform(new BlurTransformation2(context)).into(detailImageViewBg);
 
             }
@@ -328,20 +331,20 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
             }
         });
         viewPager.setCurrentItem(0);
-        Animation translate=new TranslateAnimation(0,0,300,0);
-        translate.setDuration(500);
-        translate.setFillAfter(true);
-        viewPager.setAnimation(translate);
+//        Animation translate=new TranslateAnimation(0,0,300,0);
+//        translate.setDuration(500);
+//        translate.setFillAfter(true);
+//        viewPager.setAnimation(translate);
     }
 
     @Override
     public void onBackPressed() {
         if(canBack){
-            Animation translate=new TranslateAnimation(0,0,0,300);
-            translate.setDuration(500);
-            translate.setFillAfter(true);
-            viewPager.setAnimation(translate);
-            mTabLayout.setAnimation(translate);
+//            Animation translate=new TranslateAnimation(0,0,0,300);
+//            translate.setDuration(500);
+//            translate.setFillAfter(true);
+//            viewPager.setAnimation(translate);
+//            mTabLayout.setAnimation(translate);
             super.onBackPressed();
         }
 

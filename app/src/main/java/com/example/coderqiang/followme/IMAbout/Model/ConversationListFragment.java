@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.coderqiang.followme.R;
 import com.hyphenate.EMConnectionListener;
@@ -36,11 +37,16 @@ import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.lcodecore.tkrefreshlayout.header.SinaRefreshView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by CoderQiang on 2016/12/1.
@@ -54,7 +60,10 @@ public class ConversationListFragment extends EaseConversationListFragment {
     protected List<EMConversation> conversationList = new ArrayList<EMConversation>();
     protected EaseConversationList conversationListView;
     protected FrameLayout errorItemContainer;
+    protected TextView conversationListTitle;
+    protected TextView contactListTitle;
 
+    int select=1;
     protected boolean isConflict;
 
     protected EMConversationListener convListener = new EMConversationListener(){
@@ -69,6 +78,8 @@ public class ConversationListFragment extends EaseConversationListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.ease_fragment_conversation_list, container, false);
+        conversationListTitle=(TextView)v.findViewById(R.id.conversation_list_title);
+        contactListTitle=(TextView)v.findViewById(R.id.contact_list_title);
         twinklingRefreshLayout = (TwinklingRefreshLayout) v.findViewById(com.hyphenate.easeui.R.id.conversation_tkRefresh);
         twinklingRefreshLayout.setEnableLoadmore(false);
         SinaRefreshView sinaRefreshView = new SinaRefreshView(getActivity());
@@ -78,6 +89,12 @@ public class ConversationListFragment extends EaseConversationListFragment {
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {
                 new RefreshConversation().execute();
+            }
+        });
+        contactListTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post("联系人列表");
             }
         });
         return v;
@@ -185,7 +202,8 @@ public class ConversationListFragment extends EaseConversationListFragment {
                 {
                     conversationList.clear();
                     conversationList.addAll(loadConversationList());
-                    conversationListView.refresh();
+                    if(conversationListView!=null)
+                        conversationListView.refresh();
                     break;
                 }
                 default:

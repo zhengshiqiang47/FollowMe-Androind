@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="80dp">
-    <com.bigkoo.convenientbanner.ConvenientBanner
+    android:layout_height="wrap_content">
+    <com.youth.banner.Banner
+        android:layout_marginTop="70dp"
         android:id="@+id/scenic_main_banner"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        app:canLoop="true"></com.bigkoo.convenientbanner.ConvenientBanner>
+        app:canLoop="true"></com.youth.banner.Banner>
 </LinearLayout>

@@ -7,10 +7,9 @@
         <item name="@android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="@android:colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
-        <item name="android:windowIsTranslucent">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
+        <item name="android:windowContentTransitions">true</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 

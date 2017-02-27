@@ -6,9 +6,11 @@ import android.app.Service;
 import android.content.Context;
 import android.os.Vibrator;
 import android.support.multidex.MultiDex;
+import android.support.v4.app.ActivityCompat;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.example.coderqiang.followme.Service.LocationService;
+import com.example.coderqiang.followme.Util.GetPermission;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.controller.EaseUI;
@@ -32,7 +34,6 @@ public class LocationApplication extends Application {
         /***
          * 初始化定位sdk，建议在Application中创建
          */
-
         locationApplication=this;
         locationService = new LocationService(getApplicationContext());
         mVibrator =(Vibrator)getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);

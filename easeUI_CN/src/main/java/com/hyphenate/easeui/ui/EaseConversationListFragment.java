@@ -90,7 +90,6 @@ public class EaseConversationListFragment extends EaseBaseFragment{
     protected void setUpView() {
         conversationList.addAll(loadConversationList());
         conversationListView.init(conversationList);
-        
         if(listItemClickListener != null){
             conversationListView.setOnItemClickListener(new OnItemClickListener() {
 

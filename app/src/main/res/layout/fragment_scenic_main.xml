@@ -15,47 +15,63 @@
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>
     </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
-    <android.support.design.widget.AppBarLayout
-        android:background="@color/tencent_blue"
+    <RelativeLayout
+        android:id="@+id/scenic_main_top_layout"
+        android:background="#00000000"
         android:layout_width="match_parent"
-        android:layout_height="80dp">
-        <android.support.v7.widget.Toolbar
-            android:paddingTop="20dp"
-            android:id="@+id/scenic_main_toolbar"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/scenic_main_title_top_bg"
+            android:background="@color/journey_green"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:orientation="horizontal"
+            android:layout_height="22dp" />
+        <RelativeLayout
+            android:layout_marginTop="22dp"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize">
+            <TextView
+                android:id="@+id/scenic_main_toolbar_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/journey_green"/>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/scenic_main_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <com.example.coderqiang.followme.CircleImagview
-                    android:id="@+id/scenic_main_touxiang"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/touxiang_zip"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.example.coderqiang.followme.CircleImagview
+                        android:id="@+id/scenic_main_touxiang"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/touxiang_zip"/>
 
-                <android.support.v7.widget.SearchView
-                    android:id="@+id/scenic_main_search"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/radius_bg"></android.support.v7.widget.SearchView>
+                    <android.support.v7.widget.SearchView
+                        android:id="@+id/scenic_main_search"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/radius_bg"></android.support.v7.widget.SearchView>
 
-                <Spinner
-                    android:id="@+id/scenic_main_spinner"
-                    android:layout_width="50dp"
-                    android:background="@color/tencent_blue"
-                    android:layout_gravity="center_vertical"
-                    android:layout_height="wrap_content"
-                    android:spinnerMode="dropdown"></Spinner>
-            </LinearLayout>
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
+                    <Spinner
+                        android:id="@+id/scenic_main_spinner"
+                        android:layout_width="50dp"
+                        android:background="@color/journey_green"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="40dp"
+                        android:spinnerMode="dropdown"></Spinner>
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+        </RelativeLayout>
+    </RelativeLayout>
+
     <ProgressBar
         android:id="@+id/scenic_main_progress"
         android:layout_centerInParent="true"

@@ -12,8 +12,8 @@ public class User {
     private static User user;
     private Context context;
 
+    private int id;
     private String name;
-    private String id;
     private String password;
     private Bitmap touxiang;
 
@@ -37,11 +37,11 @@ public class User {
         this.name = name;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -60,4 +60,6 @@ public class User {
     public void setTouxiang(Bitmap touxiang) {
         this.touxiang = touxiang;
     }
+
+
 }

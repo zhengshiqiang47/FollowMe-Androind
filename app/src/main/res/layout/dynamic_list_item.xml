@@ -10,6 +10,7 @@
         android:layout_height="65dp"
         android:padding="8dp">
         <com.example.coderqiang.followme.CircleImagview
+            android:id="@+id/dynamic_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="8dp"
@@ -28,29 +29,27 @@
                 android:textColor="#000"
                 android:text="Jane"/>
             <TextView
+                android:id="@+id/dynamic_time"
                 android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="2016/10/12      16:40"
                 android:textSize="12sp"
                 android:textColor="#6C6C6C"
                 />
         </LinearLayout>
     </LinearLayout>
     <TextView
+        android:id="@+id/dynamic_content"
         android:layout_marginLeft="26dp"
         android:layout_marginRight="26dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:textColor="#000"
-        android:text="今天去了故宫玩，哈哈哈哈哈哈啊哈哈哈哈今天去了故宫玩，哈哈哈今天去了故宫玩，哈哈哈今天去了故宫玩，哈哈哈!"/>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="32dp"
-        android:src="@drawable/dog_2"/>
+        android:textColor="#000" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dynamic_item_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -64,6 +63,7 @@
             android:layout_height="15dp"
             android:src="@mipmap/position1"/>
         <TextView
+            android:id="@+id/dynamic_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
@@ -76,36 +76,53 @@
         android:layout_marginTop="8dp"
         android:layout_marginLeft="32dp">
         <ImageView
+            android:id="@+id/dynamic_love"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@mipmap/love"/>
         <ImageView
+            android:id="@+id/dynamic_share"
             android:layout_marginTop="2dp"
             android:layout_marginLeft="8dp"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@mipmap/share"/>
         <ImageView
+            android:id="@+id/dynamic_comment"
             android:layout_marginTop="4dp"
             android:layout_marginLeft="8dp"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:src="@mipmap/comment"/>
     </LinearLayout>
-    <EditText
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
-        android:paddingLeft="8dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
-        android:hint="评论"
-        android:textSize="12sp"
-        android:id="@+id/dynamic_editText"
-        android:background="@drawable/dynamic_item_comment_bg"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/dynamic_comment_editText"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:hint="评论"
+            android:textSize="12sp"
+            android:background="@drawable/dynamic_item_comment_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <ImageView
+            android:id="@+id/dynamic_comment_send"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="8dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_send_black_36dp"/>
+    </LinearLayout>
+
     <TextView
         android:layout_marginTop="6dp"
         android:layout_width="match_parent"

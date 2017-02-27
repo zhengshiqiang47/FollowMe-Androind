@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -20,6 +23,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 //
 //import com.alibaba.mobileim.IYWLoginService;
@@ -41,6 +48,7 @@ import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
+import com.example.coderqiang.followme.Fragment.EaseContactListFragment;
 import com.example.coderqiang.followme.Fragment.JourneyFragment;
 import com.example.coderqiang.followme.Fragment.ScenicCommentsFragment;
 import com.example.coderqiang.followme.Fragment.ScenicMainFragment;
@@ -66,10 +74,13 @@ import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.domain.EaseUser;
-import com.hyphenate.easeui.ui.EaseContactListFragment;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.exceptions.HyphenateException;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +89,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
-public class MainActivity extends FragmentActivity{
+public class MainActivity extends FragmentActivity implements View.OnClickListener{
     private static final String TAG="MainActivity";
     FragmentManager fm;
     public JourneyFragment journeyFragment;
@@ -86,12 +97,29 @@ public class MainActivity extends FragmentActivity{
     SquarFragment squarFragment;
     ScenicMainFragment scenicMainFragment;
     EaseContactListFragment easeContactListFragment;
+    ConversationListFragment conversationListFragment;
     private int currentTabIndex;
     private TextView unreadLabel;
     Fragment currentFragment;
     @Bind(R.id.journey_nav)
     BottomNavigationBar bottomNavigationBar;
-    ConversationListFragment conversationListFragment;
+    @Bind(R.id.journey_day_fab)
+    FloatingActionButton journeyFab;
+    @Bind(R.id.journey_menu_hide_text)
+    FrameLayout menuHideTv;
+    @Bind(R.id.menu_new_day_layout)
+    LinearLayout menuDayLayout;
+    @Bind(R.id.journey_day_menu_layout)
+    LinearLayout menuLayout;
+    @Bind(R.id.menu_new_journey_layout)
+    LinearLayout menuJourneyLayout;
+    @Bind(R.id.menu_new_journey_note_layout)
+    LinearLayout menuNoteLayou;
+    @Bind(R.id.menu_new_journey)
+    TextView menuNewJourney;
+    @Bind(R.id.menu_add_scenic_layout)
+    LinearLayout menuAddScenicLayout;
+
     FragmentManager fmV4;
     Context context;
     Boolean isV4=false;
@@ -102,12 +130,23 @@ public class MainActivity extends FragmentActivity{
         setContentView(R.layout.activity_main);
         fmV4=getSupportFragmentManager();
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         context=this;
         fm =this.getSupportFragmentManager();
         setDefaultFragment();
         initNavigation();
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
         EMClient.getInstance().addConnectionListener(new EMConnectionListener() {
             @Override
             public void onConnected() {
@@ -133,18 +172,25 @@ public class MainActivity extends FragmentActivity{
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
+
+
     private void initNavigation(){
+        menuNoteLayou.setOnClickListener(this);
         registerBroadcastReceiver();
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_CLASSIC);
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.mipmap.position1, "日程"))
-                .addItem(new BottomNavigationItem(R.drawable.fire_white,"攻略"))
+                .addItem(new BottomNavigationItem(R.mipmap.fire_white,"攻略"))
                 .addItem(new BottomNavigationItem(R.mipmap.xingji1,"动态"))
-                .addItem(new BottomNavigationItem(R.mipmap.chat, "联系人"))
-                .addItem(new BottomNavigationItem(R.mipmap.chat, "会话"))
+                .addItem(new BottomNavigationItem(R.mipmap.chat, "通讯"))
                 .addItem(new BottomNavigationItem(R.drawable.mine_selected,"我的"))
-
                 .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
@@ -167,7 +213,7 @@ public class MainActivity extends FragmentActivity{
                         }
                         switchFragment(currentFragment,squarFragment);
                         break;
-                    case 3:
+//                    case 3:
 //                        if (conversationListFragment == null) {
 //                            conversationListFragment=new ConversationListFragment();
 //                            conversationListFragment.setConversationListItemClickListener(new EaseConversationListFragment.EaseConversationListItemClickListener() {
@@ -181,18 +227,9 @@ public class MainActivity extends FragmentActivity{
 //                        }
 //                        Log.i(TAG,"conversationList");
 //                        switchFragment(currentFragment,conversationListFragment);
-                        if(easeContactListFragment==null){
-                            easeContactListFragment=new EaseContactListFragment();
-                            easeContactListFragment.setContactListItemClickListener(new EaseContactListFragment.EaseContactListItemClickListener() {
-                                @Override
-                                public void onListItemClicked(EaseUser user) {
-                                    startActivity(new Intent(MainActivity.this, ChatActivity.class).putExtra(EaseConstant.EXTRA_USER_ID,user.getUsername()));
-                                }
-                            });
-                        }
-                        switchFragment(currentFragment,easeContactListFragment);
-                        break;
-                    case 4:
+//
+//                        break;
+                    case 3:
                         if (conversationListFragment == null) {
                             conversationListFragment=new ConversationListFragment();
                             conversationListFragment.setConversationListItemClickListener(new EaseConversationListFragment.EaseConversationListItemClickListener() {
@@ -207,7 +244,7 @@ public class MainActivity extends FragmentActivity{
                         Log.i(TAG,"conversationList");
                         switchFragment(currentFragment,conversationListFragment);
                         break;
-                    case 5:
+                    case 4:
                         if (userinfoFragment == null) {
                             userinfoFragment=new UserinfoFragment();
                         }
@@ -285,9 +322,9 @@ public class MainActivity extends FragmentActivity{
     private void switchFragment(Fragment from, Fragment to){
         if(currentFragment!=to){
             if(!to.isAdded()){
-                fm.beginTransaction().add(R.id.fragment_container,to).hide(from).show(to).commit();
+                fm.beginTransaction().add(R.id.fragment_container,to).hide(from).show(to).commitAllowingStateLoss();
             }else {
-                fm.beginTransaction().hide(from).show(to).commit();
+                fm.beginTransaction().hide(from).show(to).commitAllowingStateLoss();
 //                fm.beginTransaction().replace(R.id.fragment_container, to).commit();
             }
 
@@ -316,6 +353,17 @@ public class MainActivity extends FragmentActivity{
         userinfoFragment=new UserinfoFragment();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.menu_new_journey_note_layout:
+                Log.i(TAG,"写动态");
+                Intent intent = new Intent(this, NewDynamicActivity.class);
+                startActivity(intent);
+                break;
+        }
+    }
+
     private class GetScenicSpot extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -331,14 +379,16 @@ public class MainActivity extends FragmentActivity{
                 city.setScenicspots(tempSces);
             }
             city.addscenicPage();
-            CityLab.get(getApplicationContext()).setCurrentCity(city);
             Log.e(TAG, ScenicspotLab.get(getApplication()).getScenicspots().size() + "");
             TravelPlanUtil.getTravelPlan(context);
             httpParse.getAllScenicDetails(getApplicationContext(), cityName);
             return null;
         }
 
-
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            EventBus.getDefault().post("景点数据获取完成");
+        }
     }
 
     private BroadcastReceiver broadcastReceiver;
@@ -391,6 +441,44 @@ public class MainActivity extends FragmentActivity{
 
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void overrideTransitionEventBus(String msg) {
+        Log.i(TAG,"msg:"+msg);
+        if(msg.equals("定位改变")){
+            Log.i(TAG,msg);
+            new GetScenicSpot().execute();
+        }else if(msg.equals("dynamicFragment")){
+            Log.i(TAG,msg);
+            switchFragment(currentFragment,squarFragment);
+        }else if(msg.equals("联系人列表")){
+            if(easeContactListFragment==null){
+                easeContactListFragment=new EaseContactListFragment();
+                easeContactListFragment.setContactListItemClickListener(new EaseContactListFragment.EaseContactListItemClickListener() {
+                    @Override
+                    public void onListItemClicked(EaseUser user) {
+                        startActivity(new Intent(MainActivity.this, ChatActivity.class).putExtra(EaseConstant.EXTRA_USER_ID,user.getUsername()));
+                    }
+                });
+            }
+            switchFragment(currentFragment,easeContactListFragment);
+        }else if(msg.equals("会话列表")){
+            if (conversationListFragment == null) {
+                conversationListFragment=new ConversationListFragment();
+                conversationListFragment.setConversationListItemClickListener(new EaseConversationListFragment.EaseConversationListItemClickListener() {
+
+                    @Override
+                    public void onListItemClicked(EMConversation conversation) {
+                        Log.i(TAG, "点击联系人");
+                        startActivity(new Intent(MainActivity.this, ChatActivity.class).putExtra(EaseConstant.EXTRA_USER_ID, conversation.getUserName()));
+                    }
+                });
+            }
+            Log.i(TAG,"conversationList");
+            switchFragment(currentFragment,conversationListFragment);
+        }
+
     }
 
 }

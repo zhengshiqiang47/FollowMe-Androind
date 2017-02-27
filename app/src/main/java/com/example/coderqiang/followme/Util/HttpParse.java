@@ -2,9 +2,11 @@ package com.example.coderqiang.followme.Util;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.TimeFormatException;
 
-import com.baidu.platform.comapi.map.E;
+import com.example.coderqiang.followme.Interface.BaiduImageInterface;
+import com.example.coderqiang.followme.Interface.ImgJsonIterface;
+import com.example.coderqiang.followme.Interface.WeatherInterface;
+import com.example.coderqiang.followme.Model.BaiduMapImage;
 import com.example.coderqiang.followme.Model.City;
 import com.example.coderqiang.followme.Model.CityLab;
 import com.example.coderqiang.followme.Model.Comment;
@@ -14,13 +16,11 @@ import com.example.coderqiang.followme.Model.ScenicspotLab;
 import com.example.coderqiang.followme.Model.Weather;
 
 import org.jsoup.Jsoup;
-import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import okhttp3.FormBody;
@@ -28,8 +28,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
@@ -67,7 +65,6 @@ public class HttpParse {
         Document document;
         try {
             document= Jsoup.parse(result);
-
             Element allSightEle=document.select("a[class=fr]").get(0);
             String allUrl=allSightEle.attr("href");
             String pageUrl=allUrl.split(".html")[0]+"/s0-p"+pageNum+".html";
@@ -89,7 +86,7 @@ public class HttpParse {
                 }else manyA=" ";
                 String mark=element.select("div[class=rdetailbox]").select("ul[class=r_comment]").select("li").select("a[class=score]").text();
                 String commentCount = element.select("div[class=rdetailbox]").select("ul[class=r_comment]").select("li").select("a[class=recomment]").text();
-                Log.i(TAG,"name:"+name);
+//                Log.i(TAG,"name:"+name);
 //                Log.i(TAG,"url:"+url);
 //                Log.i(TAG,"rank:"+rank);
 //                Log.i(TAG,"addr:"+addr);
@@ -122,7 +119,7 @@ public class HttpParse {
     }
 
     public  void getAllScenicDetails(final Context context, String cityname){
-        if (cityname==null) cityname = "北京";
+        if (cityname==null) cityname = "杭州";
         final ArrayList<Scenicspot> scenicspots=ScenicspotLab.get(context).getScenicspots();
         final ArrayList<Scenicspot> willParse = new ArrayList<Scenicspot>();
         if (cityname.charAt(cityname.length()-1)=='市'){
@@ -401,13 +398,19 @@ public class HttpParse {
             String provinceName=provinceEle.select("div[class=map_title cf]").text().replace(" 更多","");
 //            Log.i(TAG, provinceName);
             Elements cityEles = provinceEle.select("ul[class=map_linklist cf]").select("li");
+            boolean first=true;
             for (Element cityEle : cityEles) {
                 City city=new City();
                 String url=cityEle.select("a").attr("href");
                 String name=cityEle.select("a").text().replace("旅游攻略","");
                 String strs[]=url.split("/");
                 String ctripidAndName= strs[strs.length - 1].replace(".html", "");
-                Log.i(TAG,"name:"+name);
+
+                if (first) {
+                    Log.i(TAG,"name:"+name);
+                    first=false;
+                }
+
 //                Log.i(TAG,"citripIdAndName:"+ctripidAndName);
                 city.setCityName(name);
                 city.setProvinceName(provinceName);
@@ -454,4 +457,29 @@ public class HttpParse {
         }
     }
 
+    public String getBaiduImage(Context context,String uid,String type) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://map.baidu.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        BaiduImageInterface jsonIterface = retrofit.create(BaiduImageInterface.class);
+        Call<BaiduMapImage> call = jsonIterface.getImage("ugcphotolist", type, "1", "mappc", uid, "photo_exterior,phone_other", "1", "20");
+        Log.i(TAG, "开始抓取图片");
+        /**http://map.baidu.com/detail?qt=ugcphotolist&type=scope&orderBy=1&from=mappc&uid=a9173a180c1324641df74dd3
+         * &photoType=photo_exterior,phone_other&pageIndex=1&pageCount=20
+         * Created by CoderQiang on 2017/2/18.
+         */
+
+        try {
+            BaiduMapImage baiduMapImages = call.execute().body();
+            if (baiduMapImages != null && baiduMapImages.getPhoto() != null && baiduMapImages.getPhoto().getPhoto_list() != null&& baiduMapImages.getPhoto().getPhoto_list().size()>0) {
+                Log.i(TAG, "baiduMapIamge" + baiduMapImages.getPhoto().getPhoto_list().get(0).getImgUrl());
+                return baiduMapImages.getPhoto().getPhoto_list().get(0).getImgUrl();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, "获取失败", e);
+        }
+        return null;
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.coderqiang.followme.Util;
+package com.example.coderqiang.followme.Interface;
 
 import com.example.coderqiang.followme.Model.ScenicImg;
 

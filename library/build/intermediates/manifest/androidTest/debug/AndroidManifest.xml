@@ -3,7 +3,7 @@
     package="uk.co.senab.photoview.test" >
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="21"
         android:targetSdkVersion="25" />
 
     <instrumentation

@@ -52,9 +52,9 @@ public class CityLab {
                 }
             }
         }else {
-            city.setCityName("北京");
-            city.setProvinceName("北京");
-            city.setCtripId("beijing1");
+            city.setCityName("杭州");
+            city.setProvinceName("浙江");
+            city.setCtripId("hangzhou14");
         }
         return city;
     }

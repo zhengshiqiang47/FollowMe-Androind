@@ -76,11 +76,11 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
         Log.i(TAG, "创建view" + scenicspot.getScenicName()+"");
         String intro = scenicspot.getIntroduction();
         intro = "   " + intro;
-        Log.i(TAG,"介绍"+intro);
+//        Log.i(TAG,"介绍"+intro);
         introTv.setText(intro);
         countTime.setText(scenicspot.getCountTime()+"");
         price.setText(scenicspot.getTicket()+" ");
-        Log.i(TAG, "门票" + scenicspot.getTicket());
+//        Log.i(TAG, "门票" + scenicspot.getTicket());
         trafficTv.setText(scenicspot.getTraffic()+"");
         openTime.setText(scenicspot.getOpenTime()+"");
         albumImg = new ArrayList<String>();

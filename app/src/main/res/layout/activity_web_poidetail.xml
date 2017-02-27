@@ -17,7 +17,7 @@
         <android.support.v7.widget.Toolbar
             android:paddingTop="20dp"
             android:id="@+id/webview_toolbar"
-            android:background="@color/tencent_blue"
+            android:background="@color/journey_green"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:layout_alignParentTop="true"

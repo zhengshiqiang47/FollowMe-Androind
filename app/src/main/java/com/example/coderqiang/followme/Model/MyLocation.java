@@ -2,6 +2,8 @@ package com.example.coderqiang.followme.Model;
 
 import android.content.Context;
 
+import com.baidu.location.BDLocation;
+
 /**
  * Created by CoderQiang on 2016/12/4.
  */
@@ -12,6 +14,7 @@ public class MyLocation {
     private Double longtitute;
     private String cityName;
     private boolean hasLocation=false;
+    private BDLocation bdLocation;
 
     private MyLocation() {
 
@@ -25,35 +28,43 @@ public class MyLocation {
     }
 
     public Double getLatitute() {
-        return latitute;
+        return myLocation.latitute;
     }
 
     public void setLatitute(Double latitute) {
-        this.latitute = latitute;
+        myLocation.latitute = latitute;
     }
 
     public Double getLongtitute() {
-        return longtitute;
+        return myLocation.longtitute;
     }
 
     public void setLongtitute(Double longtitute) {
-        this.longtitute = longtitute;
+        myLocation.longtitute = longtitute;
     }
 
     public String getCityName() {
-        return cityName;
+        return myLocation.cityName;
     }
 
     public void setCityName(String cityName) {
-        this.cityName = cityName;
+        myLocation.cityName = cityName;
     }
 
 
     public boolean isHasLocation() {
-        return hasLocation;
+        return myLocation.hasLocation;
     }
 
     public void setHasLocation(boolean hasLocation) {
-        this.hasLocation = hasLocation;
+        myLocation.hasLocation = hasLocation;
+    }
+
+    public BDLocation getBdLocation() {
+        return myLocation.bdLocation;
+    }
+
+    public void setBdLocation(BDLocation bdLocation) {
+        myLocation.bdLocation = bdLocation;
     }
 }

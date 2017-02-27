@@ -21,11 +21,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -49,12 +52,19 @@ import com.example.coderqiang.followme.Model.ScenicspotLab;
 import com.example.coderqiang.followme.Model.User;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Util.HttpParse;
+import com.example.coderqiang.followme.Util.TravelPlanUtil;
 import com.example.coderqiang.followme.Util.UploadImage;
 import com.example.coderqiang.followme.View.AddScenicDialog;
 import com.example.coderqiang.followme.View.CitySeletctDialog;
 import com.example.coderqiang.followme.View.ViewPagerScaleTransformer;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.youth.banner.Banner;
+import com.youth.banner.loader.ImageLoader;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,9 +97,16 @@ public class ScenicMainFragment extends Fragment {
     TextView progressTv;
     @Bind(R.id.scenic_main_search)
     SearchView searchView;
+    @Bind(R.id.scenic_main_title_top_bg)
+    TextView title_bg;
+    @Bind(R.id.scenic_main_toolbar_bg)
+    TextView toolbar_bg;
+    @Bind(R.id.scenic_main_top_layout)
+    RelativeLayout topLayout;
+
     LinearLayout addSceLayout;
 
-    ConvenientBanner banner;
+    Banner banner;
 
     City city;
     int count;
@@ -103,6 +120,7 @@ public class ScenicMainFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     @Nullable
@@ -137,6 +155,7 @@ public class ScenicMainFragment extends Fragment {
                     public void onCompleted() {
                         scenicspots=city.getScenicspots();
                         recyclerView.getAdapter().notifyItemChanged(count);
+                        Log.e(TAG, "conunt" + count);
                         count=scenicspots.size();
                         twinklingRefreshLayout.finishLoadmore();
                     }
@@ -156,7 +175,6 @@ public class ScenicMainFragment extends Fragment {
                 init();
             }
         });
-
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,21 +198,45 @@ public class ScenicMainFragment extends Fragment {
     }
 
     private void init(){
-        if(!MyLocation.getMyLocation(getActivity()).isHasLocation()){
-            city=CityLab.get(getActivity()).isContain("北京");
-            Log.i(TAG,"未定位");
-        }else {
-            city = CityLab.get(getActivity().getApplicationContext()).getCurrentCity();
-        }
-
+        city = CityLab.get(getActivity().getApplicationContext()).getCurrentCity();
         scenicspots = city.getScenicspots();
         Log.i(TAG,"city:"+city.getCityName()+" "+city.getScenicspots().size());
         count=scenicspots.size();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         recyclerView.setAdapter(new MyAdapter());
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            boolean isHide=false;
+            int y=0;
+            int countY=0;
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                y+=dy;
+//                if(dy>0&&!isHide){
+//                    countY+=dy;
+//                    if(countY>=300){
+//                        topLayout.setTranslationY(-(countY-300));
+//                        if(countY>=300+title_bg.getHeight()+toolbar_bg.getHeight()){
+//                            countY=0;
+//                            isHide=true;
+//                        }
+//                    }
+//                }
+//                Log.i(TAG,"isHide"+isHide);
+//                if(dy<0&&y>500&&isHide){
+//                    countY+=dy;
+//                    if (countY<-100){
+//                        TranslateAnimation translate=new TranslateAnimation(0,0,0,title_bg.getHeight()+toolbar_bg.getHeight());
+//                        translate.setDuration(1000);
+//                        translate.setFillAfter(true);
+//                        topLayout.setAnimation(translate);
+//                        isHide=false;
+//                    }
+//                }
+
+            }
+        });
         fragments = new ArrayList<ScenicHeaderFragment>();
         topImages = new ArrayList<>();
-        Log.i(TAG,"能到这");
         for (int i=0;i<5;i++){
             if(scenicspots.size()>0&&scenicspots.get(i).getImgUrls().size()>0){
                 fragments.add(ScenicHeaderFragment.newInstance(scenicspots.get(i)));
@@ -204,20 +246,27 @@ public class ScenicMainFragment extends Fragment {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        while (ScenicspotLab.get(getActivity().getApplicationContext()).getScenicspots().size()==0||scenicspots.get(0).getImgUrls().size()==0){
+                        try {
+                            while (ScenicspotLab.get(getActivity().getApplicationContext()).getScenicspots().size()==0||scenicspots==null||scenicspots.size()==0||scenicspots.get(0).getImgUrls()==null||scenicspots.get(0).getImgUrls().size()==0){
+                                try {
+                                    Log.i(TAG,"sleep");
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
                             try {
-                                Log.i(TAG,"sleep");
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
                             }
                         }
                         getActivity().runOnUiThread(new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 if(scenicspots.size()>0){
-                                    for (int i=0;i<5;i++)
-                                        topImages.add(scenicspots.get(i).getImgUrls().get(0).getBigImgUrl());
                                     init();
                                     initSpinner();
                                 }
@@ -231,6 +280,7 @@ public class ScenicMainFragment extends Fragment {
         }
         UploadImage.setTouxiang(touxiang,getActivity().getApplicationContext());
     }
+
     int defaultPosition=0;
 
     private void initSpinner() {
@@ -238,7 +288,7 @@ public class ScenicMainFragment extends Fragment {
         String province=null;
         if(CityLab.get(getActivity()).getCurrentCity()!=null){
             province=CityLab.get(getActivity()).getCurrentCity().getProvinceName();
-        }else province="福建";
+        }
         int temp=0;
         for(int i=0;i<CityLab.get(getActivity()).getCities().size();i++){
             City spinCity=CityLab.get(getActivity()).getCities().get(i);
@@ -312,20 +362,13 @@ public class ScenicMainFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        try {
-            if(banner.isTurning())
-                banner.stopTurning();
-        }catch (Exception e){
-            Log.e(TAG,"onPause异常",e);
-        }
+
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (banner!=null&&!banner.isTurning())
-            banner.startTurning(5000);
     }
 
     private void hideAndShowProgress(int type){
@@ -372,16 +415,10 @@ public class ScenicMainFragment extends Fragment {
                 if(isRecyc){
                     bannerHolder= (BannerHolder) holder;
                     bannerHolder=(BannerHolder)holder;
-                    bannerHolder.convenientBanner.setPages(new CBViewHolderCreator<TopImageHolder>() {
-                        @Override
-                        public TopImageHolder createHolder() {
-                            return new TopImageHolder();
-                        }
-                    },topImages).setPageIndicator(new int[]{R.drawable.circle_indicator_white,R.drawable.circle_indicator_selcet})
-                            .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT).setScrollDuration(1000);
-                    banner=bannerHolder.convenientBanner;
-                    banner.setcurrentitem(0);
-                    banner.startTurning(5000);
+                    banner=bannerHolder.banner;
+                    bannerHolder.banner.setImageLoader(new GlideImageLoader());
+                    bannerHolder.banner.setImages(topImages);
+                    bannerHolder.banner.start();
                 }
             } else if(holder instanceof MyViewHolder){
                 final MyViewHolder myViewHolder = (MyViewHolder) holder;
@@ -395,7 +432,7 @@ public class ScenicMainFragment extends Fragment {
                 String intro = scenicspots.get(position).getBrightPoint();
                 final Scenicspot scenicspot = scenicspots.get(position);
                 ImageView imageView=myViewHolder.imageView;
-                Glide.with(context.getActivity().getApplication()).load(imgUrl).override(800,600).diskCacheStrategy(DiskCacheStrategy.RESULT).skipMemoryCache(true).centerCrop().into(imageView);
+                Glide.with(context.getActivity().getApplication()).load(imgUrl).placeholder(R.drawable.loadingbg).override(800,600).diskCacheStrategy(DiskCacheStrategy.RESULT).skipMemoryCache(true).centerCrop().into(imageView);
                 if(intro.length()>=1)
                     myViewHolder.introTv.setText(intro.substring(1,intro.length()));
 //                Log.i(TAG, "名字"+name+" 亮点" + intro);
@@ -437,7 +474,7 @@ public class ScenicMainFragment extends Fragment {
                         Intent intent=new Intent(getActivity(),ScenicActivity.class);
                         intent.putExtra(ScenicActivity.EXTRA_CITY,MyLocation.getMyLocation(getActivity().getApplicationContext()).getCityName());
                         startActivity(intent);
-                        getActivity().overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
+                        ((MainActivity)getActivity()).overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
                     }
                 });
                 introHolder.scenicIn.setOnClickListener(new View.OnClickListener() {
@@ -446,6 +483,7 @@ public class ScenicMainFragment extends Fragment {
                         Intent intent = new Intent(getActivity(), ChinaActivity.class);
                         startActivity(intent);
                         getActivity().overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
+                        ((MainActivity)getActivity()).overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
                     }
                 });
                 introHolder.travelIn.setOnClickListener(new View.OnClickListener() {
@@ -469,6 +507,7 @@ public class ScenicMainFragment extends Fragment {
                         intent.putExtra(WebViewActivity.EXTRA_COUNT, 2);
                         startActivity(intent);
                         getActivity().overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
+
                     }
                 });
                 introHolder.travelNear.setOnClickListener(new View.OnClickListener() {
@@ -498,7 +537,6 @@ public class ScenicMainFragment extends Fragment {
         @Override
         public void onViewRecycled(RecyclerView.ViewHolder holder) {
             if(holder instanceof BannerHolder) {
-                Log.i(TAG,"onviewRecycled");
                 isRecyc=false;
                 bannerHolder=(BannerHolder) holder;
                 return;
@@ -520,10 +558,10 @@ public class ScenicMainFragment extends Fragment {
 
         private class BannerHolder extends RecyclerView.ViewHolder{
 
-            ConvenientBanner convenientBanner;
+            Banner banner;
             public BannerHolder(View itemView) {
                 super(itemView);
-                convenientBanner = (ConvenientBanner) itemView.findViewById(R.id.scenic_main_banner);
+                banner = (Banner) itemView.findViewById(R.id.scenic_main_banner);
 
             }
         }
@@ -623,10 +661,39 @@ public class ScenicMainFragment extends Fragment {
 //        }
 //    }
 
+    public class GlideImageLoader extends ImageLoader {
+        @Override
+        public void displayImage(Context context, Object path, ImageView imageView) {
+            /**
+             注意：
+             1.图片加载器由自己选择，这里不限制，只是提供几种使用方法
+             2.返回的图片路径为Object类型，由于不能确定你到底使用的那种图片加载器，
+             传输的到的是什么格式，那么这种就使用Object接收和返回，你只需要强转成你传输的类型就行，
+             切记不要胡乱强转！
+             */
+
+            //Glide 加载图片简单用法
+            Glide.with(context).load(path).into(imageView);
+
+        }
+
+        //提供createImageView 方法，如果不用可以不重写这个方法，主要是方便自定义ImageView的创建
+    }
+
     public int dp2px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void overrideTransitionEventBus(String msg) {
+        if(msg.equals("景点数据获取完成")){
+            Log.i(TAG,"初始化布局"+msg);
+            init();
+        }else if(msg.equals("定位改变")) {
+            Log.i(TAG,"重新改变布局");
+            init();
+        }
+    }
 
 }

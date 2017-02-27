@@ -286,7 +286,7 @@ public class ScenicFragment extends Fragment{
             if(!city.getCityName().equals( MyLocation.getMyLocation(getActivity()).getCityName()))
                 city.addscenicPage();
             httpParse.getAllScenicDetails(getActivity(),city.getCityName());
-            httpParse.getWeather(context.getActivity().getApplicationContext(),city);
+            httpParse.getWeather(context.getContext().getApplicationContext(),city);
             return null;
         }
 

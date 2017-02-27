@@ -45,10 +45,12 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.example.coderqiang.followme.Activity.ChinaActivity;
 import com.example.coderqiang.followme.Activity.LoginActivity;
+import com.example.coderqiang.followme.Activity.NewDynamicActivity;
 import com.example.coderqiang.followme.Activity.PictureActivity;
 import com.example.coderqiang.followme.Activity.ScenicActivity;
 import com.example.coderqiang.followme.Activity.ScenicDetailActivity;
 import com.example.coderqiang.followme.Activity.SelectImageActivity;
+import com.example.coderqiang.followme.Activity.TestActivity;
 import com.example.coderqiang.followme.Activity.WebViewActivity;
 import com.example.coderqiang.followme.CircleImagview;
 import com.example.coderqiang.followme.Model.MyLocation;
@@ -124,7 +126,7 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
         myMessageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ChinaActivity.class);
+                Intent intent = new Intent(getActivity(), NewDynamicActivity.class);
 //                intent.putExtra(WebViewActivity.TYPE,WebViewActivity.TYPE_URL);
 //                intent.putExtra(WebViewActivity.WEB_URL,"http://you.ctrip.com/travels");
                 startActivity(intent);

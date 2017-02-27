@@ -32,7 +32,7 @@ public class UserUtil {
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
         RequestBody body=new FormBody.Builder()
                 .add("username",username)
-                .add("type",type+"").build();
+                .add("type","6").build();
         Request request=new Request.Builder()
                 .url("http://123.206.195.52:8080/day_30/getUserInfoServlet")
                 .post(body)
@@ -45,8 +45,14 @@ public class UserUtil {
             return result;
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("UserUtil","获取用户数据失败",e);
         }
         return "";
+    }
+
+    public static void getUser(String username){
+
+        return ;
     }
 
     public static boolean signUp(Context context,String username, String password, String nickName){

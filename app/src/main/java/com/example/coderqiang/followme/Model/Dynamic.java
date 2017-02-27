@@ -1,5 +1,9 @@
 package com.example.coderqiang.followme.Model;
 
+import android.net.Uri;
+
+import com.baidu.location.BDLocation;
+
 import java.util.ArrayList;
 
 /**
@@ -7,23 +11,31 @@ import java.util.ArrayList;
  */
 
 public class Dynamic {
-    private String userID;
+    private int userID;
+    private int dynamicID;
     private String userName;
-    private String dynamicID;
     private String Content;
-    private String Date;
-    private ArrayList<String> imagURL;
+    private long timeStamp;
+    private ArrayList<Uri> imagURL;
     private String Address;
+    private Double Longtitude;
+    private Double Latitude;
+    private String travelTime;
+    private ArrayList<DynamicComment> comments;
+    private int glance;
+    private String memo="";
     private int love;
 
-    public Dynamic(String userName,String userID,String DynamicID,String Content,String Date,ArrayList<String> imagURL) {
+    public Dynamic(String userName,int userID,String Content,String address,long timeStamp,ArrayList<Uri> imagURL) {
         this.userName = userName;
         this.userID=userID;
         this.userName=userName;
-        this.dynamicID=DynamicID;
         this.Content=Content;
         this.imagURL=imagURL;
         love=0;
+        glance=0;
+        this.timeStamp=timeStamp;
+        this.Address=address;
     }
 
 
@@ -35,19 +47,19 @@ public class Dynamic {
         this.userName = userName;
     }
 
-    public String getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 
-    public String getDynamicID() {
+    public int getDynamicID() {
         return dynamicID;
     }
 
-    public void setDynamicID(String dynamicID) {
+    public void setDynamicID(int dynamicID) {
         this.dynamicID = dynamicID;
     }
 
@@ -59,13 +71,6 @@ public class Dynamic {
         Content = content;
     }
 
-    public String getDate() {
-        return Date;
-    }
-
-    public void setDate(String date) {
-        Date = date;
-    }
 
 
     public int getLove() {
@@ -84,13 +89,6 @@ public class Dynamic {
         this.love--;
     }
 
-    public ArrayList<String> getImagURL() {
-        return imagURL;
-    }
-
-    public void setImagURL(ArrayList<String> imagURL) {
-        this.imagURL = imagURL;
-    }
 
     public String getAddress() {
         return Address;
@@ -100,4 +98,67 @@ public class Dynamic {
         Address = address;
     }
 
+    public Double getLongtitude() {
+        return Longtitude;
+    }
+
+    public void setLongtitude(Double longtitude) {
+        Longtitude = longtitude;
+    }
+
+    public Double getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        Latitude = latitude;
+    }
+
+    public String getTravelTime() {
+        return travelTime;
+    }
+
+    public void setTravelTime(String travelTime) {
+        this.travelTime = travelTime;
+    }
+
+    public int getGlance() {
+        return glance;
+    }
+
+    public void setGlance(int glance) {
+        this.glance = glance;
+    }
+
+    public ArrayList<DynamicComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(ArrayList<DynamicComment> comments) {
+        this.comments = comments;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public ArrayList<Uri> getImagURL() {
+        return imagURL;
+    }
+
+    public void setImagURL(ArrayList<Uri> imagURL) {
+        this.imagURL = imagURL;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 }
