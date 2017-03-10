@@ -16,6 +16,7 @@ public class User {
     private String name;
     private String password;
     private Bitmap touxiang;
+    private FMUser fmUser;
 
 
     private User(Context context){
@@ -62,4 +63,11 @@ public class User {
     }
 
 
+    public FMUser getFmUser() {
+        return fmUser;
+    }
+
+    public void setFmUser(FMUser fmUser) {
+        this.fmUser = fmUser;
+    }
 }

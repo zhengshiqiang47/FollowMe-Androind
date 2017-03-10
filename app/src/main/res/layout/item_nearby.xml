@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.example.coderqiang.followme.CircleImagview
+        android:id="@+id/item_nearby_avator"
+        android:layout_margin="8dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/touxiang_zip"/>
+    <TextView
+        android:id="@+id/item_nearby_name"
+        android:layout_marginLeft="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="用户名"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:textColor="@color/black_3"/>
+    <TextView
+        android:id="@+id/item_nearby_distance"
+        android:text="距我100m"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+    <ImageView
+        android:id="@+id/item_nearby_add"
+        android:layout_margin="8dp"
+        android:layout_width="35dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_adduser_blue"/>
+</LinearLayout>

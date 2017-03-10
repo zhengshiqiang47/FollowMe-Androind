@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,18 +43,28 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.example.coderqiang.followme.Activity.ChinaActivity;
+import com.example.coderqiang.followme.Activity.EditUserInfoActivity;
+import com.example.coderqiang.followme.Activity.HistoryTrackActivity;
 import com.example.coderqiang.followme.Activity.LoginActivity;
+import com.example.coderqiang.followme.Activity.NearbyActivity;
 import com.example.coderqiang.followme.Activity.NewDynamicActivity;
 import com.example.coderqiang.followme.Activity.PictureActivity;
 import com.example.coderqiang.followme.Activity.ScenicActivity;
 import com.example.coderqiang.followme.Activity.ScenicDetailActivity;
 import com.example.coderqiang.followme.Activity.SelectImageActivity;
+import com.example.coderqiang.followme.Activity.ShowTravlePlanAcvitity;
 import com.example.coderqiang.followme.Activity.TestActivity;
+import com.example.coderqiang.followme.Activity.TraceActivity;
+import com.example.coderqiang.followme.Activity.TravlePlanActivity;
 import com.example.coderqiang.followme.Activity.WebViewActivity;
 import com.example.coderqiang.followme.CircleImagview;
+import com.example.coderqiang.followme.Model.CityLab;
+import com.example.coderqiang.followme.Model.FMUser;
+import com.example.coderqiang.followme.Model.FriendsLab;
 import com.example.coderqiang.followme.Model.MyLocation;
 import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.ScenicspotLab;
@@ -60,6 +72,7 @@ import com.example.coderqiang.followme.Model.SettingLab;
 import com.example.coderqiang.followme.Model.TravleDay;
 import com.example.coderqiang.followme.Model.User;
 import com.example.coderqiang.followme.R;
+import com.example.coderqiang.followme.Util.ServerUtil;
 import com.example.coderqiang.followme.Util.UploadImage;
 import com.example.coderqiang.followme.Util.UserUtil;
 import com.example.coderqiang.followme.View.AddScenicDialog;
@@ -67,14 +80,24 @@ import com.hyphenate.chat.EMClient;
 import com.lcodecore.tkrefreshlayout.header.progresslayout.CircleImageView;
 import com.nightonke.boommenu.BoomMenuButton;
 
+import net.qiujuer.genius.graphics.Blur;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by CoderQiang on 2016/11/1.
@@ -94,7 +117,7 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
     @Bind(R.id.userinfo_nick)
     TextView nickTv;
     @Bind(R.id.userinfo_signature)
-    EditText signatureTV;
+    TextView signatureTV;
     @Bind(R.id.userinfo_travel)
     TextView travelTv;
     @Bind(R.id.userinfo_edit)
@@ -107,31 +130,50 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
     ImageView collectArrow;
     @Bind(R.id.logout)
     LinearLayout logoutLayout;
+    @Bind(R.id.userinfo_title_bg)
+    ImageView userInfoTitlebg;
+    @Bind(R.id.userinfo_address)
+    TextView address;
+    @Bind(R.id.userinfo_my_travel)
+    TextView myTravel;
+    @Bind(R.id.userinfo_sex)
+    ImageView sex;
+    @Bind(R.id.userinfo_set)
+    TextView setTextview;
+    @Bind(R.id.userinfo_travelplan)
+    LinearLayout myTravlePlan;
+    @Bind(R.id.userinfo_nearby)
+    LinearLayout nearby;
 
-    private static final int PHOTO_REQUEST=1;
+    private static final int PHOTO_REQUEST = 1;
     private static final int PHOTO_REQUEST_CUT=2;
     private static final int PHOTO_REQUEST_CAREMA = 3;
     private ArrayList<Scenicspot> collectScenicspots;
+    private String friendSize="";
     File tempFile;
     private static final String PHOTO_FILE_NAME = "temp_photo.jpg";
     String path;
+    Uri saveUri;
+
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_uerinfo_detail_2, container, false);
-         ButterKnife.bind(this, v);
-        loadImg();
+        ButterKnife.bind(this, v);
         initView();
-        new getUserInfo().execute();
+        if(User.get(getActivity()).getFmUser()==null) {
+            new getUserInfo().execute();
+        } else {
+            updateUserInfo(User.get(getActivity()).getFmUser());
+        }
         myMessageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NewDynamicActivity.class);
-//                intent.putExtra(WebViewActivity.TYPE,WebViewActivity.TYPE_URL);
-//                intent.putExtra(WebViewActivity.WEB_URL,"http://you.ctrip.com/travels");
-                startActivity(intent);
+                Toast.makeText(getActivity(),"敬请期待",Toast.LENGTH_SHORT).show();
             }
         });
+
+        getFriend();
         return v;
     }
 
@@ -142,25 +184,6 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent,PHOTO_REQUEST);
-            }
-        });
-        signatureTV.addTextChangedListener(new TextWatcher() {
-            String before = "";
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                before=s.toString();
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(!s.toString().equals(before)){
-
-                }
             }
         });
         UploadImage.setTouxiang(imageView,getActivity().getApplicationContext());
@@ -184,22 +207,94 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
                 ScenicspotLab.get(getActivity()).clear();
             }
         });
+        myTravel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), HistoryTrackActivity.class);
+//                startActivity(intent);
+                Toast.makeText(getActivity(),"敬请期待",Toast.LENGTH_SHORT).show();
+            }
+        });
+        editTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), TravlePlanActivity.class);
+                startActivity(intent);
+            }
+        });
+        setTextview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), TravlePlanActivity.class);
+                startActivity(intent);
+            }
+        });
+        myTravlePlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ShowTravlePlanAcvitity.class);
+                startActivity(intent);
+            }
+        });
+        nearby.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NearbyActivity.class);
+                startActivity(intent);
+            }
+        });
+        address.setText(MyLocation.getMyLocation(getActivity()).getCityName());
+        concernTV.setText(FriendsLab.get(getActivity().getApplicationContext()).getFMUsers().size()+"");
+        showTitleBg();
+    }
+
+    private void showTitleBg() {
+        Glide.with(getActivity()).load("http://123.206.195.52:8080/day_30/upload/"+ User.get(getActivity()).getName()+".png").asBitmap().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                Bitmap bitmap=compressImage(resource);
+                bitmap= Blur.onStackBlur(bitmap,60);
+                userInfoTitlebg.setImageBitmap(bitmap);
+            }
+        });
+    }
+
+    private Bitmap compressImage(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        int options = 100;
+        while (baos.toByteArray().length / 1024 > 100) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+            baos.reset();//重置baos即清空baos
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+            options -= 10;//每次都减少10
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        BitmapFactory.Options options1 = new BitmapFactory.Options();
+        options1.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, options1);//把ByteArrayInputStream数据生成图片
+        return bitmap;
     }
 
 
     private void showCollect(){
-        collectScenicspots= ScenicspotLab.get(getActivity().getApplicationContext()).getCollectionspots();
-        if (collectScenicspots.size() == 0) {
-            ScenicspotLab.get(getActivity().getApplicationContext()).getCollectionspots().add(ScenicspotLab.get(getActivity()).getScenicspots().get(1));
+        try {
+            collectScenicspots= ScenicspotLab.get(getActivity().getApplicationContext()).getCollectionspots();
+            if (collectScenicspots.size() == 0) {
+                collectScenicspots.add(CityLab.get(getActivity()).getCurrentCity().getScenicspots().get(5));
+            }
+            Log.i(TAG, "收藏个数" + collectScenicspots.size());
+            collectRecycler.setVisibility(View.VISIBLE);
+            collectRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+            collectRecycler.setAdapter(new scenicAdapter());
+            TranslateAnimation translate=new TranslateAnimation(collectRecycler.getWidth(),0,0,0);
+            translate.setDuration(800);
+            translate.setFillAfter(true);
+            collectRecycler.startAnimation(translate);
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(getActivity(),"暂无收藏",Toast.LENGTH_SHORT).show();
         }
-        Log.i(TAG, "收藏个数" + collectScenicspots.size());
-        collectRecycler.setVisibility(View.VISIBLE);
-        collectRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        collectRecycler.setAdapter(new scenicAdapter());
-        TranslateAnimation translate=new TranslateAnimation(collectRecycler.getWidth(),0,0,0);
-        translate.setDuration(800);
-        translate.setFillAfter(true);
-        collectRecycler.startAnimation(translate);
+
 
     }
 
@@ -226,16 +321,6 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
         collectRecycler.startAnimation(translate);
     }
 
-    private void loadImg() {
-//        Glide.with(this)
-//                .load("http://dl.bizhi.sogou.com/images/2012/02/21/92347.jpg")
-//                .centerCrop()
-//                .crossFade()
-//                .placeholder(R.drawable.geometry)
-//                .into(userImg);
-    }
-
-
 
 
 
@@ -252,7 +337,9 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
         intent.putExtra("outputY", 300);
         intent.putExtra("outputFormat", "JPEG");// 图片格式
         intent.putExtra("noFaceDetection", true);// 取消人脸识别
-        intent.putExtra("return-data", true);
+        intent.putExtra("return-data", false);
+        intent.putExtra("noFaceDetection",true);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,saveUri);
         // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CUT
         startActivityForResult(intent, PHOTO_REQUEST_CUT);
     }
@@ -302,6 +389,7 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
         }else if (requestCode == PHOTO_REQUEST_CAREMA) {
             // 从相机返回的数据
             if (hasSdcard()) {
+
                 crop(Uri.fromFile(tempFile));
             } else {
                 Toast.makeText(getActivity().getApplicationContext(), "未找到存储卡，无法存储照片！",Toast.LENGTH_SHORT).show();
@@ -309,7 +397,13 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
 
         }else if(requestCode==PHOTO_REQUEST_CUT){
             if (data != null) {
-                Bitmap bitmap = data.getParcelableExtra("data");
+                Uri selectedImage = data.getData();
+                Bitmap bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(selectedImage));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 //                Log.i("Select","裁切之后:"+data.getData().getPath());
                 imageView.setImageBitmap(bitmap);
                 try {
@@ -345,6 +439,34 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
         out.close();
     }
 
+    public void getFriend() {
+        Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                ArrayList<FMUser> fmUsers=UserUtil.getFriend(User.get(getActivity().getApplicationContext()).getFmUser().getId());
+                friendSize=fmUsers.size()+"";
+                FriendsLab.get(getActivity().getApplicationContext()).setFMUsers(fmUsers);
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
+
+            @Override
+            public void onCompleted() {
+                concernTV.setText(friendSize);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
+    }
+
     private class Upload extends AsyncTask<Void,Void,String> {
 
         @Override
@@ -363,32 +485,47 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
         }
     }
 
-    private class getUserInfo extends AsyncTask<Void,Void,String> {
+    private class getUserInfo extends AsyncTask<Void,Void,Boolean> {
         @Override
-        protected String doInBackground(Void... params) {
-            return UserUtil.getUserInfo(6,User.get(getActivity().getApplicationContext()).getName());
+        protected Boolean doInBackground(Void... params) {
+            return UserUtil.getUser(getActivity(),User.get(getActivity().getApplication()).getName());
         }
 
         @Override
-        protected void onPostExecute(String info) {
-            Log.i("UserinfoFragment","info:"+info.split("\\|d\\|").length);
-            if (info != null&&info.split("\\|d\\|").length>1) {
-                String result[]=info.split("\\|d\\|");
-                String signature=result[2];
-                Log.i("UserInfoFragment",signature);
-                String nick=result[1];
-                String concern=result[3];
-                String travel=result[4];
-                String follower=result[5];
-                signatureTV.setText(signature);
-                nickTv.setText(nick);
-                concernTV.setText(concern);
-                travelTv.setText(travel);
-                followerTV.setText(follower);
-            }else {
-                Toast.makeText(getActivity(),"连接服务器失败，稍后自动获取",Toast.LENGTH_SHORT).show();
-            }
+        protected void onPostExecute(Boolean info) {
+
+            FMUser fmUser=User.get(getActivity().getApplicationContext()).getFmUser();
+            Log.i("UserinfoFragment","info:"+info+fmUser.getSignature());
+            updateUserInfo(fmUser);
+//            if (info != null&&info.split("\\|d\\|").length>1) {
+//                String result[]=info.split("\\|d\\|");
+//                String signature=result[2];
+//                Log.i("UserInfoFragment",signature);
+//                String nick=result[1];
+//                String concern=result[3];
+//                String travel=result[4];
+//                String follower=result[5];
+//                signatureTV.setText(signature);
+//                nickTv.setText(nick);
+//                concernTV.setText(concern);
+//                travelTv.setText(travel);
+//                followerTV.setText(follower);
+//            }else {
+//                Toast.makeText(getActivity(),"连接服务器失败，稍后自动获取",Toast.LENGTH_SHORT).show();
+//            }
         }
+
+
+    }
+    private void updateUserInfo(FMUser fmUser) {
+        signatureTV.setText(fmUser.getSignature());
+        nickTv.setText(fmUser.getNickName());
+        concernTV.setText(fmUser.getConcern()+"");
+        travelTv.setText(fmUser.getTravle()+"");
+        followerTV.setText(fmUser.getFollower()+"");
+        if(fmUser.getSex()==0)
+        sex.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_man_white));
+        else sex.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_woman_white));
     }
 
     private class scenicAdapter extends RecyclerView.Adapter{

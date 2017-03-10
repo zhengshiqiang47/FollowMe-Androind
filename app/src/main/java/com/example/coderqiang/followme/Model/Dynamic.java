@@ -16,22 +16,28 @@ public class Dynamic {
     private String userName;
     private String Content;
     private long timeStamp;
-    private ArrayList<Uri> imagURL;
+    private ArrayList<Uri> imagURL=new ArrayList<>();
     private String Address;
     private Double Longtitude;
     private Double Latitude;
     private String travelTime;
-    private ArrayList<DynamicComment> comments;
+    private int imageCount;
+    private String imageName;
+    private ArrayList<DynamicImage> dynamicImages = new ArrayList<>();
+    private ArrayList<String> imageUrls;
+    private ArrayList<DynamicComment> dynamicComments=new ArrayList<>();
     private int glance;
     private String memo="";
     private int love;
 
-    public Dynamic(String userName,int userID,String Content,String address,long timeStamp,ArrayList<Uri> imagURL) {
+    public Dynamic(String userName,int userID,String Content,String address,long timeStamp,ArrayList<Uri> imagURL,double latitude,double longtitude) {
         this.userName = userName;
         this.userID=userID;
         this.userName=userName;
         this.Content=Content;
         this.imagURL=imagURL;
+        this.Latitude=latitude;
+        this.Longtitude=longtitude;
         love=0;
         glance=0;
         this.timeStamp=timeStamp;
@@ -130,13 +136,7 @@ public class Dynamic {
         this.glance = glance;
     }
 
-    public ArrayList<DynamicComment> getComments() {
-        return comments;
-    }
 
-    public void setComments(ArrayList<DynamicComment> comments) {
-        this.comments = comments;
-    }
 
     public long getTimeStamp() {
         return timeStamp;
@@ -160,5 +160,46 @@ public class Dynamic {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public int getImageCount() {
+        return imageCount;
+    }
+
+    public void setImageCount(int imageCount) {
+        this.imageCount = imageCount;
+    }
+
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public ArrayList<DynamicImage> getDynamicImages() {
+        return dynamicImages;
+    }
+
+    public void setDynamicImages(ArrayList<DynamicImage> dynamicImages) {
+        this.dynamicImages = dynamicImages;
+    }
+
+    public ArrayList<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(ArrayList<String> imageUrls) {
+        this.imageUrls = imageUrls;
+    }
+
+    public ArrayList<DynamicComment> getDynamicComments() {
+        return dynamicComments;
+    }
+
+    public void setDynamicComments(ArrayList<DynamicComment> dynamicComments) {
+        this.dynamicComments = dynamicComments;
     }
 }

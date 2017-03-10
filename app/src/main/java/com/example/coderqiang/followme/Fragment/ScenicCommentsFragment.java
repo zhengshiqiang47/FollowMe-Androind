@@ -114,7 +114,7 @@ public class ScenicCommentsFragment extends Fragment {
                 CommentsHolder holder=(CommentsHolder)viewHolder;
                 Comment comment = comments.get(position);
 //                Log.i(TAG, "" + comment.getContent());
-                Glide.with(context).load(comment.getOwnerImag()).transform(new GlideCircleTransform(getActivity())).diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.touxiang);
+                Glide.with(context).load(comment.getOwnerImg()).transform(new GlideCircleTransform(getActivity())).diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.touxiang);
                 holder.content.setText(comment.getContent());
                 holder.content.setAlpha(1.0f);
                 holder.name.setText(comment.getCommentName());
@@ -122,7 +122,7 @@ public class ScenicCommentsFragment extends Fragment {
                 linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
                 holder.imagRecyclerView.setLayoutManager(linearLayoutManager);
-                holder.imagRecyclerView.setAdapter(new headerAdapter(comments.get(position).getImgSmals(), comments.get(position).getImages(), position));
+                holder.imagRecyclerView.setAdapter(new headerAdapter(comments.get(position).getImgSmalslist(), comments.get(position).getImagelist(), position));
                 holder.date.setText(comment.getTime());
             }else if(viewHolder instanceof FooterHolder){
                 final FooterHolder holder = (FooterHolder) viewHolder;

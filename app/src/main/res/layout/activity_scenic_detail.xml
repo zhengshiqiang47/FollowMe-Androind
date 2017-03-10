@@ -128,14 +128,14 @@
         </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
         <TextView
             android:id="@+id/scenic_detail_toolbar_bg"
-            android:background="@color/tencent_blue"
+            android:background="@color/journey_green"
             android:layout_width="match_parent"
             android:layout_height="60dp" />
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:paddingTop="20dp"
-            android:layout_height="60dp"
+            android:paddingTop="8dp"
+            android:layout_height="80dp"
             android:background="@color/transparent"
             >
             <Button

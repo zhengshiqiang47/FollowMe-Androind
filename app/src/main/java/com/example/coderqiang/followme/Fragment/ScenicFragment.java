@@ -27,6 +27,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeOption;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.coderqiang.followme.Activity.MainActivity;
@@ -38,12 +46,17 @@ import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.ScenicspotLab;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Util.HttpParse;
+import com.example.coderqiang.followme.Util.ServerUtil;
 import com.example.coderqiang.followme.View.AddScenicDialog;
 import com.example.coderqiang.followme.View.CornersTransform;
 import com.example.coderqiang.followme.View.ViewPagerScaleTransformer;
 import com.lcodecore.tkrefreshlayout.IHeaderView;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -75,6 +88,7 @@ public class ScenicFragment extends Fragment{
     public City city;
     ArrayList<Scenicspot> scenicspots;
     MyAdapter myAdapter;
+    boolean isFirstRefresh=true;
     int count;
 
     public static ScenicFragment newInstance(City city){
@@ -88,7 +102,9 @@ public class ScenicFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_scenic, container, false);
         ButterKnife.bind(this, v);
+        EventBus.getDefault().register(this);
         context=this;
+        initPoi();
         initData();
         return v;
     }
@@ -102,8 +118,6 @@ public class ScenicFragment extends Fragment{
         scenicspots=city.getScenicspots();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        myAdapter = new MyAdapter();
-        recyclerView.setAdapter(myAdapter);
         twinklingRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
             @Override
             public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
@@ -113,19 +127,15 @@ public class ScenicFragment extends Fragment{
                     public void call(Subscriber<? super Object> subscriber) {
                         subscriber.onNext(null);
                         HttpParse httpParse=new HttpParse();
-                        Log.i(TAG,city.getCityName()+"Page:"+city.getScenicPage());
-                        httpParse.getScenicspot(getActivity().getApplicationContext(),city.getCityName(),city.getScenicPage()+"");
-                        city.addscenicPage();
-                        httpParse.getAllScenicDetails(getActivity().getApplicationContext(),city.getCityName());
+                        httpParse.getScenicspot(getActivity().getApplicationContext(),city.getCityName(),city.getScenicPage()+"",ServerUtil.LOAD_SUCCESS);
+//                        city.addscenicPage();
+//                        httpParse.getAllScenicDetails(getActivity().getApplicationContext(),city.getCityName());
                         subscriber.onCompleted();
                     }
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
                     @Override
                     public void onCompleted() {
-                        scenicspots=city.getScenicspots();
-                        recyclerView.getAdapter().notifyItemChanged(count);
-                        count=scenicspots.size();
-                        twinklingRefreshLayout.finishLoadmore();
+
                     }
 
                     @Override
@@ -177,17 +187,14 @@ public class ScenicFragment extends Fragment{
             if(holder instanceof MyViewHolder){
                 position-=1;
                 final MyViewHolder myViewHolder = (MyViewHolder) holder;
-                String imgUrl;
-                if(scenicspots.get(position).getImgUrls().size()>0){
-                    imgUrl = scenicspots.get(position).getImgUrls().get(0).getBigImgUrl();
-                } else imgUrl = scenicspots.get(position).getFirstImg();
+                final String imgUrl=scenicspots.get(position).getImgUrls().get(0).getBigImgUrl();
                 String name = scenicspots.get(position).getScenicName();
                 String intro = scenicspots.get(position).getBrightPoint();
                 String countComment=scenicspots.get(position).getCommentCount();
                 String countImage=scenicspots.get(position).getImgUrls().size()+"";
                 final Scenicspot scenicspot = scenicspots.get(position);
                 ImageView imageView=myViewHolder.imageView;
-                Glide.with(getActivity().getApplication()).load(imgUrl).override(800,600).diskCacheStrategy(DiskCacheStrategy.RESULT).skipMemoryCache(true).centerCrop().into(imageView);
+                Glide.with(getActivity().getApplication()).load(imgUrl).override(800,600).diskCacheStrategy(DiskCacheStrategy.SOURCE).centerCrop().into(imageView);
                 if(intro.length()>=1)
                     myViewHolder.introTv.setText(intro.substring(1,intro.length()));
 //                Log.i(TAG, "名字"+name+" 亮点" + intro);
@@ -196,12 +203,18 @@ public class ScenicFragment extends Fragment{
                 myViewHolder.nameTVbottom.setText(name);
                 myViewHolder.countComment.setText(countComment);
                 myViewHolder.countImage.setText(countImage);
-                final int scePosition=position;
+//                final int scePosition=position;
+                if(scenicspot.getDistance()==null){
+                    getDistance(myViewHolder.distance,scenicspot);
+                }else {
+                    myViewHolder.distance.setText(scenicspot.getDistance());
+                }
                 myViewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), ScenicDetailActivity.class);
                         intent.putExtra(ScenicDetailActivity.EXTRA_SCENIC_SER,scenicspot);
+                        intent.putExtra(ScenicDetailActivity.EXTRA_URL, imgUrl);
                         ActivityOptions activityOptions=null;
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                             android.util.Pair<View, String> pair[] = new android.util.Pair[2];
@@ -264,6 +277,7 @@ public class ScenicFragment extends Fragment{
             TextView minTv;
             TextView weatherInfo;
             TextView title;
+
             public HeaderHolder(View itemView) {
                 super(itemView);
                 imageView=(ImageView)itemView.findViewById(R.id.scenic_normal_header_imageview);
@@ -282,10 +296,10 @@ public class ScenicFragment extends Fragment{
         @Override
         protected Void doInBackground(Void... params) {
             HttpParse httpParse=new HttpParse();
-            httpParse.getScenicspot(getActivity(),city.getCityName(),city.getScenicPage()+"");
+            httpParse.getScenicspot(getActivity(),city.getCityName(),city.getScenicPage()+"", ServerUtil.LOAD_SUCCESS);
             if(!city.getCityName().equals( MyLocation.getMyLocation(getActivity()).getCityName()))
-                city.addscenicPage();
-            httpParse.getAllScenicDetails(getActivity(),city.getCityName());
+//                city.addscenicPage();
+//            httpParse.getAllScenicDetails(getActivity(),city.getCityName());
             httpParse.getWeather(context.getContext().getApplicationContext(),city);
             return null;
         }
@@ -293,7 +307,7 @@ public class ScenicFragment extends Fragment{
         @Override
         protected void onPostExecute(Void aVoid) {
             Log.i(TAG,"开始初始化view");
-            myAdapter.refresh();
+
 
         }
     }
@@ -308,6 +322,7 @@ public class ScenicFragment extends Fragment{
         TextView countImage;
         TextView countComment;
         LinearLayout addScenicLayout;
+        TextView distance;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -320,6 +335,7 @@ public class ScenicFragment extends Fragment{
             countImage=(TextView)itemView.findViewById(R.id.scenic_item_count_img);
             countComment=(TextView)itemView.findViewById(R.id.scenic_item_count_commment);
             addScenicLayout=(LinearLayout) itemView.findViewById(R.id.scenic_item_go);
+            distance = (TextView) itemView.findViewById(R.id.scenic_item_distance);
             addSceLayout=addScenicLayout;
         }
     }
@@ -328,8 +344,8 @@ public class ScenicFragment extends Fragment{
         Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                HttpParse httpParese=new HttpParse();
-                httpParese.getPlace(city);
+//                HttpParse httpParese=new HttpParse();
+//                httpParese.getPlace(city);
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
@@ -354,5 +370,58 @@ public class ScenicFragment extends Fragment{
 
     private void hideProgress(){
         progressLayout.setVisibility(View.GONE);
+    }
+
+
+    GeoCoder geoCoder;
+
+    private void initPoi(){
+        geoCoder= GeoCoder.newInstance();
+    }
+
+    public String getDistance(final TextView textView, final Scenicspot scenicspot){
+        OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
+            @Override
+            public void onGetGeoCodeResult(GeoCodeResult geoCodeResult){
+                if (geoCodeResult == null || geoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
+                    //没有检索到结果
+                    Log.i(TAG,"地理编码出错");
+                }
+                LatLng latLng=geoCodeResult.getLocation();
+                LatLng myLl = new LatLng(MyLocation.getMyLocation(getActivity()).getLatitute(), MyLocation.getMyLocation(getActivity()).getLongtitute());
+                if(myLl.latitude==0){
+                    Log.i(TAG,"纬度为0");
+                }
+                scenicspot.setDistance(""+(1.0f*(int) DistanceUtil.getDistance(latLng,myLl))/1000);
+                if (textView!=null){
+                    textView.setText("(距我 "+scenicspot.getDistance()+" km)");
+                    scenicspot.setDistance("(距我 "+scenicspot.getDistance()+" km)");
+                }
+            }
+
+            @Override
+            public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+
+            }
+        };
+        geoCoder.setOnGetGeoCodeResultListener(listener);
+        geoCoder.geocode(new GeoCodeOption().city(scenicspot.getCityName()).address(scenicspot.getAddr()));
+        return null;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void overrideTransitionEventBus(String msg) {
+        if(msg.equals("loadSuccess")){
+            if(isFirstRefresh){
+                myAdapter = new MyAdapter();
+                recyclerView.setAdapter(myAdapter);
+                isFirstRefresh=false;
+            }
+            myAdapter.refresh();
+            scenicspots=city.getScenicspots();
+            recyclerView.getAdapter().notifyItemChanged(count);
+            count=scenicspots.size();
+            twinklingRefreshLayout.finishLoadmore();
+        }
     }
 }

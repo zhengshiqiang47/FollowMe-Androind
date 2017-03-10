@@ -16,9 +16,11 @@ import android.widget.Toast;
 
 import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.SettingLab;
-import com.example.coderqiang.followme.Model.TravelPlanLab;
+import com.example.coderqiang.followme.Model.TravlePlanLab;
 import com.example.coderqiang.followme.Model.TravleDay;
 import com.example.coderqiang.followme.R;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -48,7 +50,7 @@ public class AddScenicDialog extends Dialog {
         LayoutInflater inflater=LayoutInflater.from(context);
         customView=inflater.inflate(R.layout.city_select_dialog,null);
         this.scenicspot=scenicspot;
-        travleDays= TravelPlanLab.get(context.getApplicationContext()).getTravelPlans().get(0).getTravleDays();
+        travleDays= TravlePlanLab.get(context.getApplicationContext()).getCurrentPlan().getTravleDays();
     }
 
     public AddScenicDialog(Context context, int themeResId,Scenicspot scenicspot) {
@@ -56,7 +58,7 @@ public class AddScenicDialog extends Dialog {
         LayoutInflater inflater=LayoutInflater.from(context);
         customView=inflater.inflate(R.layout.city_select_dialog,null);
         this.scenicspot=scenicspot;
-        travleDays= TravelPlanLab.get(context.getApplicationContext()).getTravelPlans().get(0).getTravleDays();
+        travleDays = TravlePlanLab.get(context.getApplicationContext()).getCurrentPlan().getTravleDays();
     }
 
 
@@ -110,6 +112,7 @@ public class AddScenicDialog extends Dialog {
                     Toast.makeText(context,result,Toast.LENGTH_SHORT).show();
                     if(result.equals("添加成功")){
                         SettingLab.getSettingLab(context.getApplicationContext()).setTravelDayUpdate(true);
+                        EventBus.getDefault().post("addscenicspot");
                     }
 //                    if(dialogCallback!=null){
 //                        dialogCallback.refresh(cities.get(tempPositon),type);

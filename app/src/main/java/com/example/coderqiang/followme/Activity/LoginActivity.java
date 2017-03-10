@@ -35,6 +35,8 @@ import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Service.LocationService;
 import com.example.coderqiang.followme.Util.GetPermission;
 import com.example.coderqiang.followme.Util.HttpParse;
+import com.example.coderqiang.followme.Util.ServerUtil;
+import com.example.coderqiang.followme.Util.UserUtil;
 import com.example.coderqiang.followme.View.JellyInterpolator;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
@@ -160,8 +162,9 @@ public class LoginActivity extends Activity {
         Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                HttpParse httpParse=new HttpParse();
-                httpParse.getAllCityId(getApplicationContext());
+//                HttpParse httpParse=new HttpParse();
+//                httpParse.getAllCityId(getApplicationContext());
+                ServerUtil.getAllCity(getApplicationContext());
                 subscriber.onCompleted();
             }
         }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
@@ -182,26 +185,31 @@ public class LoginActivity extends Activity {
         });
 
     }
-
+    private int flag=0;
     private void loginAccount(final String num, final String pwd){
-        EMClient.getInstance().login(num, pwd, new EMCallBack() {
+        EMClient.getInstance().login(num, "111222333", new EMCallBack() {
             @Override
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();
                 EMClient.getInstance().chatManager().loadAllConversations();
                 Log.i(TAG,"登录成功");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context.getApplicationContext(),"登录成功",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                User.get(getApplicationContext()).setName(num);
-                User.get(getApplicationContext()).setPassword(pwd);
-                Intent intent = new Intent(context, MainActivity.class);;
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
-                onDestroy();
+                flag++;
+                if (flag==2){
+                    Intent intent = new Intent(context, MainActivity.class);;
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context.getApplicationContext(),"登录成功",Toast.LENGTH_SHORT).show();
+                        }
+
+                    });
+                    User.get(getApplicationContext()).setName(num);
+                    User.get(getApplicationContext()).setPassword(pwd);
+                    onDestroy();
+                }
+
             }
 
             @Override
@@ -220,6 +228,46 @@ public class LoginActivity extends Activity {
             @Override
             public void onProgress(int i, String s) {
 
+            }
+        });
+
+        Observable.create(new Observable.OnSubscribe<Object>() {
+
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                boolean isLogin=UserUtil.login(getApplicationContext(),num,pwd);
+                if(isLogin){
+                    subscriber.onCompleted();
+                }else{
+                    subscriber.onNext(null);
+                }
+
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
+
+            @Override
+            public void onCompleted() {
+                flag++;
+                if (flag==2){
+                    Intent intent = new Intent(context, MainActivity.class);;
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
+                    Toast.makeText(context.getApplicationContext(),"登录成功",Toast.LENGTH_SHORT).show();
+                    User.get(getApplicationContext()).setName(num);
+                    User.get(getApplicationContext()).setPassword(pwd);
+                    onDestroy();
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Toast.makeText(getApplicationContext(),"登录失败",Toast.LENGTH_SHORT);
+                inputAnimatorCancle(mInputLayout,width,height);
             }
         });
     }

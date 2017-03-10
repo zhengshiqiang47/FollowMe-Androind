@@ -44,131 +44,136 @@ public class HttpParse {
     private static final String TAG = "HttpParse";
     private static final String APP_KEY="e6e8f3668fc7f4817d9738489cf1d738";
 
-    public ArrayList<Scenicspot> getScenicspot(Context context,String cityname,String pageNum){
-        ArrayList<Scenicspot> scenicspots=ScenicspotLab.get(context).getScenicspots();
+    public ArrayList<Scenicspot> getScenicspot(Context context,String cityname,String pageNum,String msg) {
+        ArrayList<Scenicspot> scenicspots = ScenicspotLab.get(context).getScenicspots();
 
-        HttpAnalyze httpAnalyze=new HttpAnalyze();
-        City city=new City();
+        HttpAnalyze httpAnalyze = new HttpAnalyze();
+        City city = new City();
         if (cityname != null) {
-            city=CityLab.get(context).isContain(cityname);
-        }else {
+            city = CityLab.get(context).isContain(cityname);
+        } else {
             city.setCityName("杭州");
             city.setProvinceName("浙江");
             city.setCtripId("hangzhou14");
             cityname = "杭州";
         }
-        ArrayList<Scenicspot> citySpots=city.getScenicspots();
-        if(Integer.parseInt(pageNum)<city.getCountPage()){
-            return citySpots;
-        }
-        String result=httpAnalyze.getHtml("http://you.ctrip.com/searchsite/Sight?query="+cityname);
-        Document document;
-        try {
-            document= Jsoup.parse(result);
-            Element allSightEle=document.select("a[class=fr]").get(0);
-            String allUrl=allSightEle.attr("href");
-            String pageUrl=allUrl.split(".html")[0]+"/s0-p"+pageNum+".html";
-            String sightResult=httpAnalyze.getHtml("http://you.ctrip.com/"+pageUrl);
-            Log.i(TAG, pageUrl + "");
-            Document sightDoc=Jsoup.parse(sightResult);
-            Elements sightElems=sightDoc.select("div[class=list_mod2]");
-            for (int i=0;i<sightElems.size();i++) {
-                Element element=sightElems.get(i);
-                String imgUrl=element.select("div[class=leftimg]").select("a").select("img").attr("src");
-//                Log.i(TAG, "imgUrl:" + imgUrl);
-                String name=element.select("div[class=rdetailbox]").select("dl").select("dt").select("a[target=_blank]").text();
-                String url="http://you.ctrip.com"+element.select("div[class=rdetailbox]").select("dl").select("dt").select("a[target=_blank]").attr("href");
-                String rank=element.select("div[class=rdetailbox]").select("dl").select("dt").select("s").text();
-                String addr=element.select("div[class=rdetailbox]").select("dl").select("dd").get(0).text();
-                String manyA=element.select("div[class=rdetailbox]").select("dl").select("dd").get(1).text();
-                if(manyA.contains("A级景区")){
-                    manyA=manyA.split("景区")[0];
-                }else manyA=" ";
-                String mark=element.select("div[class=rdetailbox]").select("ul[class=r_comment]").select("li").select("a[class=score]").text();
-                String commentCount = element.select("div[class=rdetailbox]").select("ul[class=r_comment]").select("li").select("a[class=recomment]").text();
-//                Log.i(TAG,"name:"+name);
-//                Log.i(TAG,"url:"+url);
-//                Log.i(TAG,"rank:"+rank);
-//                Log.i(TAG,"addr:"+addr);
-//                Log.i(TAG,"manyA:"+manyA);
-//                Log.i(TAG,"mark:"+mark);
-//                Log.i(TAG, "commentCount" + commentCount);
-//                Log.i(TAG,"---------");
-                Scenicspot scenicspot=new Scenicspot();
-                scenicspot.setMark(mark);
-                scenicspot.setCommentCount(commentCount);
-                scenicspot.setFirstImg(imgUrl);
-                scenicspot.setScenicName(name);
-                scenicspot.setCityName(cityname);
-                scenicspot.setParse(true);
-                scenicspot.setUrl(url);
-                scenicspot.setRank(rank);
-                scenicspot.setAddr(addr);
-                scenicspot.setManyA(manyA);
-                scenicspot.setParse(false);
-                scenicspots.add(scenicspot);
-                citySpots.add(scenicspot);
-                city.setScenicspots(citySpots);
-                city.setParse(true);
-            }
-            return citySpots;
-        }catch (Exception e){
-            Log.e(TAG,"解析景点地址出错",e);
-            return citySpots;
-        }
+        ArrayList<Scenicspot> citySpots = city.getScenicspots();
+        int page = Integer.parseInt(pageNum);
+        citySpots=ServerUtil.getScenicSpot(cityname, page, context,msg);
+//        city.addscenicPage();
+        return citySpots;
+//        if(Integer.parseInt(pageNum)<city.getCountPage()){
+//            return citySpots;
+//        }
+//        String result=httpAnalyze.getHtml("http://you.ctrip.com/searchsite/Sight?query="+cityname);
+//        Document document;
+//        try {
+//            document= Jsoup.parse(result);
+//            Element allSightEle=document.select("a[class=fr]").get(0);
+//            String allUrl=allSightEle.attr("href");
+//            String pageUrl=allUrl.split(".html")[0]+"/s0-p"+pageNum+".html";
+//            String sightResult=httpAnalyze.getHtml("http://you.ctrip.com/"+pageUrl);
+//            Log.i(TAG, pageUrl + "");
+//            Document sightDoc=Jsoup.parse(sightResult);
+//            Elements sightElems=sightDoc.select("div[class=list_mod2]");
+//            for (int i=0;i<sightElems.size();i++) {
+//                Element element=sightElems.get(i);
+//                String imgUrl=element.select("div[class=leftimg]").select("a").select("img").attr("src");
+////                Log.i(TAG, "imgUrl:" + imgUrl);
+//                String name=element.select("div[class=rdetailbox]").select("dl").select("dt").select("a[target=_blank]").text();
+//                String url="http://you.ctrip.com"+element.select("div[class=rdetailbox]").select("dl").select("dt").select("a[target=_blank]").attr("href");
+//                String rank=element.select("div[class=rdetailbox]").select("dl").select("dt").select("s").text();
+//                String addr=element.select("div[class=rdetailbox]").select("dl").select("dd").get(0).text();
+//                String manyA=element.select("div[class=rdetailbox]").select("dl").select("dd").get(1).text();
+//                if(manyA.contains("A级景区")){
+//                    manyA=manyA.split("景区")[0];
+//                }else manyA=" ";
+//                String mark=element.select("div[class=rdetailbox]").select("ul[class=r_comment]").select("li").select("a[class=score]").text();
+//                String commentCount = element.select("div[class=rdetailbox]").select("ul[class=r_comment]").select("li").select("a[class=recomment]").text();
+////                Log.i(TAG,"name:"+name);
+////                Log.i(TAG,"url:"+url);
+////                Log.i(TAG,"rank:"+rank);
+////                Log.i(TAG,"addr:"+addr);
+////                Log.i(TAG,"manyA:"+manyA);
+////                Log.i(TAG,"mark:"+mark);
+////                Log.i(TAG, "commentCount" + commentCount);
+////                Log.i(TAG,"---------");
+//                Scenicspot scenicspot=new Scenicspot();
+//                scenicspot.setMark(mark);
+//                scenicspot.setCommentCount(commentCount);
+//                scenicspot.setFirstImage(imgUrl);
+//                scenicspot.setScenicName(name);
+//                scenicspot.setCityName(cityname);
+//                scenicspot.setParse(true);
+//                scenicspot.setUrl(url);
+//                scenicspot.setRank(rank);
+//                scenicspot.setAddr(addr);
+//                scenicspot.setManyA(manyA);
+//                scenicspot.setParse(false);
+//                scenicspots.add(scenicspot);
+//                citySpots.add(scenicspot);
+//                city.setScenicspots(citySpots);
+//                city.setParse(true);
+//            }
+//            return citySpots;
+//        }catch (Exception e){
+//            Log.e(TAG,"解析景点地址出错",e);
+//            return citySpots;
+//        }
     }
 
     public  void getAllScenicDetails(final Context context, String cityname){
-        if (cityname==null) cityname = "杭州";
-        final ArrayList<Scenicspot> scenicspots=ScenicspotLab.get(context).getScenicspots();
-        final ArrayList<Scenicspot> willParse = new ArrayList<Scenicspot>();
-        if (cityname.charAt(cityname.length()-1)=='市'){
-            cityname=cityname.substring(0, cityname.length() - 1);
-        }
-        for (Scenicspot scenicspot : scenicspots) {
-            if (scenicspot.getCityName().equals(cityname)) {
-                willParse.add(scenicspot);
-            }
-        }
-        final String cityName=cityname;
-        CityLab.get(context).isContain(cityName);
-        for(int i=0;i<willParse.size();i++){
-            final int position=i;
-            Observable.create(new Observable.OnSubscribe<Object>() {
-                @Override
-                public void call(Subscriber<? super Object> subscriber) {
-                    if(!willParse.get(position).isParse())
-                        scenicspots.get(position).setParse(getScenicDetail(context, willParse.get(position)));
-                    if (position==0) {
-                        ScenicspotLab.get(context.getApplicationContext()).getHotScenicspots().add(scenicspots.get(position));
-                    }
-                    subscriber.onNext(null);
-                }
-            }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onNext(Object o) {
-                    if(!willParse.get(position).isParse()){
-                        Log.i(TAG, willParse.get(position).getScenicName() + "未解析成功");
-                        scenicspots.remove(willParse.get(position));
-                        if(CityLab.get(context).isContain(cityName)!=null){
-                            CityLab.get(context).isContain(cityName).deleteScenicspot(willParse.get(position));
-                            Log.i(TAG,"移除"+CityLab.get(context).isContain(cityName).getScenicspots().contains(scenicspots.get(position)));
-                        }
-                    }
-                }
-            });
-
-        }
+//        if (cityname==null) cityname = "杭州";
+//        final ArrayList<Scenicspot> scenicspots=ScenicspotLab.get(context).getScenicspots();
+//        final ArrayList<Scenicspot> willParse = new ArrayList<Scenicspot>();
+//        if (cityname.charAt(cityname.length()-1)=='市'){
+//            cityname=cityname.substring(0, cityname.length() - 1);
+//        }
+//        for (Scenicspot scenicspot : scenicspots) {
+//            if (scenicspot.getCityName().equals(cityname)) {
+//                willParse.add(scenicspot);
+//            }
+//        }
+//        String cityName=cityname;
+//        ServerUtil.getScenicSpot(cityname,)
+//        CityLab.get(context).isContain(cityName);
+//        for(int i=0;i<willParse.size();i++){
+//            final int position=i;
+//            Observable.create(new Observable.OnSubscribe<Object>() {
+//                @Override
+//                public void call(Subscriber<? super Object> subscriber) {
+//                    if(!willParse.get(position).isParse())
+//                        scenicspots.get(position).setParse(getScenicDetail(context, willParse.get(position)));
+//                    if (position==0) {
+//                        ScenicspotLab.get(context.getApplicationContext()).getHotScenicspots().add(scenicspots.get(position));
+//                    }
+//                    subscriber.onNext(null);
+//                }
+//            }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
+//                @Override
+//                public void onCompleted() {
+//
+//                }
+//
+//                @Override
+//                public void onError(Throwable e) {
+//
+//                }
+//
+//                @Override
+//                public void onNext(Object o) {
+//                    if(!willParse.get(position).isParse()){
+//                        Log.i(TAG, willParse.get(position).getScenicName() + "未解析成功");
+//                        scenicspots.remove(willParse.get(position));
+//                        if(CityLab.get(context).isContain(cityName)!=null){
+//                            CityLab.get(context).isContain(cityName).deleteScenicspot(willParse.get(position));
+//                            Log.i(TAG,"移除"+CityLab.get(context).isContain(cityName).getScenicspots().contains(scenicspots.get(position)));
+//                        }
+//                    }
+//                }
+//            });
+//
+//        }
         Log.i(TAG,"景点信息加载完成");
     }
 
@@ -297,13 +302,13 @@ public class HttpParse {
 //            Log.i(TAG, "mark" + mark);
 //            Log.i(TAG, "time" + time);
 //            Log.i(TAG, "description" + descriotion);
-            comment.setOwnerImag(userImg);
+            comment.setOwnerImg(userImg);
             comment.setTime(time);
             comment.setCommentName(userName);
             comment.setSightMark(mark);
             comment.setContent(descriotion);
-            comment.setImages(bigImages);
-            comment.setImgSmals(smaImages);
+            comment.setImagelist(bigImages);
+            comment.setImgSmalslist(smaImages);
             comments.add(comment);
         }
         return comments;

@@ -20,8 +20,14 @@
                 android:layout_width="3dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="4dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="0dp"
                 android:src="@drawable/scenic_detail_intro_left_line"/>
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:src="@drawable/ic_jieshao"/>
             <TextView
                 android:background="@color/white"
                 android:layout_width="wrap_content"
@@ -29,7 +35,7 @@
                 android:textColor="#000"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="2dp"
                 android:text="景区简介:"/>
         </LinearLayout>
         <TextView
@@ -53,12 +59,20 @@
             android:layout_width="3dp"
             android:layout_height="18sp"
             android:layout_marginRight="4dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="0dp"
             android:src="@drawable/scenic_detail_intro_left_line"/>
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:translationY="-2dp"
+            android:src="@drawable/ic_price"/>
         <TextView
             android:background="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:textColor="#000"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -84,6 +98,16 @@
             android:layout_height="18sp"
             android:layout_marginRight="4dp"
             android:src="@drawable/scenic_detail_intro_left_line"/>
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:translationY="-2dp"
+            android:src="@drawable/ic_time"
+            android:id="@+id/imageView8" />
+
         <TextView
             android:background="@color/white"
             android:layout_width="wrap_content"
@@ -117,6 +141,15 @@
             android:src="@drawable/scenic_detail_intro_left_line"
             android:id="@+id/imageView2" />
 
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:translationY="-2dp"
+            android:src="@drawable/ic_time"
+            android:id="@+id/imageView9" />
+
         <TextView
             android:background="@color/white"
             android:layout_width="wrap_content"
@@ -127,14 +160,14 @@
             android:textStyle="bold"
             android:text="时间花费:"/>
         <TextView
-            android:id="@+id/scenic_detail_item_counttime"
-            android:layout_marginLeft="8dp"
-            android:layout_weight="1"
-            android:textSize="15sp"
-            android:lineSpacingMultiplier="1.2"
-            android:textColor="@color/black_deep"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:id="@+id/scenic_detail_item_counttime"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="1"
+        android:textSize="15sp"
+        android:lineSpacingMultiplier="1.2"
+        android:textColor="@color/black_deep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -161,33 +194,18 @@
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp"
                 android:textStyle="bold"
-                android:text="道路交通:"/>
-        </LinearLayout>
-        <com.ms.square.android.expandabletextview.ExpandableTextView
-            android:id="@+id/scenic_detail_traffic_expand_textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            expandableTextView:maxCollapsedLines="8"
-            expandableTextView:animAlphaStart="1"
-            expandableTextView:animDuration="400">
+                android:text="地址:"/>
             <TextView
-                android:id="@id/expandable_text"
+                android:id="@+id/scenic_detail_item_addr"
                 android:layout_marginLeft="8dp"
+                android:layout_weight="1"
                 android:textSize="15sp"
+                android:lineSpacingMultiplier="1.2"
                 android:textColor="@color/black_deep"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-            <ImageButton
-                android:id="@id/expand_collapse"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:scaleType="centerInside"
-                android:layout_gravity="center"
-                android:src="@drawable/arrow_up"
-                android:background="@android:color/transparent" />
-        </com.ms.square.android.expandabletextview.ExpandableTextView>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
     </LinearLayout>
     <LinearLayout
         android:layout_marginTop="8dp"

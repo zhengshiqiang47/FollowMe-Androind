@@ -6,6 +6,7 @@
     android:layout_above="@id/journey_day_fab"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <LinearLayout
         android:id="@+id/menu_new_day_layout"
         android:orientation="horizontal"
@@ -24,10 +25,11 @@
             android:elevation="10dp"
         />
         <ImageView
+
             android:layout_margin="16dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/circle" />
+            android:src="@drawable/ic_new_travle_day" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/menu_new_journey_layout"
@@ -50,7 +52,7 @@
             android:layout_margin="16dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/circle"/>
+            android:src="@drawable/ic_new_plan"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/menu_new_journey_note_layout"
@@ -73,7 +75,7 @@
             android:layout_margin="16dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/circle"/>
+            android:src="@drawable/ic_new_dynamic"/>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -100,7 +102,7 @@
                 android:layout_margin="16dp"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/circle"/>
+                android:src="@drawable/ic_add_scenicspot"/>
         </LinearLayout>
 
     </LinearLayout>

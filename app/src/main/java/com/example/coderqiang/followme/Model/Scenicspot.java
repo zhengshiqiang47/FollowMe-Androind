@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -8,15 +10,17 @@ import java.util.ArrayList;
  */
 
 public class Scenicspot implements Serializable{
+    private int id;
     private String ScenicspotID="";
-    private String ScenicName="";
+    private String scenicName="";
     private String rank="";
     private String addr="";
     private String manyA="";
     private String type="";
+    private String url;
     private String mark = "";
     private String commentCount = "";
-    private String firstImg="";
+    private String firstImage="";
     private ArrayList<ScenicImg> imgUrls = new ArrayList<ScenicImg>();
     private String cityName="";
     private ArrayList<Comment> comments=new ArrayList<Comment>();
@@ -28,7 +32,7 @@ public class Scenicspot implements Serializable{
     private String tips="";
     private String ticket="";
     private String openTime="";
-    private String CountTime="";
+    private String countTime="";
     private String strategy="";
     private String shotIntro="";
     private boolean isParse=false;
@@ -37,6 +41,7 @@ public class Scenicspot implements Serializable{
     private String districtId = "";
     private String poiId = "";
     private int pageNum=2;
+    private String distance;
     public static int ID=0;
 
     public String getScenicspotID() {
@@ -95,8 +100,6 @@ public class Scenicspot implements Serializable{
         this.url = url;
     }
 
-    private String url;
-
     public void pageNumPlus() {
         pageNum++;
     }
@@ -109,13 +112,6 @@ public class Scenicspot implements Serializable{
         this.shotIntro = shotIntro;
     }
 
-    public String getScenicName() {
-        return ScenicName;
-    }
-
-    public void setScenicName(String scenicName) {
-        ScenicName = scenicName;
-    }
 
     public String getCityName() {
         return cityName;
@@ -181,28 +177,12 @@ public class Scenicspot implements Serializable{
         this.openTime = openTime;
     }
 
-    public String getCountTime() {
-        return CountTime;
-    }
-
-    public void setCountTime(String countTime) {
-        CountTime = countTime;
-    }
-
     public String getStrategy() {
         return strategy;
     }
 
     public void setStrategy(String strategy) {
         this.strategy = strategy;
-    }
-
-    public String getFirstImg() {
-        return firstImg;
-    }
-
-    public void setFirstImg(String firstImg) {
-        this.firstImg = firstImg;
     }
 
     public boolean isParse() {
@@ -290,5 +270,45 @@ public class Scenicspot implements Serializable{
 
     public void setCommentCount(String commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFirstImage() {
+        return firstImage;
+    }
+
+    public void setFirstImage(String firstImage) {
+        this.firstImage = firstImage;
+    }
+
+    public String getScenicName() {
+        return scenicName;
+    }
+
+    public void setScenicName(String scenicName) {
+        this.scenicName = scenicName;
+    }
+
+    public String getCountTime() {
+        return countTime;
+    }
+
+    public void setCountTime(String countTime) {
+        this.countTime = countTime;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 }

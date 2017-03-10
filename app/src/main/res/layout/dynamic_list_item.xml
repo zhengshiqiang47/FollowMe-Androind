@@ -13,8 +13,7 @@
             android:id="@+id/dynamic_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="8dp"
-            android:src="@drawable/touxiang_zip"/>
+            android:layout_marginLeft="8dp" />
 
         <LinearLayout
             android:paddingLeft="16dp"
@@ -69,32 +68,38 @@
             android:textSize="12sp"
             android:text="北京  故宫"/>
     </LinearLayout>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="right"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="32dp">
+        android:layout_marginRight="32dp">
         <ImageView
             android:id="@+id/dynamic_love"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@mipmap/love"/>
+            android:src="@drawable/ic_love"/>
         <ImageView
             android:id="@+id/dynamic_share"
             android:layout_marginTop="2dp"
             android:layout_marginLeft="8dp"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@mipmap/share"/>
+            android:src="@drawable/ic_share"/>
         <ImageView
             android:id="@+id/dynamic_comment"
             android:layout_marginTop="4dp"
             android:layout_marginLeft="8dp"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:src="@mipmap/comment"/>
+            android:src="@drawable/ic_comment"/>
     </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dynamic_comment_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -43,12 +43,6 @@ public class SquarFragment extends android.support.v4.app.Fragment {
     List<android.support.v4.app.Fragment> fragments;
     PagerAdapter mAdapter;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,7 +59,7 @@ public class SquarFragment extends android.support.v4.app.Fragment {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 ArgbEvaluator evaluator = new ArgbEvaluator();
                 if (position == 0) {
-                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.tab_1_green));
+                    mTabLayout.setBackgroundColor(getResources().getColor(R.color.journey_green));
                     int evaluate = (Integer) evaluator.evaluate(positionOffset, getResources().getColor(R.color.tab_2_blue), getResources().getColor(R.color.tab_1_green));
                     setBg(evaluate);
                 }

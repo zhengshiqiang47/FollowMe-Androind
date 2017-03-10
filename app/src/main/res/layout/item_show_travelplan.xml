@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_marginTop="16dp"
+    android:layout_height="220dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:src="@drawable/loadingbg"
+            android:id="@+id/item_show_travelplan_image"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="220dp" />
+        <TextView
+            android:textSize="17sp"
+            android:textColor="@color/white"
+            android:id="@+id/item_show_travelplan_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+        <Button
+            android:id="@+id/item_show_travelplan_button"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="16dp"
+            android:text="设为当前"
+            android:background="@drawable/chat_edit_bg"/>
+    </RelativeLayout>
+</LinearLayout>

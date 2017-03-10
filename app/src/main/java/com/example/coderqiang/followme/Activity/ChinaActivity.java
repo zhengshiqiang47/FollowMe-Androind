@@ -106,68 +106,69 @@ public class ChinaActivity extends AppCompatActivity implements View.OnClickList
         hotCities.add(CityLab.get(context).isContain("哈尔滨"));
         hotCities.add(CityLab.get(context).isContain("三亚"));
         hotCities.add(CityLab.get(context).isContain("桂林"));
-        for (int i=0;i<hotCities.size();i++){
-            final City city=hotCities.get(i);
-            Observable.create(new Observable.OnSubscribe<Object>() {
-                @Override
-                public void call(Subscriber<? super Object> subscriber) {
-                    HttpParse httpParese=new HttpParse();
-                    httpParese.getPlace(city);
-                    subscriber.onCompleted();
-                }
-            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
-
-                @Override
-                public void onCompleted() {
-                    count++;
-                    if(count==hotCities.size()+currentCities.size())
-                        initView();
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onNext(Object o) {
-
-                }
-            });
-        }
+//        for (int i=0;i<hotCities.size();i++){
+//            final City city=hotCities.get(i);
+//            Observable.create(new Observable.OnSubscribe<Object>() {
+//                @Override
+//                public void call(Subscriber<? super Object> subscriber) {
+////                    HttpParse httpParese=new HttpParse();
+////                    httpParese.getPlace(city);
+//                    subscriber.onCompleted();
+//                }
+//            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
+//
+//                @Override
+//                public void onCompleted() {
+//                    count++;
+//                    if(count==hotCities.size()+currentCities.size())
+//                        initView();
+//                }
+//
+//                @Override
+//                public void onError(Throwable e) {
+//
+//                }
+//
+//                @Override
+//                public void onNext(Object o) {
+//
+//                }
+//            });
+//        }
         ArrayList<String> cities=CityLab.get(context).getProviceCity(currentProvince);
         for (int i=0;i<cities.size();i++) {
             City city=CityLab.get(context).isContain(cities.get(i));
             currentCities.add(city);
         }
-        for (int i=0;i<currentCities.size();i++){
-            final City city=currentCities.get(i);
-            Observable.create(new Observable.OnSubscribe<Object>() {
-                @Override
-                public void call(Subscriber<? super Object> subscriber) {
-                    HttpParse httpParese=new HttpParse();
-                    httpParese.getPlace(city);
-                    subscriber.onCompleted();
-                }
-            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
-
-                @Override
-                public void onCompleted() {
-                    count++;
-                    if(count==hotCities.size()+currentCities.size()) initView();
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onNext(Object o) {
-
-                }
-            });
-        }
+        initView();
+//        for (int i=0;i<currentCities.size();i++){
+//            final City city=currentCities.get(i);
+//            Observable.create(new Observable.OnSubscribe<Object>() {
+//                @Override
+//                public void call(Subscriber<? super Object> subscriber) {
+////                    HttpParse httpParese=new HttpParse();
+////                    httpParese.getPlace(city);
+//                    subscriber.onCompleted();
+//                }
+//            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
+//
+//                @Override
+//                public void onCompleted() {
+//                    count++;
+//                    if(count==hotCities.size()+currentCities.size()) initView();
+//                }
+//
+//                @Override
+//                public void onError(Throwable e) {
+//
+//                }
+//
+//                @Override
+//                public void onNext(Object o) {
+//
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -333,54 +334,55 @@ public class ChinaActivity extends AppCompatActivity implements View.OnClickList
                 City city=CityLab.get(context).isContain(cities.get(i));
                 currentCities.add(city);
             }
-            for (int i=0;i<currentCities.size();i++){
-                final City city=currentCities.get(i);
-                Observable.create(new Observable.OnSubscribe<Object>() {
-                    @Override
-                    public void call(Subscriber<? super Object> subscriber) {
-                        HttpParse httpParese=new HttpParse();
-                        httpParese.getPlace(city);
-                        subscriber.onCompleted();
-                    }
-                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
-
-                    @Override
-                    public void onCompleted() {
-                        cityCount++;
-                        if(cityCount==currentCities.size()) {
-
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Object o) {
-
-                    }
-                });
-            }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (cityCount!=currentCities.size()){
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            gridAdapter.notifyDataSetChanged();
-                        }
-                    });
-                }
-            }).start();
+//            for (int i=0;i<currentCities.size();i++){
+//                final City city=currentCities.get(i);
+//                Observable.create(new Observable.OnSubscribe<Object>() {
+//                    @Override
+//                    public void call(Subscriber<? super Object> subscriber) {
+////                        HttpParse httpParese=new HttpParse();
+////                        httpParese.getPlace(city);
+//                        subscriber.onCompleted();
+//                    }
+//                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
+//
+//                    @Override
+//                    public void onCompleted() {
+//                        cityCount++;
+//                        if(cityCount==currentCities.size()) {
+//
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Object o) {
+//
+//                    }
+//                });
+//            }
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    while (cityCount!=currentCities.size()){
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            gridAdapter.notifyDataSetChanged();
+//                        }
+//                    });
+//                }
+//            }).start();
+            gridAdapter.notifyDataSetChanged();
         }
         private class ItemHolder1 extends RecyclerView.ViewHolder{
             private ImageView topImage;
@@ -516,7 +518,7 @@ public class ChinaActivity extends AppCompatActivity implements View.OnClickList
             String imgUrl;
             if(scenicspots.get(position).getImgUrls().size()>0){
                 imgUrl = scenicspots.get(position).getImgUrls().get(0).getBigImgUrl();
-            } else imgUrl = scenicspots.get(position).getFirstImg();
+            } else imgUrl = scenicspots.get(position).getFirstImage();
             String name = scenicspots.get(position).getScenicName();
             String intro = scenicspots.get(position).getBrightPoint();
             final Scenicspot scenicspot = scenicspots.get(position);

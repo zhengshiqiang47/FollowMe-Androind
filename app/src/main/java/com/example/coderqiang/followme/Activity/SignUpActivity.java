@@ -67,7 +67,7 @@ public class SignUpActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            UserUtil.signUp(getApplicationContext(),userName, password,nickName);
+            UserUtil.signUp(getApplicationContext(),userName,"111222333",nickName);
             return null;
         }
 

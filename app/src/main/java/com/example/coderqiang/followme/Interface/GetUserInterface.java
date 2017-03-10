@@ -1,6 +1,7 @@
 package com.example.coderqiang.followme.Interface;
 
 import com.example.coderqiang.followme.Model.Dynamic;
+import com.example.coderqiang.followme.Model.FMUser;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,6 @@ import retrofit2.http.Query;
 
 public interface GetUserInterface {
     @GET("userInfoServlet")
-    Call<ArrayList<Dynamic>> getDyanmic(@Query("type") String type,
-                                        @Query("userid") String userId);
+    Call<FMUser> getUser(@Query("type") String type,
+                                    @Query("id") String userId);
 }

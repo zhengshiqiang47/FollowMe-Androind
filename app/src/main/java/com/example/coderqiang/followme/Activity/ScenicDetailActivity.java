@@ -75,6 +75,7 @@ import rx.schedulers.Schedulers;
 public class ScenicDetailActivity extends SwipeBackActivity implements View.OnClickListener,ObservableScrollView.ScrollViewListener{
     private static final String TAG = "ScenicDetailActivity";
     public static final String EXTRA_SCENIC="Scenic";
+    public static final String EXTRA_URL="url";
     public static final String EXTRA_SCENIC_SER="Scenicser";
     private Context context;
     @Bind(R.id.scenic_detail_fab)
@@ -116,6 +117,7 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
     boolean isComment=false;
     boolean isEnter=true;
     public  boolean canBack=false;
+    String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
@@ -124,11 +126,12 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         scenicspot=(Scenicspot)getIntent().getSerializableExtra(EXTRA_SCENIC_SER);
+        url=getIntent().getStringExtra(EXTRA_URL);
 //        Log.i(TAG,"序列化后的Name"+scenicspot.getScenicName());
 //        Log.i(TAG, "position" + scenicPositon);
 //        scenicspot = ScenicspotLab.get(getApplicationContext()).getScenicspots().get(scenicPositon);
         context=this;
-        Log.i(TAG, scenicspot.getScenicName());
+        Log.i(TAG, "name:"+scenicspot.getScenicName()+" 简介:"+scenicspot.getIntroduction()+" comment:"+scenicspot.getComments().size());
         ButterKnife.bind(this);
         initData();
         this.setEnterSharedElementCallback(new SharedElementCallback() {
@@ -158,11 +161,12 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
         toolbarBg.setAlpha(0);
         nameHeaderTv.setText(scenicspot.getScenicName());
         fab.setOnClickListener(this);
+        Glide.with(context).load(url).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).skipMemoryCache(false).into(detailImageView);
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                HttpParse httpParse=new HttpParse();
-                httpParse.getScenicDetail(context.getApplicationContext(), scenicspot);
+//                HttpParse httpParse=new HttpParse();
+//                httpParse.getScenicDetail(context.getApplicationContext(), scenicspot);
                 subscriber.onNext("");
                 try {
                     Thread.sleep(500);
@@ -185,7 +189,7 @@ public class ScenicDetailActivity extends SwipeBackActivity implements View.OnCl
 
             @Override
             public void onNext(String str) {
-                Glide.with(context.getApplicationContext()).load(scenicspot.getImgUrls().get(0).getBigImgUrl()).placeholder(R.drawable.loadingbg).override(800,600).diskCacheStrategy(DiskCacheStrategy.RESULT).skipMemoryCache(true).centerCrop().into(detailImageView);
+
 //                Glide.with(context).load(scenicspot.getImgUrls().get(0).getBigImgUrl()).transform(new BlurTransformation2(context)).into(detailImageViewBg);
 
             }

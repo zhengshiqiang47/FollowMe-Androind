@@ -14,6 +14,7 @@
 package com.example.coderqiang.followme.Fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,10 +31,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.coderqiang.followme.Activity.AddFriendActivity;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
@@ -72,6 +75,7 @@ public class EaseContactListFragment extends EaseBaseFragment {
     protected boolean isConflict;
     protected FrameLayout contentContainer;
     protected TextView conversationTitle;
+    protected ImageView addFriend;
 
 
     private Map<String, EaseUser> contactsMap;
@@ -85,6 +89,14 @@ public class EaseContactListFragment extends EaseBaseFragment {
             @Override
             public void onClick(View v) {
                 EventBus.getDefault().post("会话列表");
+            }
+        });
+        addFriend=(ImageView)v.findViewById(R.id.contact_list_addfriend);
+        addFriend.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddFriendActivity.class);
+                startActivity(intent);
             }
         });
         return v;

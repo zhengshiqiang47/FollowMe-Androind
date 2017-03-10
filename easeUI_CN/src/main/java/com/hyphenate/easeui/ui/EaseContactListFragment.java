@@ -71,8 +71,6 @@ public class EaseContactListFragment extends EaseBaseFragment {
     protected boolean isConflict;
     protected FrameLayout contentContainer;
     protected TextView conversationTitle;
-
-    
     private Map<String, EaseUser> contactsMap;
 
     

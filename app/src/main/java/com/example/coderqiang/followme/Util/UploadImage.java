@@ -31,6 +31,7 @@ import java.net.URL;
 
 public class UploadImage {
     private static final String TAG="UpLoadImage";
+    private static final String DYNAMICIMG_URL="http://123.206.195.52:8080/day_30/dynamicImgUploadServlet";
 
     public static String formUpload(String urlStr, String filePath,String name,Context context) {
         String rsp = "";
@@ -116,8 +117,9 @@ public class UploadImage {
         return rsp;
     }
 
-    public static String  DynamicImgUpload(String urlStr, Uri uri,String id,Activity context) {
+    public static String  DynamicImgUpload( Uri uri,String id,Activity context) {
         String rsp = "";
+        String urlStr=DYNAMICIMG_URL;
         HttpURLConnection conn = null;
         String BOUNDARY = "|"; // request头和上传文件内容分隔符
         try {
@@ -187,8 +189,8 @@ public class UploadImage {
             rsp = buffer.toString();
             reader.close();
             Log.i(TAG,rsp);
-            if(rsp.contains("上传成功"));
             reader = null;
+            return name;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -197,7 +199,7 @@ public class UploadImage {
                 conn = null;
             }
         }
-        return rsp;
+        return "";
     }
 
     private static File uri2File(Uri uri,Activity context) {
@@ -218,8 +220,8 @@ public class UploadImage {
 //        if (false) {
 //            circleImagview.setImageBitmap(User.get(context).getTouxiang());
 //        }else{
-            Log.i("UpLoadImage","username"+User.get(context).getName());
-            Glide.with(context).load("http://123.206.195.52:8080/day_30/upload/"+ User.get(context).getName()+".png").asBitmap().skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.NONE).centerCrop().into(circleImagview);
+//            Log.i("UpLoadImage","username"+User.get(context).getName());
+            Glide.with(context).load("http://123.206.195.52:8080/day_30/upload/"+ User.get(context).getName()+".png").asBitmap().skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.NONE).override(300,300).centerCrop().into(circleImagview);
 //        }
     }
 }

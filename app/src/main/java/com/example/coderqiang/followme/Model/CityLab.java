@@ -59,6 +59,21 @@ public class CityLab {
         return city;
     }
 
+    public Boolean isExist(String cityname) {
+        if (cityname != null) {
+            for (int i=0;i<cities.size();i++) {
+                City cityT=cities.get(i);
+                if(cityname.contains(cityT.getCityName())){
+                    return true;
+                }else if(i==cities.size()-1){
+                    Log.i(TAG, "城市:" + cityname + "不存在");
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
     public ArrayList<String> getProviceCity(String provinceName){
         ArrayList<String> provinceCities = new ArrayList<String>();
         for (int i=0;i<cities.size();i++){

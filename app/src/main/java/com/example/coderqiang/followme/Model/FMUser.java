@@ -5,20 +5,35 @@ package com.example.coderqiang.followme.Model;
  */
 
 public class FMUser {
-    int id;
-    String userName;
-    String nickName;
-    String signature;
-    String address;
+
+    /**
+     * id : 8
+     * userName : zhengshiqiang
+     * password : zsqqq1996424
+     * nickName : CoderQiang
+     * signature : 很懒,什么都没写
+     * birthDay : 0
+     * sex : 0
+     * concern : 0
+     * travle : 0
+     * follower : 1
+     */
+
+    private int id;
+    private String userName;
+    private String password;
+    private String nickName;
+    private String signature;
     String phone;
     String email;
-    long birthDay;
-    int sex;
-    int concern;
-    int travle;
-    int follower;
-
-    public FMUser(){}
+    String city;
+    private long birthDay;
+    private int sex;
+    private int concern;
+    private int travle;
+    private int follower;
+    private int dynamicIndex=1;
+    private int distance;
 
     public int getId() {
         return id;
@@ -34,6 +49,14 @@ public class FMUser {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getNickName() {
@@ -52,14 +75,6 @@ public class FMUser {
         this.signature = signature;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -74,14 +89,6 @@ public class FMUser {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public long getBirthDay() {
-        return birthDay;
-    }
-
-    public void setBirthDay(long birthDay) {
-        this.birthDay = birthDay;
     }
 
     public int getSex() {
@@ -114,5 +121,41 @@ public class FMUser {
 
     public void setFollower(int follower) {
         this.follower = follower;
+    }
+
+    public int getDynamicIndex() {
+        return dynamicIndex;
+    }
+
+    public void setDynamicIndex(int dynamicIndex) {
+        this.dynamicIndex = dynamicIndex;
+    }
+
+    public void addDynamicIndex(){
+        this.dynamicIndex++;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public long getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(long birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 }

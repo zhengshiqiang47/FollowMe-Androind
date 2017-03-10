@@ -44,7 +44,6 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.location.Poi;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -66,7 +65,6 @@ import com.baidu.mapapi.navi.NaviParaOption;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
-import com.baidu.mapapi.search.poi.PoiAddrInfo;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
 import com.baidu.mapapi.search.poi.PoiDetailSearchOption;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
@@ -88,11 +86,10 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.baidu.mapapi.search.sug.SuggestionSearch;
-import com.baidu.mapapi.search.sug.SuggestionSearchOption;
 import com.bumptech.glide.Glide;
-import com.example.coderqiang.followme.Activity.MainActivity;
 import com.example.coderqiang.followme.Activity.ScenicActivity;
 import com.example.coderqiang.followme.Activity.ScenicDetailActivity;
+import com.example.coderqiang.followme.Activity.TraceActivity;
 import com.example.coderqiang.followme.Adapter.SearchResultAdapter;
 import com.example.coderqiang.followme.CircleImagview;
 import com.example.coderqiang.followme.MapRelate.DrivingRouteOverlay;
@@ -103,12 +100,13 @@ import com.example.coderqiang.followme.Model.MyLocation;
 import com.example.coderqiang.followme.Model.MySearchResult;
 import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.SettingLab;
-import com.example.coderqiang.followme.Model.TravelPlanLab;
+import com.example.coderqiang.followme.Model.TravlePlanLab;
 import com.example.coderqiang.followme.Model.TravleDay;
 import com.example.coderqiang.followme.Model.TravlePlan;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Service.MyOrientationListener;
 import com.example.coderqiang.followme.Util.HttpParse;
+import com.example.coderqiang.followme.Util.ServerUtil;
 import com.example.coderqiang.followme.Util.UploadImage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -163,6 +161,8 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
     LinearLayout titleLayout;
     @Bind(R.id.journey_search_reslut_recy)
     RecyclerView searchRecycler;
+    @Bind(R.id.journey_day_trace)
+    ImageView trace;
     LinearLayout menuAddScenicLayout;
     LinearLayout mapMakerLayout;
     public BDLocation bdLocation;
@@ -273,6 +273,13 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         behavior.setBottomSheetCallback(bottomSheetCallback);
         mRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         myLocationIcon.setOnClickListener(this);
+        trace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), TraceActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -622,7 +629,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (TravelPlanLab.get(getActivity().getApplicationContext()).getTravelPlans().size()==0){
+                while (TravlePlanLab.get(getActivity().getApplicationContext()).getTravelPlans().size()==0){
                     try {
                         Log.i(TAG,"sleep");
                         Thread.sleep(1000);
@@ -634,6 +641,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                     @Override
                     public void run() {
                         Log.i(TAG,"正在获取数据");
+                        currentPlan=TravlePlanLab.get(getActivity().getApplicationContext()).getCurrentPlan();
                         myAdapter = new MyAdapter();
                         mRecyclerview.setAdapter(myAdapter);
                     }
@@ -841,6 +849,10 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(getActivity(),ScenicActivity.class);
+                if(CityLab.get(getActivity()).isContain(currentPlan.getCityName())==null){
+                    Toast.makeText(getActivity(),"正在定位中,请稍后...",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 intent.putExtra(ScenicActivity.EXTRA_CITY,currentPlan.getCity().getCityName());
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
@@ -914,7 +926,6 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
 
     class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-        TravlePlan travlePlan;
 
         private static final int TYPE_HEADER=0;
         private static final int TYPE_NORMAL=1;
@@ -922,12 +933,6 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
         public MyAdapter() {
             super();
-            if(TravelPlanLab.get(getActivity().getApplicationContext()).getTravelPlans().size()==0){
-
-            }else {
-                travlePlan = TravelPlanLab.get(getActivity().getApplicationContext()).getTravelPlans().get(0);
-                currentPlan=travlePlan;
-            }
         }
 
         @Override
@@ -951,9 +956,9 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
             if(viewholder instanceof MyViewHolder){
                 int tempposition=position-1;
-                final TravleDay travleDay=travlePlan.getTravleDays().get(tempposition);
+                final TravleDay travleDay=currentPlan.getTravleDays().get(tempposition);
                 MyViewHolder holder=(MyViewHolder)viewholder;
-                holder.city.setText(travlePlan.getCity().getCityName());
+                holder.city.setText(currentPlan.getCityName());
                 if(holder.detail.getTag() instanceof  TextWatcher){
                     holder.detail.removeTextChangedListener((TextWatcher) holder.detail.getTag());
                 }
@@ -979,7 +984,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                 holder.detail.addTextChangedListener(textWatcher);
                 holder.detail.setTag(textWatcher);
                 holder.day.setText("Day " + travleDay.getDayNum());
-                final String cityName=travlePlan.getCity().getCityName();
+                final String cityName=currentPlan.getCityName();
                 holder.city.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -1004,11 +1009,11 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                     @Override
                     public void onClick(View v) {
                         TravleDay travleDay=new TravleDay();
-                        travleDay.setDayNum(travlePlan.getTravleDays().size()+1);
+                        travleDay.setDayNum(currentPlan.getTravleDays().size()+1);
                         travleDay.setMemo("");
-                        travlePlan.getTravleDays().add(travleDay);
-                        mRecyclerview.getAdapter().notifyItemChanged(travlePlan.getTravleDays().size());
-                        mRecyclerview.smoothScrollToPosition(travlePlan.getTravleDays().size()-1);
+                        currentPlan.getTravleDays().add(travleDay);
+                        mRecyclerview.getAdapter().notifyItemChanged(currentPlan.getTravleDays().size());
+                        mRecyclerview.smoothScrollToPosition(currentPlan.getTravleDays().size()-1);
                     }
                 });
             }
@@ -1019,15 +1024,15 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         public int getItemViewType(int position) {
             if(position==0){
                 return TYPE_HEADER;
-            }else if(position==travlePlan.getTravleDays().size()+1) {
+            }else if(position==currentPlan.getTravleDays().size()+1) {
                 return TYPE_FOOTER;
             }else return TYPE_NORMAL;
         }
 
         @Override
         public int getItemCount() {
-            if(travlePlan==null) return 2;
-            return travlePlan.getTravleDays().size()+2;
+            if(currentPlan==null) return 2;
+            return currentPlan.getTravleDays().size()+2;
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
@@ -1315,6 +1320,39 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         mPoiSearch.searchPoiDetail((new PoiDetailSearchOption()).poiUid(poiInfo.uid));
         searchRecycler.setVisibility(View.GONE);
         centerToPoi(poiInfo.location);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getMesg(String msg) {
+        if(msg.equals("plan")){
+            currentPlan=TravlePlanLab.get(getActivity().getApplicationContext()).getCurrentPlan();
+            myAdapter.notifyDataSetChanged();
+        }else if(msg.equals("addscenicspot")){
+            currentPlan=TravlePlanLab.get(getActivity().getApplicationContext()).getCurrentPlan();
+            myAdapter.notifyDataSetChanged();
+            Observable.create(new Observable.OnSubscribe<Object>() {
+                @Override
+                public void call(Subscriber<? super Object> subscriber) {
+                    int id= ServerUtil.updateTravelPlan(getActivity().getApplicationContext(),currentPlan);
+                    Log.i(TAG,"id"+id+ currentPlan.getTravleDays().toString()+" ");
+                }
+            }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Object o) {
+
+                }
+            });
+        }
     }
 
 }

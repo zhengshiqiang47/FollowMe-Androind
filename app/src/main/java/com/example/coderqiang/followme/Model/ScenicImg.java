@@ -1,6 +1,7 @@
 package com.example.coderqiang.followme.Model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by CoderQiang on 2016/11/29.
@@ -24,8 +25,17 @@ public class ScenicImg implements Serializable{
     private String bigImgUrl;
     private int width;
     private int height;
+    private int scenicId;
     private UserInfoBean userInfo;
     private ImgInfoBean imgInfo;
+
+    public int getScenicId() {
+        return scenicId;
+    }
+
+    public void setScenicId(int scenicId) {
+        this.scenicId = scenicId;
+    }
 
     public int getId() {
         return id;

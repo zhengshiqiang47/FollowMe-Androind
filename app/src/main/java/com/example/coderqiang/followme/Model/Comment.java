@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -8,32 +10,21 @@ import java.util.ArrayList;
  */
 
 public class Comment implements Serializable{
+    private int id;
+    private int scenicId;
     private String commentId;
-    private String ownerImag="";
-    private String CommentName="";
-    private String Content="";
+    private String ownerImg;
+    private String commentName="";
+    private String content="";
     private String time="";
     private String sightMark="";
     private String useful = "";
-    private ArrayList<String> images=new ArrayList<String>();
-    private ArrayList<String> imgSmals=new ArrayList<String>();
-
-    public String getCommentName() {
-        return CommentName;
-    }
-
-    public void setCommentName(String commentName) {
-        CommentName = commentName;
-    }
+    private String imgSmall;
+    private String images;
+    private ArrayList<String> imagelist=new ArrayList<String>();
+    private ArrayList<String> imgSmalslist=new ArrayList<String>();
 
 
-    public String getContent() {
-        return Content;
-    }
-
-    public void setContent(String content) {
-        Content = content;
-    }
 
     public String getTime() {
         return time;
@@ -43,13 +34,6 @@ public class Comment implements Serializable{
         this.time = time;
     }
 
-    public ArrayList<String> getImages() {
-        return images;
-    }
-
-    public void setImages(ArrayList<String> images) {
-        this.images = images;
-    }
 
     public String getCommentId() {
         return commentId;
@@ -59,13 +43,6 @@ public class Comment implements Serializable{
         this.commentId = commentId;
     }
 
-    public String getOwnerImag() {
-        return ownerImag;
-    }
-
-    public void setOwnerImag(String ownerImag) {
-        this.ownerImag = ownerImag;
-    }
 
     public String getSightMark() {
         return sightMark;
@@ -83,11 +60,76 @@ public class Comment implements Serializable{
         this.useful = useful;
     }
 
-    public ArrayList<String> getImgSmals() {
-        return imgSmals;
+    public int getId() {
+        return id;
     }
 
-    public void setImgSmals(ArrayList<String> imgSmals) {
-        this.imgSmals = imgSmals;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getScenicId() {
+        return scenicId;
+    }
+
+    public void setScenicId(int scenicId) {
+        this.scenicId = scenicId;
+    }
+
+    public ArrayList<String> getImagelist() {
+        return imagelist;
+    }
+
+    public void setImagelist(ArrayList<String> imagelist) {
+        this.imagelist = imagelist;
+    }
+
+    public ArrayList<String> getImgSmalslist() {
+        return imgSmalslist;
+    }
+
+    public void setImgSmalslist(ArrayList<String> imgSmalslist) {
+        this.imgSmalslist = imgSmalslist;
+    }
+
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
+    }
+
+    public String getOwnerImg() {
+        return ownerImg;
+    }
+
+    public void setOwnerImg(String ownerImg) {
+        this.ownerImg = ownerImg;
+    }
+
+    public String getCommentName() {
+        return commentName;
+    }
+
+    public void setCommentName(String commentName) {
+        this.commentName = commentName;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getImgSmall() {
+        return imgSmall;
+    }
+
+    public void setImgSmall(String imgSmall) {
+        this.imgSmall = imgSmall;
     }
 }

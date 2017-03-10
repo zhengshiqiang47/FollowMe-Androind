@@ -147,10 +147,10 @@ public class PictureActivity extends SwipeBackActivity {
         public Object instantiateItem(ViewGroup container, final int position) {
             View view = getLayoutInflater().inflate(R.layout.picture_item, null);
             PhotoView picture_iv_item = (PhotoView) view.findViewById(R.id.picture_item_photoview);
-
             picture_iv_item.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
+                    Log.i("PhotoView","click");
                     if(isHide) showTv();
                     else hideTv();
                 }

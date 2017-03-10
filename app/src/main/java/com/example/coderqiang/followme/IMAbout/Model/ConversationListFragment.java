@@ -21,8 +21,10 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.coderqiang.followme.Activity.AddFriendActivity;
 import com.example.coderqiang.followme.R;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMConversationListener;
@@ -62,6 +64,7 @@ public class ConversationListFragment extends EaseConversationListFragment {
     protected FrameLayout errorItemContainer;
     protected TextView conversationListTitle;
     protected TextView contactListTitle;
+    protected ImageView addFriend;
 
     int select=1;
     protected boolean isConflict;
@@ -80,6 +83,7 @@ public class ConversationListFragment extends EaseConversationListFragment {
         View v = inflater.inflate(R.layout.ease_fragment_conversation_list, container, false);
         conversationListTitle=(TextView)v.findViewById(R.id.conversation_list_title);
         contactListTitle=(TextView)v.findViewById(R.id.contact_list_title);
+        addFriend=(ImageView)v.findViewById(R.id.conversation_list_addfriend);
         twinklingRefreshLayout = (TwinklingRefreshLayout) v.findViewById(com.hyphenate.easeui.R.id.conversation_tkRefresh);
         twinklingRefreshLayout.setEnableLoadmore(false);
         SinaRefreshView sinaRefreshView = new SinaRefreshView(getActivity());
@@ -95,6 +99,13 @@ public class ConversationListFragment extends EaseConversationListFragment {
             @Override
             public void onClick(View v) {
                 EventBus.getDefault().post("联系人列表");
+            }
+        });
+        addFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddFriendActivity.class);
+                startActivity(intent);
             }
         });
         return v;

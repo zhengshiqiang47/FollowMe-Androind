@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/userdetail_top_layout"
+            android:background="@color/gray_light"
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+            <ImageView
+                android:scaleType="centerCrop"
+                android:id="@+id/userdetail_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <TextView
+                android:id="@+id/userdetail_name"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:textSize="19sp"
+                android:textColor="@color/white"
+                android:text="CoderQiang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/userdetail_id"
+                android:layout_toRightOf="@id/userdetail_name"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:textSize="13sp"
+                android:textColor="@color/white"
+                android:text="(zhengshiqiang)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/userdetail_signature"
+                android:textColor="@color/white"
+                android:layout_marginTop="11dp"
+                android:text="很懒很懒"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userdetail_name"
+                android:layout_centerHorizontal="true" />
+            <LinearLayout
+                android:id="@+id/userdetail_info"
+                android:layout_marginTop="4dp"
+                android:layout_below="@id/userdetail_signature"
+                android:padding="4dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/userinfo_concern"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textStyle="italic"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <TextView
+
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/white"
+                        android:text="关注"
+                        android:gravity="center"
+                        android:textSize="17sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <TextView
+                    android:layout_width="2px"
+                    android:layout_height="match_parent" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/userinfo_follower"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textStyle="italic"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:textColor="@color/white"
+                        android:layout_marginTop="4dp"
+                        android:text="粉丝"
+                        android:gravity="center"
+                        android:textSize="17sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/userinfo_travel"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textStyle="italic"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:textColor="@color/white"
+                        android:layout_marginTop="8dp"
+                        android:text="游记"
+                        android:gravity="center"
+                        android:textSize="17sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView7" />
+                </LinearLayout>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/userdetail_sex"
+                android:layout_margin="32dp"
+                android:layout_below="@id/userdetail_info"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                />
+            <TextView
+                android:id="@+id/userinfo_city"
+                android:layout_marginLeft="32dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/userdetail_sex"/>
+
+        </RelativeLayout>
+        <com.example.coderqiang.followme.CircleImagview
+            android:id="@+id/userdetail_avator"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="150dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/userdetail_recycler"
+            android:layout_below="@id/userdetail_top_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+</RelativeLayout>

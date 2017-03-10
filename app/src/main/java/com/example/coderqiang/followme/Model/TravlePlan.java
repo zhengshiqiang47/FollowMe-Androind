@@ -8,12 +8,16 @@ import java.util.Date;
  */
 
 public class TravlePlan {
+    private int id;
     private ArrayList<TravleDay> travleDays=new ArrayList<TravleDay>();
-    private City city;
-    private Date begin;
+    private int userId;
     private String travleName;
-    private int dayCount;
+    private City city;
+    private String cityName;
+    private Long time;
+    private int dayCount=0;
     private String beginMemo;
+    private String travleDaysStr;
     private Double latitute;
     private Double longtitute;
 
@@ -48,13 +52,6 @@ public class TravlePlan {
         this.longtitute = longtitute;
     }
 
-    public Date getBegin() {
-        return begin;
-    }
-
-    public void setBegin(Date begin) {
-        this.begin = begin;
-    }
 
     public String getTravleName() {
         return travleName;
@@ -84,5 +81,45 @@ public class TravlePlan {
         if(travleDays.size()>i)
             return travleDays.get(i);
         else return null;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time) {
+        this.time = time;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTravleDaysStr() {
+        return travleDaysStr;
+    }
+
+    public void setTravleDaysStr(String travleDaysStr) {
+        this.travleDaysStr = travleDaysStr;
     }
 }

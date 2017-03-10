@@ -39,7 +39,8 @@ public class GetPermission {
 
     public static boolean getAllPermission(Activity activity){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if (    ContextCompat.checkSelfPermission(activity,PERMISSIONS_FINE_LOCATION_STR) != PackageManager.PERMISSION_GRANTED||
+            if (
+                    ContextCompat.checkSelfPermission(activity,PERMISSIONS_FINE_LOCATION_STR) != PackageManager.PERMISSION_GRANTED||
                     ContextCompat.checkSelfPermission(activity,PERMISSIONS_LOCATION_STR) != PackageManager.PERMISSION_GRANTED||
                     ContextCompat.checkSelfPermission(activity,PERMISSIONS_WRITE_STORAGY_STR) != PackageManager.PERMISSION_GRANTED||
                     ContextCompat.checkSelfPermission(activity,PERMISSIONS_MICROPHONE_STR) != PackageManager.PERMISSION_GRANTED||

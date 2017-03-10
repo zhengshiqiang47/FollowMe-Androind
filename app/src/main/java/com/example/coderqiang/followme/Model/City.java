@@ -14,14 +14,19 @@ import java.util.Timer;
  */
 
 public class City implements Serializable{
+    private int id;
+    private boolean isGlobal;
     private String provinceName;
     private String cityName;
     private String ctripId;
+    private String country;
     private boolean isParse=false;
     private int scenicPage=1;
     private Weather weather;
+    private String imageUrl;
     private ArrayList<String> iamgeUrls=new ArrayList<String>();
     private ArrayList<Scenicspot> scenicspots = new ArrayList<>();
+    private int countPage=1;
 
     public int getCountPage() {
         return countPage;
@@ -30,9 +35,6 @@ public class City implements Serializable{
     public void setCountPage(int countPage) {
         this.countPage = countPage;
     }
-
-    private int countPage=1;
-
 
     public String getCtripId() {
         return ctripId;
@@ -108,5 +110,37 @@ public class City implements Serializable{
         if(scenicspots.contains(scenicspot))
             scenicspots.remove(scenicspot);
         return true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isGlobal() {
+        return isGlobal;
+    }
+
+    public void setGlobal(boolean global) {
+        isGlobal = global;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

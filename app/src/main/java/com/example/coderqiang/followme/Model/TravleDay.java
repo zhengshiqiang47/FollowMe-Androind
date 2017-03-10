@@ -10,9 +10,13 @@ import java.util.Date;
 public class TravleDay {
     private ArrayList<Scenicspot> scenicspots=new ArrayList<Scenicspot>();
 
+    private HistoryTrackData historyTrackData;
+    private Weather weather;
     private String memo;
-    private Date date;
+    private Long time;
     private int dayNum;
+    private String scenicspotsStr;
+
 
     public String getMemo() {
         return memo;
@@ -22,18 +26,12 @@ public class TravleDay {
         this.memo = memo;
     }
 
-    public Date getDate() {
-        return date;
-    }
 
     public int getScenicCount(){
 
         return scenicspots.size();
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
 
     public ArrayList<Scenicspot> getScenicspots() {
         return scenicspots;
@@ -67,5 +65,37 @@ public class TravleDay {
         }else {
             return "删除失败";
         }
+    }
+
+    public HistoryTrackData getHistoryTrackData() {
+        return historyTrackData;
+    }
+
+    public void setHistoryTrackData(HistoryTrackData historyTrackData) {
+        this.historyTrackData = historyTrackData;
+    }
+
+    public Weather getWeather() {
+        return weather;
+    }
+
+    public void setWeather(Weather weather) {
+        this.weather = weather;
+    }
+
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time) {
+        this.time = time;
+    }
+
+    public String getScenicspotsStr() {
+        return scenicspotsStr;
+    }
+
+    public void setScenicspotsStr(String scenicspotsStr) {
+        this.scenicspotsStr = scenicspotsStr;
     }
 }

@@ -46,8 +46,6 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
     public LinearLayout linearLayout;
     @Bind(R.id.scenic_detail_intro_expand_textView)
     TextView introTv;
-    @Bind(R.id.scenic_detail_traffic_expand_textView)
-    ExpandableTextView trafficTv;
     @Bind(R.id.scenic_detail_item_counttime)
     TextView countTime;
     @Bind(R.id.scenic_detail_item_price)
@@ -56,6 +54,8 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
     TextView openTime;
     @Bind(R.id.scenic_detail_album_recycler)
     RecyclerView recyclerView;
+    @Bind(R.id.scenic_detail_item_addr)
+    TextView address;
     Fragment context;
     ArrayList<String> albumImg;
     CustomViewPager vp;
@@ -81,7 +81,7 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
         countTime.setText(scenicspot.getCountTime()+"");
         price.setText(scenicspot.getTicket()+" ");
 //        Log.i(TAG, "门票" + scenicspot.getTicket());
-        trafficTv.setText(scenicspot.getTraffic()+"");
+        address.setText(scenicspot.getAddr());
         openTime.setText(scenicspot.getOpenTime()+"");
         albumImg = new ArrayList<String>();
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3,GridLayoutManager.VERTICAL,false));
@@ -156,7 +156,4 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
 
     }
 
-    public int getCountHeight(){
-        return introTv.getHeight()+trafficTv.getHeight()+countTime.getHeight()+price.getHeight()+openTime.getHeight()+ ScenicDetailActivity.Dp2Px(getActivity(),50);
-    }
 }

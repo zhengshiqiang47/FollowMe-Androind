@@ -42,6 +42,13 @@ import android.widget.TextView;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.radar.RadarNearbyResult;
+import com.baidu.mapapi.radar.RadarSearchError;
+import com.baidu.mapapi.radar.RadarSearchListener;
+import com.baidu.mapapi.radar.RadarSearchManager;
+import com.baidu.mapapi.radar.RadarUploadInfo;
+import com.baidu.mapapi.radar.RadarUploadInfoCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.Request;
@@ -64,8 +71,10 @@ import com.example.coderqiang.followme.Model.User;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Util.HttpAnalyze;
 import com.example.coderqiang.followme.Util.HttpParse;
+import com.example.coderqiang.followme.Util.ServerUtil;
 import com.example.coderqiang.followme.Util.SetStatusColor;
 import com.example.coderqiang.followme.Util.TravelPlanUtil;
+import com.example.coderqiang.followme.Util.UserUtil;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMChatManager;
@@ -89,7 +98,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener{
+public class MainActivity extends FragmentActivity implements View.OnClickListener, RadarSearchListener, RadarUploadInfoCallback {
     private static final String TAG="MainActivity";
     FragmentManager fm;
     public JourneyFragment journeyFragment;
@@ -120,6 +129,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Bind(R.id.menu_add_scenic_layout)
     LinearLayout menuAddScenicLayout;
 
+    public static RadarSearchManager mManager;
+
+
+    Boolean isFirstGet=true;
     FragmentManager fmV4;
     Context context;
     Boolean isV4=false;
@@ -181,22 +194,26 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
 
     private void initNavigation(){
+        mManager= RadarSearchManager.getInstance();
+        mManager.addNearbyInfoListener(this);
+        mManager.setUserID(User.get(this).getId()+"");
+        mManager.startUploadAuto(this, 60000);
         menuNoteLayou.setOnClickListener(this);
+        menuJourneyLayout.setOnClickListener(this);
         registerBroadcastReceiver();
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_CLASSIC);
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar
-                .addItem(new BottomNavigationItem(R.mipmap.position1, "日程"))
-                .addItem(new BottomNavigationItem(R.mipmap.fire_white,"攻略"))
-                .addItem(new BottomNavigationItem(R.mipmap.xingji1,"动态"))
-                .addItem(new BottomNavigationItem(R.mipmap.chat, "通讯"))
-                .addItem(new BottomNavigationItem(R.drawable.mine_selected,"我的"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_location, "日程"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_gonglue_home,"攻略"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_dynamic_home,"动态"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_contact, "通讯"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_userinfo,"我的"))
                 .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position) {
-                Log.i(TAG, "position" + position);
                 switch (position) {
                     case 0:
                         switchFragment(currentFragment,journeyFragment);
@@ -322,9 +339,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private void switchFragment(Fragment from, Fragment to){
         if(currentFragment!=to){
             if(!to.isAdded()){
-                fm.beginTransaction().add(R.id.fragment_container,to).hide(from).show(to).commitAllowingStateLoss();
+                fm.beginTransaction().add(R.id.fragment_container,to).hide(from).show(to).commit();
             }else {
-                fm.beginTransaction().hide(from).show(to).commitAllowingStateLoss();
+                fm.beginTransaction().hide(from).show(to).commit();
 //                fm.beginTransaction().replace(R.id.fragment_container, to).commit();
             }
 
@@ -350,6 +367,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         });
         squarFragment=new SquarFragment();
+        scenicMainFragment=new ScenicMainFragment();
         userinfoFragment=new UserinfoFragment();
     }
 
@@ -361,27 +379,39 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Intent intent = new Intent(this, NewDynamicActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.menu_new_journey_layout:
+                Intent intent2=new Intent(this,NewTravlePlanActivity.class);
+                startActivity(intent2);
+                break;
         }
     }
+
+
+
 
     private class GetScenicSpot extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
+            try {
+                UserUtil.getUser(getApplicationContext(),User.get(getApplicationContext()).getName());
+            }catch (Exception e){
+                Log.e(TAG,"服务器连接失败",e);
+            }
             HttpParse httpParse=new HttpParse();
             String cityName= MyLocation.getMyLocation(getApplicationContext()).getCityName();
 //            cityName="杭州市";
             City city=CityLab.get(getApplicationContext()).isContain(cityName);
-            ArrayList<Scenicspot> tempSces= httpParse.getScenicspot(getApplicationContext(), city.getCityName(),city.getScenicPage()+"");
+            ArrayList<Scenicspot> tempSces= httpParse.getScenicspot(getApplicationContext(), city.getCityName(),city.getScenicPage()+"",ServerUtil.LOAD_SUCCESS);
             Log.i(TAG,"hasLocation"+MyLocation.getMyLocation(getApplicationContext()).isHasLocation());
             if(!MyLocation.getMyLocation(getApplicationContext()).isHasLocation()){
                 Log.i(TAG,"进到这了");
                 city.setScenicspots(tempSces);
             }
-            city.addscenicPage();
+//            city.addscenicPage();
             Log.e(TAG, ScenicspotLab.get(getApplication()).getScenicspots().size() + "");
-            TravelPlanUtil.getTravelPlan(context);
-            httpParse.getAllScenicDetails(getApplicationContext(), cityName);
+
+//            httpParse.getAllScenicDetails(getApplicationContext(), cityName);
             return null;
         }
 
@@ -407,7 +437,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     conversationListFragment.refresh();
                 }
                 //red packet code : 处理红包回执透传消息
-                //end of red packet code
+                //end of red packet code[]
             }
         };
         broadcastManager.registerReceiver(broadcastReceiver, intentFilter);
@@ -443,6 +473,33 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         });
     }
 
+    @Override
+    public void onGetNearbyInfoList(RadarNearbyResult radarNearbyResult, RadarSearchError radarSearchError) {
+
+    }
+
+    @Override
+    public void onGetUploadState(RadarSearchError radarSearchError) {
+        Log.i(TAG,radarSearchError.name()+"");
+    }
+
+    @Override
+    public void onGetClearInfoState(RadarSearchError radarSearchError) {
+
+    }
+
+    @Override
+    public RadarUploadInfo onUploadInfoCallback() {
+        RadarUploadInfo info=new RadarUploadInfo();
+        info.comments=User.get(getApplicationContext()).getName();
+        info.pt=new LatLng(MyLocation.getMyLocation(this).getLatitute(),MyLocation.getMyLocation(this).getLongtitute());
+        return info;
+    }
+
+    public RadarSearchManager getmManager(){
+        return mManager;
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void overrideTransitionEventBus(String msg) {
         Log.i(TAG,"msg:"+msg);
@@ -450,8 +507,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             Log.i(TAG,msg);
             new GetScenicSpot().execute();
         }else if(msg.equals("dynamicFragment")){
-            Log.i(TAG,msg);
-            switchFragment(currentFragment,squarFragment);
+//            Log.i(TAG,msg);
+//            switchFragment(currentFragment,squarFragment);
         }else if(msg.equals("联系人列表")){
             if(easeContactListFragment==null){
                 easeContactListFragment=new EaseContactListFragment();
@@ -477,6 +534,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
             Log.i(TAG,"conversationList");
             switchFragment(currentFragment,conversationListFragment);
+        } else if (msg.equals(ServerUtil.LOAD_SUCCESS)) {
+            if(isFirstGet){
+                TravelPlanUtil.getTravelPlan(context);
+                isFirstGet=false;
+            }
         }
 
     }

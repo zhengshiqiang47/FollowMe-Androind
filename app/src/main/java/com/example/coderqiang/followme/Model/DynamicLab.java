@@ -12,9 +12,11 @@ public class DynamicLab {
     private static DynamicLab dynamicLab;
     private Context mContext;
     private ArrayList<Dynamic> dynamics;
+    private ArrayList<Dynamic> myDynamics;
 
     private DynamicLab(Context context){
         dynamics=new ArrayList<Dynamic>();
+        myDynamics = new ArrayList<Dynamic>();
         this.mContext=context;
     }
 
@@ -29,4 +31,11 @@ public class DynamicLab {
         return dynamics;
     }
 
+    public ArrayList<Dynamic> getMyDynamics() {
+        return myDynamics;
+    }
+
+    public void setMyDynamics(ArrayList<Dynamic> myDynamics) {
+        this.myDynamics = myDynamics;
+    }
 }

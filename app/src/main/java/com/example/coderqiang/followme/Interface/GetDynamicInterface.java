@@ -16,5 +16,6 @@ import retrofit2.http.Query;
 public interface GetDynamicInterface {
     @GET("dynamicServlet")
     Call<ArrayList<Dynamic>> getDyanmic(@Query("type") String type,
-                                        @Query("userid") String userId);
+                                        @Query("userid") String userId,
+                                        @Query("page") int page);
 }

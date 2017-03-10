@@ -9,6 +9,7 @@ import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.radar.RadarSearchManager;
 import com.example.coderqiang.followme.Service.LocationService;
 import com.example.coderqiang.followme.Util.GetPermission;
 import com.hyphenate.chat.EMClient;
@@ -40,7 +41,6 @@ public class LocationApplication extends Application {
         SDKInitializer.initialize(getApplicationContext());
         EMOptions options=new EMOptions();
         options.setAutoLogin(false);
-        options.setAcceptInvitationAlways(false);
         EaseUI.getInstance().init(getApplicationContext(), options);
         EMClient.getInstance().init(getApplicationContext(),options);
         EMClient.getInstance().setDebugMode(true);
