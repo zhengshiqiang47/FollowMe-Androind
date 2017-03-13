@@ -159,11 +159,6 @@
                     android:layout_height="match_parent"
                     android:text="景点名称"
                     />
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="16dp"
-                    android:src="@mipmap/ic_share_white_48dp"/>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
     </RelativeLayout>

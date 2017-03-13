@@ -261,7 +261,7 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onError(Throwable e) {
-
+                flag--;
             }
 
             @Override

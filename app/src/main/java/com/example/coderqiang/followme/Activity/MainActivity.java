@@ -205,8 +205,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.ic_location, "日程"))
-                .addItem(new BottomNavigationItem(R.drawable.ic_gonglue_home,"攻略"))
                 .addItem(new BottomNavigationItem(R.drawable.ic_dynamic_home,"动态"))
+                .addItem(new BottomNavigationItem(R.drawable.ic_gonglue_home,"攻略"))
                 .addItem(new BottomNavigationItem(R.drawable.ic_contact, "通讯"))
                 .addItem(new BottomNavigationItem(R.drawable.ic_userinfo,"我的"))
                 .setFirstSelectedPosition(0)
@@ -218,13 +218,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     case 0:
                         switchFragment(currentFragment,journeyFragment);
                         break;
-                    case 1:
+                    case 2:
                         if(scenicMainFragment==null){
                             scenicMainFragment=new ScenicMainFragment();
                         }
                         switchFragment(currentFragment, scenicMainFragment);
                         break;
-                    case 2:
+                    case 1:
                         if(squarFragment==null){
                             squarFragment=new SquarFragment();
                         }
@@ -380,7 +380,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 startActivity(intent);
                 break;
             case R.id.menu_new_journey_layout:
-                Intent intent2=new Intent(this,NewTravlePlanActivity.class);
+                Intent intent2=new Intent(this,TravlePlanActivity.class);
                 startActivity(intent2);
                 break;
         }

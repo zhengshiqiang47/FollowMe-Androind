@@ -220,39 +220,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
-                    android:id="@+id/userinfo_my_message"
+                    android:id="@+id/userinfo_nearby"
                     android:layout_marginBottom="1dp"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-                    <ImageView
-                        android:layout_marginLeft="16dp"
-                        android:layout_gravity="center"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_email"/>
-
-                    <TextView
-                        android:layout_weight="1"
-                        android:padding="16dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="我的消息"
-                        android:id="@+id/textView8" />
-
-                    <ImageView
-                        android:rotation="-90"
-                        android:layout_marginRight="16dp"
-                        android:layout_gravity="center"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/arrow_down"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/userinfo_my_travel_plan"
-                    android:orientation="horizontal"
                     android:background="@color/white"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <ImageView
@@ -260,15 +231,15 @@
                         android:layout_gravity="center"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/ic_travel"/>
+                        android:src="@drawable/ic_nearby"/>
                     <TextView
-                        android:id="@+id/userinfo_my_travel"
                         android:layout_weight="1"
                         android:padding="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="我的游记"/>
+                        android:text="附近的人"/>
                     <ImageView
+                        android:id="@+id/scenic_collection_arrow"
                         android:rotation="-90"
                         android:layout_marginRight="16dp"
                         android:layout_gravity="center"
@@ -276,6 +247,7 @@
                         android:layout_height="16dp"
                         android:src="@drawable/arrow_down"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/userinfo_travelplan"
                     android:orientation="horizontal"
@@ -307,7 +279,6 @@
 
             <LinearLayout
                 android:id="@+id/scenic_collection"
-                android:layout_marginTop="16dp"
                 android:layout_marginBottom="1dp"
                 android:background="@color/white"
                 android:orientation="horizontal"
@@ -340,35 +311,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </android.support.v7.widget.RecyclerView>
+
             <LinearLayout
-                android:id="@+id/userinfo_nearby"
-                android:layout_marginBottom="1dp"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:layout_marginLeft="16dp"
-                    android:layout_gravity="center"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_nearby"/>
-                <TextView
-                    android:layout_weight="1"
-                    android:padding="16dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="附近的人"/>
-                <ImageView
-                    android:id="@+id/scenic_collection_arrow"
-                    android:rotation="-90"
-                    android:layout_marginRight="16dp"
-                    android:layout_gravity="center"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/arrow_down"/>
-            </LinearLayout>
-            <LinearLayout
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -386,6 +331,63 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="设置"/>
+                <ImageView
+                    android:rotation="-90"
+                    android:layout_marginRight="16dp"
+                    android:layout_gravity="center"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/arrow_down"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/userinfo_my_message"
+                android:layout_marginBottom="1dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
+                <ImageView
+                    android:layout_marginLeft="16dp"
+                    android:layout_gravity="center"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_email"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:padding="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="我的消息"
+                    android:id="@+id/textView8" />
+
+                <ImageView
+                    android:rotation="-90"
+                    android:layout_marginRight="16dp"
+                    android:layout_gravity="center"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/arrow_down"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/userinfo_my_travel_plan"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_marginLeft="16dp"
+                    android:layout_gravity="center"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_travel"/>
+                <TextView
+                    android:id="@+id/userinfo_my_travel"
+                    android:layout_weight="1"
+                    android:padding="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="我的游记"/>
                 <ImageView
                     android:rotation="-90"
                     android:layout_marginRight="16dp"

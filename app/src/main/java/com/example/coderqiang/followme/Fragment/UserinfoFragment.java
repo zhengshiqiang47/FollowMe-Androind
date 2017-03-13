@@ -60,6 +60,7 @@ import com.example.coderqiang.followme.Activity.ShowTravlePlanAcvitity;
 import com.example.coderqiang.followme.Activity.TestActivity;
 import com.example.coderqiang.followme.Activity.TraceActivity;
 import com.example.coderqiang.followme.Activity.TravlePlanActivity;
+import com.example.coderqiang.followme.Activity.UserDetailInfoActivity;
 import com.example.coderqiang.followme.Activity.WebViewActivity;
 import com.example.coderqiang.followme.CircleImagview;
 import com.example.coderqiang.followme.Model.CityLab;
@@ -218,14 +219,14 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
         editTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), TravlePlanActivity.class);
+                Intent intent = new Intent(getActivity(), EditUserInfoActivity.class);
                 startActivity(intent);
             }
         });
         setTextview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), TravlePlanActivity.class);
+                Intent intent = new Intent(getActivity(), EditUserInfoActivity.class);
                 startActivity(intent);
             }
         });
