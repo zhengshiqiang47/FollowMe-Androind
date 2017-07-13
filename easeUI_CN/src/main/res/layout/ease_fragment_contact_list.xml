@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hyphenate="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/conversation_bar_2"
+        android:background="@color/journey_green"
+        android:layout_width="match_parent"
+        android:paddingTop="20dp"
+        android:layout_height="80dp">
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_weight="1.2"
+                    android:gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_marginRight="-4dp"
+                        android:padding="8dp"
+                        android:id="@+id/conversation_list_title_2"
+                        android:background="@drawable/contact_title_bg"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="16sp"
+                        android:text="会话列表"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/contact_list_title_2"
+                        android:background="@drawable/contact_title_bg_select"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/journey_green"
+                        android:layout_gravity="center"
+                        android:padding="8dp"
+                        android:textSize="16sp"
+                        android:text="好友列表"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+                    <ImageView
+                        android:layout_marginRight="8dp"
+                        android:layout_gravity="right"
+                        android:id="@+id/contact_list_addfriend"
+                        android:layout_width="30dp"
+                        android:src="@drawable/ic_adduser_white"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <include
+        android:id="@+id/search_bar_view"
+        layout="@layout/ease_search_bar_with_padding" />
+
+    <FrameLayout
+        android:id="@+id/content_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.hyphenate.easeui.widget.EaseContactList
+            android:id="@+id/contact_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!-- hyphenate:ctsListInitialLetterBg="#abc" -->
+
+    </FrameLayout>
+
+</LinearLayout>

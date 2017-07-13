@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/imagefilter_title"
+        android:background="@color/journey_green"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize">
+        <ImageView
+            android:id="@+id/addfriend_back"
+            android:layout_marginLeft="8dp"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_arrow_back_white_24dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="添加好友"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:layout_weight="1"/>
+        <ImageView
+            android:id="@+id/imagefilter_right"
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="8dp" />
+    </LinearLayout>
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/addfriend_search"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></android.support.v7.widget.SearchView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/addfriend_recycler"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+</LinearLayout>
