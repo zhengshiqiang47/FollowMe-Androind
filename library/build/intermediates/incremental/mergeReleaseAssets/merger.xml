@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="E:\AndroidSDK\FollowMe\library\src\main\assets"/><source path="E:\AndroidSDK\FollowMe\library\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="E:\AndroidSDK\FollowMe\library\src\release\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/Users/coderqiang/Documents/app/FollowMe/library/src/main/assets"/><source path="/Users/coderqiang/Documents/app/FollowMe/library/build/generated/assets/shaders/release"/></dataSet><dataSet config="release"><source path="/Users/coderqiang/Documents/app/FollowMe/library/src/release/assets"/></dataSet></merger>
