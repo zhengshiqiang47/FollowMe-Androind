@@ -68,6 +68,10 @@ public class User {
     }
 
     public void setFmUser(FMUser fmUser) {
+        if (fmUser == null) {
+            return;
+        }
         this.fmUser = fmUser;
+        this.id = fmUser.getId();
     }
 }

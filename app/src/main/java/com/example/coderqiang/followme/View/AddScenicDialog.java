@@ -17,12 +17,13 @@ import android.widget.Toast;
 import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.SettingLab;
 import com.example.coderqiang.followme.Model.TravlePlanLab;
-import com.example.coderqiang.followme.Model.TravleDay;
+import com.example.coderqiang.followme.Model.TravelDay;
 import com.example.coderqiang.followme.R;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by CoderQiang on 2017/1/5.
@@ -40,7 +41,7 @@ public class AddScenicDialog extends Dialog {
     private TextView title;
 
     Scenicspot scenicspot;
-    ArrayList<TravleDay> travleDays;
+    List<TravelDay> travelDays;
 
     public AddScenicDialog(Context context, int x, int y, Scenicspot scenicspot) {
         super(context);
@@ -50,7 +51,7 @@ public class AddScenicDialog extends Dialog {
         LayoutInflater inflater=LayoutInflater.from(context);
         customView=inflater.inflate(R.layout.city_select_dialog,null);
         this.scenicspot=scenicspot;
-        travleDays= TravlePlanLab.get(context.getApplicationContext()).getCurrentPlan().getTravleDays();
+        travelDays = TravlePlanLab.get(context.getApplicationContext()).getCurrentPlan().getTravelDays();
     }
 
     public AddScenicDialog(Context context, int themeResId,Scenicspot scenicspot) {
@@ -58,7 +59,7 @@ public class AddScenicDialog extends Dialog {
         LayoutInflater inflater=LayoutInflater.from(context);
         customView=inflater.inflate(R.layout.city_select_dialog,null);
         this.scenicspot=scenicspot;
-        travleDays = TravlePlanLab.get(context.getApplicationContext()).getCurrentPlan().getTravleDays();
+        travelDays = TravlePlanLab.get(context.getApplicationContext()).getCurrentPlan().getTravelDays();
     }
 
 
@@ -103,12 +104,12 @@ public class AddScenicDialog extends Dialog {
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
            CityHolder cityHolder=(CityHolder)holder;
             final int tempPositon=position;
-            cityHolder.textView.setText("添加到Day "+travleDays.get(position).getDayNum());
+            cityHolder.textView.setText("添加到Day "+ travelDays.get(position).getDayNum());
             cityHolder.textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("Dialog","点击了:"+travleDays.get(tempPositon).getDayNum());
-                    String result=travleDays.get(tempPositon).addScenicSpots(scenicspot);
+                    Log.i("Dialog","点击了:"+ travelDays.get(tempPositon).getDayNum());
+                    String result= travelDays.get(tempPositon).addScenicSpots(scenicspot);
                     Toast.makeText(context,result,Toast.LENGTH_SHORT).show();
                     if(result.equals("添加成功")){
                         SettingLab.getSettingLab(context.getApplicationContext()).setTravelDayUpdate(true);
@@ -124,7 +125,7 @@ public class AddScenicDialog extends Dialog {
 
         @Override
         public int getItemCount() {
-            return travleDays.size();
+            return travelDays.size();
         }
     }
 

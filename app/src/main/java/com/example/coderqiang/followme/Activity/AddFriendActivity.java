@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Activity;
 
+import static com.example.coderqiang.followme.Util.ServerUtil.BASE_URL;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -177,7 +179,7 @@ public class AddFriendActivity extends Activity {
             ItemHolder itemHolder=(ItemHolder) holder;
             final FMUser fmuser = fmUsers.get(position);
             itemHolder.itemFriendName.setText(fmuser.getUserName()+"");
-            Glide.with(activtiy).load("http://123.206.195.52:8080/day_30/upload/"+fmuser.getUserName()+".png").asBitmap().skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.NONE).override(300,300).placeholder(R.drawable.em_default_avatar).centerCrop().into(itemHolder.itemFriendAvator);
+            Glide.with(activtiy).load(BASE_URL+"upload/"+fmuser.getUserName()+".png").asBitmap().skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.NONE).override(300,300).placeholder(R.drawable.em_default_avatar).centerCrop().into(itemHolder.itemFriendAvator);
             itemHolder.itemFriendAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

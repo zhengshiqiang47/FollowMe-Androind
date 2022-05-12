@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.coderqiang.followme.Model.City;
 import com.example.coderqiang.followme.Model.CityLab;
-import com.example.coderqiang.followme.Model.TravlePlan;
+import com.example.coderqiang.followme.Model.TravelPlan;
 import com.example.coderqiang.followme.Model.TravlePlanLab;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Util.DateUtil;
@@ -23,6 +22,7 @@ import com.example.coderqiang.followme.Util.DateUtil;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -36,7 +36,7 @@ public class ShowTravlePlanAcvitity extends Activity {
     @Bind(R.id.show_travelplan_recyclery)
     RecyclerView showTravelplanRecyclery;
 
-    ArrayList<TravlePlan> plans;
+    List<TravelPlan> plans;
     Activity activity;
 
     @Override
@@ -64,14 +64,14 @@ public class ShowTravlePlanAcvitity extends Activity {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             PlanHodler planHolder=(PlanHodler)holder;
-            final TravlePlan travlePlan=plans.get(position);
-            City city=CityLab.get(getApplicationContext()).isContain(travlePlan.getCityName());
+            final TravelPlan travelPlan =plans.get(position);
+            City city=CityLab.get(getApplicationContext()).isContain(travelPlan.getCityName());
             Glide.with(activity).load(city.getIamgeUrls().get(0)).into(planHolder.cityImage);
-            planHolder.name.setText(travlePlan.getTravleName()+" "+ DateUtil.getDateToString(travlePlan.getTime()));
+            planHolder.name.setText(travelPlan.getTravleName()+" "+ DateUtil.getDateToString(travelPlan.getTime()));
             planHolder.setCurButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TravlePlanLab.get(getApplicationContext()).setCurrentPlan(travlePlan);
+                    TravlePlanLab.get(getApplicationContext()).setCurrentPlan(travelPlan);
                     EventBus.getDefault().post("plan");
                     finish();
                 }

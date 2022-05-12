@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Adapter;
 
+import static com.example.coderqiang.followme.Util.ServerUtil.BASE_URL;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -49,7 +51,7 @@ public class ImageAddAdapter extends RecyclerView.Adapter {
         this.urls=urls;
         if (urls != null) {
             for (DynamicImage dynamicImage:urls){
-                String url = "http://123.206.195.52:8080/day_30/dynamicImg/" + dynamicImage.getName();
+                String url = BASE_URL + "dynamicImg/" + dynamicImage.getName();
                 urlStr.add(url);
             }
         }
@@ -91,7 +93,7 @@ public class ImageAddAdapter extends RecyclerView.Adapter {
     }
 
     private void showDynamic(int position, ImageHolder imageHolder) {
-        String baseUrl="http://123.206.195.52:8080/day_30/dynamicImg";
+        String baseUrl=BASE_URL + "dynamicImg";
         imageHolder.delete.setVisibility(View.GONE);
         imageHolder.filter.setVisibility(View.GONE);
         final int tempPosition=position;

@@ -22,6 +22,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -44,7 +45,7 @@ public class HttpParse {
     private static final String TAG = "HttpParse";
     private static final String APP_KEY="e6e8f3668fc7f4817d9738489cf1d738";
 
-    public ArrayList<Scenicspot> getScenicspot(Context context,String cityname,String pageNum,String msg) {
+    public List<Scenicspot> getScenicspot(Context context,String cityname,String pageNum,String msg) {
         ArrayList<Scenicspot> scenicspots = ScenicspotLab.get(context).getScenicspots();
 
         HttpAnalyze httpAnalyze = new HttpAnalyze();
@@ -57,7 +58,7 @@ public class HttpParse {
             city.setCtripId("hangzhou14");
             cityname = "杭州";
         }
-        ArrayList<Scenicspot> citySpots = city.getScenicspots();
+        List<Scenicspot> citySpots = city.getScenicspots();
         int page = Integer.parseInt(pageNum);
         citySpots=ServerUtil.getScenicSpot(cityname, page, context,msg);
 //        city.addscenicPage();
@@ -429,7 +430,7 @@ public class HttpParse {
     }
 
     public void getPlace(City city){
-        ArrayList<String> imageUrl=city.getIamgeUrls();
+        List<String> imageUrl=city.getIamgeUrls();
         HttpAnalyze httpAnalyze=new HttpAnalyze();
         String result=httpAnalyze.getHtml("http://you.ctrip.com/place/"+city.getCtripId()+".html");
         Document document=Jsoup.parse(result);

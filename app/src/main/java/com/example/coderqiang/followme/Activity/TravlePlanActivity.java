@@ -2,8 +2,6 @@ package com.example.coderqiang.followme.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -17,8 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.coderqiang.followme.Model.CityLab;
-import com.example.coderqiang.followme.Model.TravleDay;
-import com.example.coderqiang.followme.Model.TravlePlan;
+import com.example.coderqiang.followme.Model.TravelDay;
+import com.example.coderqiang.followme.Model.TravelPlan;
 import com.example.coderqiang.followme.Model.TravlePlanLab;
 import com.example.coderqiang.followme.Model.User;
 import com.example.coderqiang.followme.R;
@@ -123,7 +121,7 @@ public class TravlePlanActivity extends Activity {
         edituserinfoPublicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final TravlePlan plan=new TravlePlan();
+                final TravelPlan plan=new TravelPlan();
                 int dayCount;
                 try {
                    dayCount=Integer.parseInt(travelPlanDaycount.getText().toString());
@@ -149,10 +147,10 @@ public class TravlePlanActivity extends Activity {
                 plan.setBeginMemo(travelPlanMemo.getText().toString());
                 plan.setCity(CityLab.get(getApplicationContext()).isContain(plan.getCityName()));
                 for (int i=0;i<plan.getDayCount();i++){
-                    TravleDay travleDay=new TravleDay();
-                    travleDay.setDayNum(i+1);
-                    travleDay.setTime(plan.getTime()+24*60*60*1000);
-                    plan.getTravleDays().add(travleDay);
+                    TravelDay travelDay =new TravelDay();
+                    travelDay.setDayNum(i+1);
+                    travelDay.setTime(plan.getTime()+24*60*60*1000);
+                    plan.getTravelDays().add(travelDay);
                 }
                 TravlePlanLab.get(getApplicationContext()).setCurrentPlan(plan);
                 TravlePlanLab.get(getApplicationContext()).getTravelPlans().add(plan);

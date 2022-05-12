@@ -3,6 +3,7 @@ package com.example.coderqiang.followme.Model;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by CoderQiang on 2016/12/29.
@@ -12,11 +13,11 @@ public class TravlePlanLab {
 
     private static TravlePlanLab travelPlanLab;
     private Context mContext;
-    private TravlePlan currentPlan;
-    private ArrayList<TravlePlan> travelPlans;
+    private TravelPlan currentPlan;
+    private List<TravelPlan> travelPlans;
 
     private TravlePlanLab(Context context){
-        travelPlans=new ArrayList<TravlePlan>();
+        travelPlans=new ArrayList<TravelPlan>();
         this.mContext=context;
     }
 
@@ -27,19 +28,19 @@ public class TravlePlanLab {
         return travelPlanLab;
     }
 
-    public void setTravelPlans(ArrayList<TravlePlan> travelPlans) {
+    public void setTravelPlans(List<TravelPlan> travelPlans) {
         this.travelPlans = travelPlans;
     }
 
-    public ArrayList<TravlePlan> getTravelPlans(){
+    public List<TravelPlan> getTravelPlans(){
         return travelPlans;
     }
 
-    public TravlePlan getCurrentPlan() {
+    public TravelPlan getCurrentPlan() {
         return currentPlan;
     }
 
-    public void setCurrentPlan(TravlePlan currentPlan) {
+    public void setCurrentPlan(TravelPlan currentPlan) {
         this.currentPlan = currentPlan;
     }
 }

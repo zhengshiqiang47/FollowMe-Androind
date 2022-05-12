@@ -4,7 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 
 import com.example.coderqiang.followme.Model.Scenicspot;
-import com.example.coderqiang.followme.Model.TravleDay;
+import com.example.coderqiang.followme.Model.TravelDay;
 
 /**
  * Created by CoderQiang on 2017/1/5.
@@ -12,7 +12,7 @@ import com.example.coderqiang.followme.Model.TravleDay;
 
 public class DeleteScenicDialog extends Dialog {
 
-    public DeleteScenicDialog(Context context, TravleDay travleDay, Scenicspot scenicspot) {
+    public DeleteScenicDialog(Context context, TravelDay travelDay, Scenicspot scenicspot) {
         super(context);
 
     }

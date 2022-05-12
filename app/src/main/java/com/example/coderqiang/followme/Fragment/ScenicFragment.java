@@ -86,7 +86,7 @@ public class ScenicFragment extends Fragment{
     LinearLayout addSceLayout;
 
     public City city;
-    ArrayList<Scenicspot> scenicspots;
+    List<Scenicspot> scenicspots;
     MyAdapter myAdapter;
     boolean isFirstRefresh=true;
     int count;

@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Activity;
 
+import static com.example.coderqiang.followme.Util.ServerUtil.BASE_URL;
+
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -174,7 +176,7 @@ public class SelectImageActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            UploadImage.formUpload("http://123.206.195.52:8080/day_30/uploadServlet",path, User.get(getApplicationContext()).getName(),getApplicationContext());
+            UploadImage.formUpload(BASE_URL+"uploadServlet",path, User.get(getApplicationContext()).getName(),getApplicationContext());
             return null;
         }
 

@@ -130,7 +130,7 @@ public class ScenicMainFragment extends Fragment {
     ArrayList<ScenicHeaderFragment> fragments;
     ArrayList<String> topImages;
     Fragment context;
-    ArrayList<Scenicspot> scenicspots;
+    List<Scenicspot> scenicspots;
     ArrayList<City> allCity=new ArrayList<City>();
     boolean shouldNext=true;
     int page=1;

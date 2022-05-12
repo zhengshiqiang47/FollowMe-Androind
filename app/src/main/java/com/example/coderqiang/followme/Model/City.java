@@ -7,6 +7,7 @@ import com.baidu.platform.comapi.map.C;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
 /**
@@ -24,8 +25,8 @@ public class City implements Serializable{
     private int scenicPage=1;
     private Weather weather;
     private String imageUrl;
-    private ArrayList<String> iamgeUrls=new ArrayList<String>();
-    private ArrayList<Scenicspot> scenicspots = new ArrayList<>();
+    private List<String> iamgeUrls=new ArrayList<String>();
+    private List<Scenicspot> scenicspots = new ArrayList<>();
     private int countPage=1;
 
     public int getCountPage() {
@@ -78,12 +79,8 @@ public class City implements Serializable{
         this.scenicPage=scenicPage;
     }
 
-    public ArrayList<Scenicspot> getScenicspots() {
+    public List<Scenicspot> getScenicspots() {
         return scenicspots;
-    }
-
-    public void setScenicspots(ArrayList<Scenicspot> scenicspots) {
-        this.scenicspots = scenicspots;
     }
 
     public int getScenicPage() {
@@ -98,12 +95,16 @@ public class City implements Serializable{
         this.weather = weather;
     }
 
-    public ArrayList<String> getIamgeUrls() {
+    public List<String> getIamgeUrls() {
         return iamgeUrls;
     }
 
-    public void setIamgeUrls(ArrayList<String> iamgeUrls) {
+    public void setIamgeUrls(List<String> iamgeUrls) {
         this.iamgeUrls = iamgeUrls;
+    }
+
+    public void setScenicspots(List<Scenicspot> scenicspots) {
+        this.scenicspots = scenicspots;
     }
 
     public boolean deleteScenicspot(Scenicspot scenicspot){

@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Fragment;
 
+import static com.example.coderqiang.followme.Util.ServerUtil.BASE_URL;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -63,10 +65,6 @@ public class DynamicFragment extends Fragment {
     RecyclerView mRecyclerview;
     @Bind(R.id.twinklingrefreshLayout)
     TwinklingRefreshLayout refreshLayout;
-    //    @Bind(R.id.dynamic_swipeRefesh)
-//    SwipeRefreshLayout pullToRefreshView;
-//    @Bind(R.id.swipeToLoad)
-//    SwipeToLoadLayout swipeToLoadLayout;
     ArrayList<String> str = new ArrayList<>();
     ArrayList<Dynamic> dynamics;
 
@@ -218,7 +216,7 @@ public class DynamicFragment extends Fragment {
             if(myViewHolder.dynamicCommentEditText.getTag() instanceof TextWatcher)
                 myViewHolder.dynamicCommentEditText.removeTextChangedListener((TextWatcher) (((MyViewHolder) holder).dynamicCommentEditText.getTag()));
             myViewHolder.dynamicCommentEditText.setText(dynamic.getMemo());
-            Glide.with(context).load("http://123.206.195.52:8080/day_30/upload/"+dynamic.getUserName()+".png").asBitmap().skipMemoryCache(false)
+            Glide.with(context).load(BASE_URL + "upload/"+dynamic.getUserName()+".png").asBitmap().skipMemoryCache(false)
                     .diskCacheStrategy(DiskCacheStrategy.NONE).override(300,300).placeholder(R.drawable.em_default_avatar).centerCrop().into(myViewHolder.dynamicAvatar);
             textWatcher=new TextWatcher() {
                 @Override

@@ -137,10 +137,10 @@ public class LoginActivity extends Activity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(name_edit.getText().toString().length()>=1&&passwd_edit.getText().toString().length()>=1){
-                    loginAccount(name_edit.getText().toString(),passwd_edit.getText().toString());
-                }else {
-                    loginAccount("zhengshiqiang","zsqqq1996424");
+                if (name_edit.getText().toString().length() >= 1 && passwd_edit.getText().toString().length() >= 1) {
+                    loginAccount(name_edit.getText().toString(), passwd_edit.getText().toString());
+                } else {
+                    loginAccount("zhengshiqiang", "zsqqq1996424");
                 }
                 inputAnimator(mInputLayout,width,height);
 
@@ -162,8 +162,6 @@ public class LoginActivity extends Activity {
         Observable.create(new Observable.OnSubscribe<Object>() {
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-//                HttpParse httpParse=new HttpParse();
-//                httpParse.getAllCityId(getApplicationContext());
                 ServerUtil.getAllCity(getApplicationContext());
                 subscriber.onCompleted();
             }
@@ -185,9 +183,11 @@ public class LoginActivity extends Activity {
         });
 
     }
+
     private int flag=0;
-    private void loginAccount(final String num, final String pwd){
-        EMClient.getInstance().login(num, "111222333", new EMCallBack() {
+
+    private void loginAccount(final String username, final String password){
+        EMClient.getInstance().login(username, password, new EMCallBack() {
             @Override
             public void onSuccess() {
                 EMClient.getInstance().groupManager().loadAllGroups();
@@ -205,8 +205,8 @@ public class LoginActivity extends Activity {
                         }
 
                     });
-                    User.get(getApplicationContext()).setName(num);
-                    User.get(getApplicationContext()).setPassword(pwd);
+                    User.get(getApplicationContext()).setName(username);
+                    User.get(getApplicationContext()).setPassword(password);
                     onDestroy();
                 }
 
@@ -235,7 +235,7 @@ public class LoginActivity extends Activity {
 
             @Override
             public void call(Subscriber<? super Object> subscriber) {
-                boolean isLogin=UserUtil.login(getApplicationContext(),num,pwd);
+                boolean isLogin=UserUtil.login(getApplicationContext(),username,password);
                 if(isLogin){
                     subscriber.onCompleted();
                 }else{
@@ -253,8 +253,8 @@ public class LoginActivity extends Activity {
                     startActivity(intent);
                     overridePendingTransition(R.anim.slide_enter,R.anim.slide_exit);
                     Toast.makeText(context.getApplicationContext(),"登录成功",Toast.LENGTH_SHORT).show();
-                    User.get(getApplicationContext()).setName(num);
-                    User.get(getApplicationContext()).setPassword(pwd);
+                    User.get(getApplicationContext()).setName(username);
+                    User.get(getApplicationContext()).setPassword(password);
                     onDestroy();
                 }
             }

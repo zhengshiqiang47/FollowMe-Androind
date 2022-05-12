@@ -92,10 +92,7 @@ public class ScenicDetailFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.expand_collapse:
-                break;
-        }
+
     }
 
     private class MyAdapter extends RecyclerView.Adapter{

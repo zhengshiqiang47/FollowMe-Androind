@@ -101,8 +101,8 @@ import com.example.coderqiang.followme.Model.MySearchResult;
 import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.SettingLab;
 import com.example.coderqiang.followme.Model.TravlePlanLab;
-import com.example.coderqiang.followme.Model.TravleDay;
-import com.example.coderqiang.followme.Model.TravlePlan;
+import com.example.coderqiang.followme.Model.TravelDay;
+import com.example.coderqiang.followme.Model.TravelPlan;
 import com.example.coderqiang.followme.R;
 import com.example.coderqiang.followme.Service.MyOrientationListener;
 import com.example.coderqiang.followme.Util.HttpParse;
@@ -192,7 +192,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
     int windowWidth;
     int windowHeight;
 
-    TravlePlan currentPlan;
+    TravelPlan currentPlan;
 
     public static JourneyFragment newInstance(){
         JourneyFragment journeyFragment = new JourneyFragment();
@@ -424,6 +424,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         locListener=new BDLocationListener() {
             @Override
             public void onReceiveLocation(BDLocation location) {
+                Log.i(TAG, "location"+ location.getAddrStr());
                 MyLocationData locationData=new MyLocationData.Builder()
                         .accuracy(location.getRadius())
                         .direction(currentX)
@@ -834,12 +835,12 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         menuDayLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TravleDay travleDay=new TravleDay();
-                travleDay.setDayNum(currentPlan.getTravleDays().size()+1);
-                travleDay.setMemo("备注");
-                currentPlan.getTravleDays().add(travleDay);
-                mRecyclerview.getAdapter().notifyItemChanged(currentPlan.getTravleDays().size()-1);
-                mRecyclerview.smoothScrollToPosition(currentPlan.getTravleDays().size());
+                TravelDay travelDay =new TravelDay();
+                travelDay.setDayNum(currentPlan.getTravelDays().size()+1);
+                travelDay.setMemo("备注");
+                currentPlan.getTravelDays().add(travelDay);
+                mRecyclerview.getAdapter().notifyItemChanged(currentPlan.getTravelDays().size()-1);
+                mRecyclerview.smoothScrollToPosition(currentPlan.getTravelDays().size());
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 closeMenu(journeyFab);
 
@@ -956,13 +957,13 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
             if(viewholder instanceof MyViewHolder){
                 int tempposition=position-1;
-                final TravleDay travleDay=currentPlan.getTravleDays().get(tempposition);
+                final TravelDay travelDay =currentPlan.getTravelDays().get(tempposition);
                 MyViewHolder holder=(MyViewHolder)viewholder;
                 holder.city.setText(currentPlan.getCityName());
                 if(holder.detail.getTag() instanceof  TextWatcher){
                     holder.detail.removeTextChangedListener((TextWatcher) holder.detail.getTag());
                 }
-                holder.detail.setText(travleDay.getMemo());
+                holder.detail.setText(travelDay.getMemo());
                 TextWatcher textWatcher=new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -972,7 +973,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         Log.i(TAG,"onTextChanged:"+s);
-                        travleDay.setMemo(s.toString());
+                        travelDay.setMemo(s.toString());
                     }
 
                     @Override
@@ -983,7 +984,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
                 holder.detail.addTextChangedListener(textWatcher);
                 holder.detail.setTag(textWatcher);
-                holder.day.setText("Day " + travleDay.getDayNum());
+                holder.day.setText("Day " + travelDay.getDayNum());
                 final String cityName=currentPlan.getCityName();
                 holder.city.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1000,7 +1001,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                         return false;
                     }
                 });
-                holder.scenicRecycler.setAdapter(new scenicAdapter(travleDay));
+                holder.scenicRecycler.setAdapter(new scenicAdapter(travelDay));
             }else if(viewholder instanceof HeaderHolder){
                 HeaderHolder headerHolder=(HeaderHolder)viewholder;
             }else if(viewholder instanceof FooterHolder){
@@ -1008,12 +1009,12 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                 footerHolder.moreLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        TravleDay travleDay=new TravleDay();
-                        travleDay.setDayNum(currentPlan.getTravleDays().size()+1);
-                        travleDay.setMemo("");
-                        currentPlan.getTravleDays().add(travleDay);
-                        mRecyclerview.getAdapter().notifyItemChanged(currentPlan.getTravleDays().size());
-                        mRecyclerview.smoothScrollToPosition(currentPlan.getTravleDays().size()-1);
+                        TravelDay travelDay =new TravelDay();
+                        travelDay.setDayNum(currentPlan.getTravelDays().size()+1);
+                        travelDay.setMemo("");
+                        currentPlan.getTravelDays().add(travelDay);
+                        mRecyclerview.getAdapter().notifyItemChanged(currentPlan.getTravelDays().size());
+                        mRecyclerview.smoothScrollToPosition(currentPlan.getTravelDays().size()-1);
                     }
                 });
             }
@@ -1024,7 +1025,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         public int getItemViewType(int position) {
             if(position==0){
                 return TYPE_HEADER;
-            }else if(position==currentPlan.getTravleDays().size()+1) {
+            }else if(position==currentPlan.getTravelDays().size()+1) {
                 return TYPE_FOOTER;
             }else return TYPE_NORMAL;
         }
@@ -1032,7 +1033,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
         @Override
         public int getItemCount() {
             if(currentPlan==null) return 2;
-            return currentPlan.getTravleDays().size()+2;
+            return currentPlan.getTravelDays().size()+2;
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
@@ -1052,12 +1053,12 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
 
         private class scenicAdapter extends RecyclerView.Adapter{
             ArrayList<Scenicspot> scenicspots;
-            TravleDay travleDay;
+            TravelDay travelDay;
 
-            public scenicAdapter(TravleDay travleDay) {
+            public scenicAdapter(TravelDay travelDay) {
                 super();
-                scenicspots=travleDay.getScenicspots();
-                this.travleDay=travleDay;
+                scenicspots= travelDay.getScenicspots();
+                this.travelDay = travelDay;
                 Log.i(TAG, "景点数:" + scenicspots.size());
             }
 
@@ -1091,13 +1092,13 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                         Log.i(TAG,"长按");
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle("提示");
-                        builder.setMessage("是否从Day "+travleDay.getDayNum()+"删除"+scenicspot.getScenicName());
+                        builder.setMessage("是否从Day "+ travelDay.getDayNum()+"删除"+scenicspot.getScenicName());
                         builder.setIcon(R.drawable.circle);
                         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                travleDay.deleteScenicSpots(scenicspot);
-                                scenicspots=travleDay.getScenicspots();
+                                travelDay.deleteScenicSpots(scenicspot);
+                                scenicspots= travelDay.getScenicspots();
                                 notifyItemRemoved(position);
                                 dialog.dismiss();
                             }
@@ -1334,7 +1335,7 @@ public class JourneyFragment extends android.support.v4.app.Fragment implements 
                 @Override
                 public void call(Subscriber<? super Object> subscriber) {
                     int id= ServerUtil.updateTravelPlan(getActivity().getApplicationContext(),currentPlan);
-                    Log.i(TAG,"id"+id+ currentPlan.getTravleDays().toString()+" ");
+                    Log.i(TAG,"id"+id+ currentPlan.getTravelDays().toString()+" ");
                 }
             }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Object>() {
                 @Override

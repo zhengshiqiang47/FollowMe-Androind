@@ -1,67 +1,44 @@
 package com.example.coderqiang.followme.Fragment;
 
+import static com.example.coderqiang.followme.Util.ServerUtil.BASE_URL;
+
 import android.app.ActivityOptions;
-import android.app.Fragment;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
-import com.baidu.mapapi.search.route.PlanNode;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
-import com.example.coderqiang.followme.Activity.ChinaActivity;
 import com.example.coderqiang.followme.Activity.EditUserInfoActivity;
-import com.example.coderqiang.followme.Activity.HistoryTrackActivity;
 import com.example.coderqiang.followme.Activity.LoginActivity;
 import com.example.coderqiang.followme.Activity.NearbyActivity;
-import com.example.coderqiang.followme.Activity.NewDynamicActivity;
-import com.example.coderqiang.followme.Activity.PictureActivity;
-import com.example.coderqiang.followme.Activity.ScenicActivity;
 import com.example.coderqiang.followme.Activity.ScenicDetailActivity;
-import com.example.coderqiang.followme.Activity.SelectImageActivity;
 import com.example.coderqiang.followme.Activity.ShowTravlePlanAcvitity;
-import com.example.coderqiang.followme.Activity.TestActivity;
-import com.example.coderqiang.followme.Activity.TraceActivity;
-import com.example.coderqiang.followme.Activity.TravlePlanActivity;
-import com.example.coderqiang.followme.Activity.UserDetailInfoActivity;
-import com.example.coderqiang.followme.Activity.WebViewActivity;
 import com.example.coderqiang.followme.CircleImagview;
 import com.example.coderqiang.followme.Model.CityLab;
 import com.example.coderqiang.followme.Model.FMUser;
@@ -70,16 +47,11 @@ import com.example.coderqiang.followme.Model.MyLocation;
 import com.example.coderqiang.followme.Model.Scenicspot;
 import com.example.coderqiang.followme.Model.ScenicspotLab;
 import com.example.coderqiang.followme.Model.SettingLab;
-import com.example.coderqiang.followme.Model.TravleDay;
 import com.example.coderqiang.followme.Model.User;
 import com.example.coderqiang.followme.R;
-import com.example.coderqiang.followme.Util.ServerUtil;
 import com.example.coderqiang.followme.Util.UploadImage;
 import com.example.coderqiang.followme.Util.UserUtil;
-import com.example.coderqiang.followme.View.AddScenicDialog;
 import com.hyphenate.chat.EMClient;
-import com.lcodecore.tkrefreshlayout.header.progresslayout.CircleImageView;
-import com.nightonke.boommenu.BoomMenuButton;
 
 import net.qiujuer.genius.graphics.Blur;
 
@@ -89,7 +61,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -250,7 +221,7 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
     }
 
     private void showTitleBg() {
-        Glide.with(getActivity()).load("http://123.206.195.52:8080/day_30/upload/"+ User.get(getActivity()).getName()+".png").asBitmap().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
+        Glide.with(getActivity()).load(BASE_URL + "upload/"+ User.get(getActivity()).getName()+".png").asBitmap().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 Bitmap bitmap=compressImage(resource);
@@ -472,7 +443,7 @@ public class UserinfoFragment extends android.support.v4.app.Fragment  {
 
         @Override
         protected String doInBackground(Void... params) {
-            return UploadImage.formUpload("http://123.206.195.52:8080/day_30/uploadServlet",path, User.get(getActivity().getApplicationContext()).getName(),getActivity());
+            return UploadImage.formUpload(BASE_URL + "uploadServlet",path, User.get(getActivity().getApplicationContext()).getName(),getActivity());
         }
 
         @Override

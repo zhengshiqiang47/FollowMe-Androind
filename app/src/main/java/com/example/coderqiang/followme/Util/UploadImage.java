@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Util;
 
+import static com.example.coderqiang.followme.Util.ServerUtil.BASE_URL;
+
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
@@ -31,7 +33,6 @@ import java.net.URL;
 
 public class UploadImage {
     private static final String TAG="UpLoadImage";
-    private static final String DYNAMICIMG_URL="http://123.206.195.52:8080/day_30/dynamicImgUploadServlet";
 
     public static String formUpload(String urlStr, String filePath,String name,Context context) {
         String rsp = "";
@@ -119,7 +120,7 @@ public class UploadImage {
 
     public static String  DynamicImgUpload( Uri uri,String id,Activity context) {
         String rsp = "";
-        String urlStr=DYNAMICIMG_URL;
+        String urlStr= "api/dynamicImg/upload";
         HttpURLConnection conn = null;
         String BOUNDARY = "|"; // request头和上传文件内容分隔符
         try {
@@ -221,7 +222,7 @@ public class UploadImage {
 //            circleImagview.setImageBitmap(User.get(context).getTouxiang());
 //        }else{
 //            Log.i("UpLoadImage","username"+User.get(context).getName());
-            Glide.with(context).load("http://123.206.195.52:8080/day_30/upload/"+ User.get(context).getName()+".png").asBitmap().skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.NONE).override(300,300).centerCrop().into(circleImagview);
+            Glide.with(context).load(BASE_URL + "upload/"+ User.get(context).getName()+".png").asBitmap().skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.NONE).override(300,300).centerCrop().into(circleImagview);
 //        }
     }
 }

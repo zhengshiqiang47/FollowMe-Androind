@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Activity;
 
+import static com.example.coderqiang.followme.Util.ServerUtil.BASE_URL;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -191,7 +193,7 @@ public class UserDetailInfoActivity extends Activity {
     }
 
     private void showTitleBg() {
-        Glide.with(this).load("http://123.206.195.52:8080/day_30/upload/" + user.getUserName() + ".png").asBitmap().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
+        Glide.with(this).load(BASE_URL + "upload/" + user.getUserName() + ".png").asBitmap().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 avator = resource;

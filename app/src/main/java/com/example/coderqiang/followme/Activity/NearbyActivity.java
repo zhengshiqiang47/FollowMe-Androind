@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Activity;
 
+import static com.example.coderqiang.followme.Util.ServerUtil.BASE_URL;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -130,7 +132,7 @@ public class NearbyActivity extends Activity implements RadarSearchListener {
             NearbyHolder nearbyHolder=(NearbyHolder)holder;
             final FMUser user=fmusers.get(position);
             try{
-                Glide.with(activity).load("http://123.206.195.52:8080/day_30/upload/"+user.getUserName()+".png").asBitmap().error(R.drawable.em_default_avatar).into(nearbyHolder.itemFriendAvator);
+                Glide.with(activity).load(BASE_URL+"upload/"+user.getUserName()+".png").asBitmap().error(R.drawable.em_default_avatar).into(nearbyHolder.itemFriendAvator);
             }catch (Exception e){
                 Glide.with(activity).load(R.drawable.ease_default_avatar).asBitmap().into(nearbyHolder.itemFriendAvator);
             }

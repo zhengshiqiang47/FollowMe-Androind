@@ -13,7 +13,9 @@ import com.hyphenate.easeui.controller.EaseUI.EaseUserProfileProvider;
 import com.hyphenate.easeui.domain.EaseUser;
 
 public class EaseUserUtils {
-    
+
+    public final static String BASE_URL ="http://10.0.2.2:8080/";
+
     static EaseUserProfileProvider userProvider;
     
     static {
@@ -47,8 +49,8 @@ public class EaseUserUtils {
                 Glide.with(context).load(user.getAvatar()).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.head_me).into(imageView);
             }
         }else{
-//            Log.i("EaseUserUtils","加载头像"+"http://123.206.195.52:8080/day_30/upload/"+username+".png");
-            Glide.with(context).load("http://123.206.195.52:8080/day_30/upload/"+username+".png").error(R.drawable.head_me).transform(new CircleTransform(context)).skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
+//            Log.i("EaseUserUtils","加载头像"+"http://localhost:8080/upload/"+username+".png");
+            Glide.with(context).load(BASE_URL + "upload/"+username+".png").error(R.drawable.head_me).transform(new CircleTransform(context)).skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
         }
     }
     

@@ -1,5 +1,7 @@
 package com.example.coderqiang.followme.Activity;
 
+import static com.example.coderqiang.followme.Util.ServerUtil.BASE_URL;
+
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -282,7 +284,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             }
         });
-        Glide.with(this).load("http://123.206.195.52:8080/day_30/upload/"+ User.get(getApplicationContext()).getName()+".png").asBitmap().diskCacheStrategy(DiskCacheStrategy.NONE).into(new Target<Bitmap>() {
+        Glide.with(this).load(BASE_URL+"upload/"+ User.get(getApplicationContext()).getName()+".png").asBitmap().diskCacheStrategy(DiskCacheStrategy.NONE).into(new Target<Bitmap>() {
             @Override
             public void onLoadStarted(Drawable placeholder) {
 
@@ -402,7 +404,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             String cityName= MyLocation.getMyLocation(getApplicationContext()).getCityName();
 //            cityName="杭州市";
             City city=CityLab.get(getApplicationContext()).isContain(cityName);
-            ArrayList<Scenicspot> tempSces= httpParse.getScenicspot(getApplicationContext(), city.getCityName(),city.getScenicPage()+"",ServerUtil.LOAD_SUCCESS);
+            List<Scenicspot> tempSces= httpParse.getScenicspot(getApplicationContext(), city.getCityName(),city.getScenicPage()+"",ServerUtil.LOAD_SUCCESS);
             Log.i(TAG,"hasLocation"+MyLocation.getMyLocation(getApplicationContext()).isHasLocation());
             if(!MyLocation.getMyLocation(getApplicationContext()).isHasLocation()){
                 Log.i(TAG,"进到这了");
@@ -492,7 +494,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public RadarUploadInfo onUploadInfoCallback() {
         RadarUploadInfo info=new RadarUploadInfo();
         info.comments=User.get(getApplicationContext()).getName();
-        info.pt=new LatLng(MyLocation.getMyLocation(this).getLatitute(),MyLocation.getMyLocation(this).getLongtitute());
+//        info.pt=new LatLng(MyLocation.getMyLocation(this).getLatitute(),MyLocation.getMyLocation(this).getLongtitute());
         return info;
     }
 

@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FollowMe.iml" filepath="$PROJECT_DIR$/FollowMe.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/easeUI_CN/easeUI_CN.iml" filepath="$PROJECT_DIR$/easeUI_CN/easeUI_CN.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FollowMe.iml" filepath="$PROJECT_DIR$/.idea/modules/FollowMe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FollowMe.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FollowMe.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/easeUI_CN/FollowMe.easeUI_CN.iml" filepath="$PROJECT_DIR$/.idea/modules/easeUI_CN/FollowMe.easeUI_CN.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/FollowMe.library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/FollowMe.library.iml" />
     </modules>
   </component>
 </project>
